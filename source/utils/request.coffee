@@ -1,4 +1,4 @@
-define ['./uri'], (URI) ->
+define ['./uri','../types/array'], (URI) ->
   # TODO stuff like chaining, method override etc...
   class Response
     constructor: (headers,body,status) ->
