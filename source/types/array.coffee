@@ -15,8 +15,10 @@ define ->
     _shift: ->
       @splice 0, 1
       @
+
     _empty: ->
       @splice 0, @length
+      @
 
     _remove: (item) ->
       if (index = @indexOf(item)) != -1

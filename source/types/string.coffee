@@ -1,4 +1,4 @@
-define ->
+define ['./number'], ->
   methods = 
     clean: ->
       s = @valueOf().trim()
