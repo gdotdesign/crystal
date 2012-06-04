@@ -1,0 +1,50 @@
+#!/usr/bin/env ruby
+# encoding: UTF-8
+
+require 'rack'
+require "pathname"
+require 'commander/import'
+
+bin_file = Pathname.new(__FILE__).realpath
+$dirname = File.expand_path(File.dirname bin_file)
+require $dirname+'/specrunner'
+
+program :name, 'Crystal CLI'
+program :version, '0.0.1'
+program :description, 'Crsytal CLI'
+
+command :generate do |c|
+	c.syntax = ''
+	c.description = ''
+	c.action do |args,options|
+		puts 'Generating shard template..'
+		dir = args[0]
+		files = Dir.glob($dirname+"/shard_template")
+		FileUtils.cp_r files, Dir.pwd
+		FileUtils.move './shard_template', dir
+		Dir.glob './'+dir+'/**/*' do |f|
+			if File.file? f
+				text = File.read(f)
+  			text.gsub!('{{name}}', dir)
+  			File.open(f, "w+") {|file| file.puts text}
+				FileUtils.move f, f.gsub('temp', dir)
+			end
+		end
+	end
+end
+
+command :specserver do |c|
+	c.syntax = ''
+	c.description = ''
+	c.action do |args,options|
+		builder = Rack::Builder.new do
+		  use Rack::CommonLogger
+			use Rack::Reloader
+			use Rack::Static, :urls => ['/vendor'], :root => $dirname+"/public"
+			
+			run Specrunner
+		end
+
+		Rack::Handler::Thin.run builder, :Port => 9292
+	end
+end

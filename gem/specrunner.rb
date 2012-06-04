@@ -1,8 +1,7 @@
-require "rubygems"
-require "bundler/setup"
-require "yaml"
-
-Bundler.require(:default)
+require 'rubygems'
+require 'renee'
+require 'haml'
+require 'coffee-script'
 
 Layout = '''
 !!!
@@ -38,16 +37,50 @@ Layout = '''
 %body
 '''
 
+Index = '''
+!!!
+%head
+%body
+  - files.each do |file|
+    %a{:href=>"#{file[:package]}#{file[:file]}"} #{file[:package]}#{file[:file]}
+'''
 
 $layout = Haml::Engine.new Layout
+$index = Haml::Engine.new Index
 
 class Specrunner < Renee::Application
   app do
+    complete do
+      files = []
+      Dir.glob './specs/**/*' do |f|
+        if File.file? f
+          filename = File.basename f
+          extname = File.extname f
+          if extname == '.coffee'
+            package = File.dirname(f).split(/\//).last
+            files.push({
+              :package => if package == '.' then '' else package+"/" end,
+              :file => filename.gsub(extname,'')
+            })
+          end
+        end
+      end
+      respond! do
+        status 200
+        headers({'Content-Type' => 'text/html'})
+        body $index.render nil, {:files => files }
+      end
+    end
     part "specs" do
       var do |package|
         remainder do |file|
+          if file == ".js"
+            file = package 
+            package = ''
+          end
+          package += "/"
           file.gsub! /\.js/, ''
-          body = CoffeeScript.compile File.read("./specs/#{package}/#{file}.coffee"), {:bare => true}
+          body = CoffeeScript.compile File.read(Dir.pwd+"/specs/#{package}#{file}.coffee"), {:bare => true}
           respond! do 
             status 200
             headers({'Content-Type' => 'text/javascript'})
@@ -59,8 +92,13 @@ class Specrunner < Renee::Application
     part "source" do
       var do |package|
         remainder do |file|
+          if file == ".js"
+            file = package 
+            package = ''
+          end
+          package += "/"
           file.gsub! /\.js/, ''
-          body = CoffeeScript.compile File.read("../source/#{package}/#{file}.coffee"), {:bare => true}
+          body = CoffeeScript.compile File.read(Dir.pwd+"/source/#{package}#{file}.coffee"), {:bare => true}
           respond! do 
             status 200
             headers({'Content-Type' => 'text/javascript'})
@@ -70,8 +108,14 @@ class Specrunner < Renee::Application
       end
     end
     var do |package|
+      complete do
+        respond! do
+          status 200
+          headers({'Content-Type' => 'text/html'})
+          body $layout.render nil, {:spec => "#{package}" }
+        end
+      end
       var do |file|
-        puts "#{package}/#{file}" 
         respond! do
           status 200
           headers({'Content-Type' => 'text/html'})
