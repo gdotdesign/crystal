@@ -1,6 +1,6 @@
 define ->
   #TODO
-  #proerties base, vw, vh
+  #properties base, vw, vh
   #converters toEm, toPt, toVw, toVH, toPx
   class Unit
     @UNITS: {'px': 0,  em: 1,    pt: 2}

@@ -17,13 +17,13 @@ define ->
     upto:
       value: (limit,func,bound = @) ->
         i = parseInt(@)
-        while i < limit
+        while i <= limit
           func.call bound, i
           i++
     downto:
       value: (limit,func,bound = @) ->
         i = parseInt(@)
-        while i > limit
+        while i >= limit
           func.call bound, i
           i--
     times:
@@ -50,7 +50,7 @@ define ->
         if val > max 
           val % max
         else if val < min 
-          max + val % max
+          max - val % max
         else
           val
   Number

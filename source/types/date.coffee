@@ -11,9 +11,9 @@ define ->
         when 'Y'
           @getFullYear()
         # Hours
-        when 'H'
-          @getHours()
         when 'h'
+          @getHours()
+        when 'H'
           @getHours().toString().replace /^\d$/, "0$&"
         # Month
         when 'M'

@@ -2,6 +2,7 @@ require 'rubygems'
 require 'renee'
 require 'haml'
 require 'coffee-script'
+require 'json'
 
 Layout = '''
 !!!
@@ -28,7 +29,7 @@ Layout = '''
       })
 
       window.onload = function(){
-        require(["specs/#{spec}"],function(){
+        require(#{specs},function(){
           jasmineEnv.execute();
         })
       }
@@ -41,6 +42,7 @@ Index = '''
 !!!
 %head
 %body
+  %a{:href=>"/all"} Run all specs
   %ul
     - files.each do |file|
       %li
@@ -52,21 +54,32 @@ $index = Haml::Engine.new Index
 
 class SpecSever < Renee::Application
   app do
-    complete do
-      files = []
-      Dir.glob './specs/**/*' do |f|
-        if File.file? f
-          filename = File.basename f
-          extname = File.extname f
-          if extname == '.coffee'
-            package = File.dirname(f).split(/\//).last
-            files.push({
-              :package => if package == '.' then '' else package+"/" end,
-              :file => filename.gsub(extname,'')
-            })
-          end
+    files = []
+    Dir.glob './specs/**/*' do |f|
+      if File.file? f
+        filename = File.basename f
+        extname = File.extname f
+        if extname == '.coffee'
+          package = File.dirname(f).split(/\//).last
+          files.push({
+            :package => if package == '.' then '' else package+"/" end,
+            :file => filename.gsub(extname,'')
+          })
         end
       end
+    end
+    part 'all' do
+      specs = []
+      files.each do |f| 
+        specs.push 'specs/'+f[:package]+f[:file]
+      end
+      respond! do
+        status 200
+        headers({'Content-Type' => 'text/html'})
+        body $layout.render nil, {:specs => specs.to_json }
+      end
+    end
+    complete do
       respond! do
         status 200
         headers({'Content-Type' => 'text/html'})
@@ -114,14 +127,14 @@ class SpecSever < Renee::Application
         respond! do
           status 200
           headers({'Content-Type' => 'text/html'})
-          body $layout.render nil, {:spec => "#{package}" }
+          body $layout.render nil, {:specs => ["specs/#{package}"].to_json }
         end
       end
       var do |file|
         respond! do
           status 200
           headers({'Content-Type' => 'text/html'})
-          body $layout.render nil, {:spec => "#{package}/#{file}" }
+          body $layout.render nil, {:specs => ["specs/#{package}/#{file}"].to_json }
         end
       end
     end
