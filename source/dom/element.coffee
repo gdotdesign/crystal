@@ -47,7 +47,7 @@ define ['../types/object','../types/array'], ->
           return el
 
   # Parse attributes from string (#id.class!title)  
-  _parseName = (name) ->
+  _parseName = (name,atts = {}) ->
     ret = 
       tag: name.match(new RegExp("^.*?(?=#{prefixes})"))[0] or 'div'
       attributes: {}
@@ -55,9 +55,18 @@ define ['../types/object','../types/array'], ->
       if (m = name.match(value.regexp)) isnt null 
         name = name.replace(value.regexp, "")
         if value.unique
-          ret.attributes[key] = m.pop().slice(1)
+          if atts[key]
+            ret.attributes[key] = atts[key]
+          else
+            ret.attributes[key] = m.pop().slice(1)
         else
           map = m.map (item) -> item.slice(1)
+          if atts[key]
+            if typeof atts[key] is 'string'
+              map = map.concat atts[key].split(" ")
+            else
+              map = map.concat atts[key]
+            map._compact()
           ret.attributes[key] = map.join(" ")
     ret 
 
@@ -155,15 +164,10 @@ define ['../types/object','../types/array'], ->
       when 'element'
         node = element
       when 'string'
-        {tag,attributes} = _parseName node
+        {tag,attributes} = _parseName node, atts
         node = document.createElement tag
         for key, value of attributes
           node.setAttribute key, value
-    for key, value of atts
-      if node[key] != undefined
-        node[key] = value
-      else
-        node.setAttribute key, value
     node
 
   Node
