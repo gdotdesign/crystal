@@ -48,7 +48,7 @@ Index = '''
 $layout = Haml::Engine.new Layout
 $index = Haml::Engine.new Index
 
-class Specrunner < Renee::Application
+class SpecSever < Renee::Application
   app do
     complete do
       files = []

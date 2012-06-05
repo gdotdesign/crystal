@@ -4,10 +4,10 @@
 require 'rack'
 require "pathname"
 require 'commander/import'
+require 'spec_server'
 
 bin_file = Pathname.new(__FILE__).realpath
-$dirname = File.expand_path(File.dirname bin_file)
-require $dirname+'/specrunner'
+$dirname = File.dirname(File.expand_path(File.dirname bin_file))
 
 program :name, 'Crystal CLI'
 program :version, '0.0.1'
@@ -27,7 +27,9 @@ command :generate do |c|
 				text = File.read(f)
   			text.gsub!('{{name}}', dir)
   			File.open(f, "w+") {|file| file.puts text}
-				FileUtils.move f, f.gsub('temp', dir)
+  			if f != f.gsub('temp', dir)
+					FileUtils.move f, f.gsub('temp', dir)
+				end
 			end
 		end
 	end
@@ -42,7 +44,7 @@ command :specserver do |c|
 			use Rack::Reloader
 			use Rack::Static, :urls => ['/vendor'], :root => $dirname+"/public"
 			
-			run Specrunner
+			run SpecSever
 		end
 
 		Rack::Handler::Thin.run builder, :Port => 9292
