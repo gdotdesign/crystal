@@ -18,3 +18,6 @@ define ['source/types/string'], ->
     it "clean should remove extra whitespace", ->
       a = ' i      like     cookies      \n\n'
       expect(a.clean()).toBe 'i like cookies'
+    it "should convert entities", ->
+      a = '&<>"'
+      expect(a.entities()).toBe '&amp;&lt;&gt;&quot;'

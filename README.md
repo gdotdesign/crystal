@@ -10,3 +10,8 @@ And run the following command:
 `shard specserver`    
 Open your browser and navigate to:     
 `http://localhost:9292`
+
+###Known Bugs
+
+ *  querySelectorAll not returning proper NodeList in Opera     
+ 		http://my.opera.com/community/forums/topic.dml?id=1377232

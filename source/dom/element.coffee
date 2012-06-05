@@ -81,8 +81,8 @@ define ['../types/object','../types/array'], ->
     all: (selector = "*") ->
       @querySelectorAll(selector)
     empty: ->
-      @all().dispose()
-      
+      @querySelectorAll("*").dispose()
+
   # Methods only for HTMLElement, NodeList
   methods_element = 
     dispose: ->

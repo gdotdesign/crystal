@@ -11,7 +11,9 @@ define ->
       for node in @
         node[property]
     include: (el) ->
-      node.contains el
+      for node in @
+        return true if node is el
+      false
       
   for key, method of methods
     Object.defineProperty NodeList::, key, value: method  
