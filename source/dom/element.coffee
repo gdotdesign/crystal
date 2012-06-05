@@ -29,7 +29,6 @@ define ['../types/object','../types/array'], ->
     (args...) ->
       for el in @
         fn.apply el, args
-      @
 
   _matchesSelector = (el, selector) ->
     if el.webkitMatchesSelector
@@ -124,9 +123,9 @@ define ['../types/object','../types/array'], ->
         @selectedIndex = @children.indexOf el
 
   Object.defineProperties HTMLElement::,
-    tag: ->
+    tag:
       get: ->
-        @tagName.toLowercase()
+        @tagName.toLowerCase()
     parent:
       get: ->
         @parentElement
@@ -160,14 +159,15 @@ define ['../types/object','../types/array'], ->
     Object.defineProperty window, prop.replace("Listener",''), value: window[prop]
     
   Element.create = (node, atts = {}) ->
+    return node if node instanceof Node
     switch typeof node
-      when 'element'
-        node = element
       when 'string'
         {tag,attributes} = _parseName node, atts
         node = document.createElement tag
         for key, value of attributes
           node.setAttribute key, value
+      else
+        node = document.createElement 'div'
     node
 
   Node
