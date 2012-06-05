@@ -4,14 +4,14 @@
 require 'rack'
 require "pathname"
 require 'commander/import'
-require 'spec_server'
 
 bin_file = Pathname.new(__FILE__).realpath
+$:.unshift File.expand_path("../../lib", bin_file)
 $dirname = File.dirname(File.expand_path(File.dirname bin_file))
 
-program :name, 'Crystal CLI'
+program :name, 'Shard CLI'
 program :version, '0.0.1'
-program :description, 'Crsytal CLI'
+program :description, 'Shard CLI'
 
 command :generate do |c|
 	c.syntax = ''
@@ -39,6 +39,7 @@ command :specserver do |c|
 	c.syntax = ''
 	c.description = ''
 	c.action do |args,options|
+		require 'spec_server'
 		builder = Rack::Builder.new do
 		  use Rack::CommonLogger
 			use Rack::Reloader

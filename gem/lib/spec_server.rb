@@ -41,8 +41,10 @@ Index = '''
 !!!
 %head
 %body
-  - files.each do |file|
-    %a{:href=>"#{file[:package]}#{file[:file]}"} #{file[:package]}#{file[:file]}
+  %ul
+    - files.each do |file|
+      %li
+        %a{:href=>"#{file[:package]}#{file[:file]}"} #{file[:package]}#{file[:file]}
 '''
 
 $layout = Haml::Engine.new Layout

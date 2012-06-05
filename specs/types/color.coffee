@@ -1,8 +1,21 @@
-exports["color test"] = (test) ->
-  c = new Color
-  c.hex = "000000"
-  test.strictEqual c.hex, "000000"
-  test.strictEqual c.red, 0
-  c.red = 255
-  test.strictEqual c.hex, "FF0000"
-  test.done()
+define ['source/types/color'], (Color) ->
+  describe "Array", ->
+    it 'default value should be FFFFFF', ->
+      c = new Color
+      expect(c.hex).toBe "FFFFFF"
+      expect(c.red).toBe 255
+      expect(c.blue).toBe 255
+      expect(c.green).toBe 255
+      expect(c.hue).toBe 0
+      expect(c.saturation).toBe 0
+      expect(c.lightness).toBe 100
+    it 'should set hex value', ->
+      c = new Color
+      c.hex = "000000"
+      expect(c.hex).toBe "000000"
+      expect(c.red).toBe 0
+      expect(c.blue).toBe 0
+      expect(c.green).toBe 0
+      expect(c.hue).toBe 0
+      expect(c.saturation).toBe 0
+      expect(c.lightness).toBe 0
