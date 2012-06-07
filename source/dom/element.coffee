@@ -55,7 +55,7 @@ define ['../types/object','../types/array'], ->
         name = name.replace(value.regexp, "")
         if value.unique
           if atts[key]
-            ret.attributes[key] = atts[key]
+            ret.attributes[key] = atts[key] if atts[key] isnt null and atts[key] isnt undefined
           else
             ret.attributes[key] = m.pop().slice(1)
         else
@@ -67,6 +67,8 @@ define ['../types/object','../types/array'], ->
               map = map.concat atts[key]
             map._compact()
           ret.attributes[key] = map.join(" ")
+      else
+        ret.attributes[key] = atts[key] if atts[key] isnt null and atts[key] isnt undefined
     ret 
 
   # Methods for Node
@@ -165,6 +167,10 @@ define ['../types/object','../types/array'], ->
         {tag,attributes} = _parseName node, atts
         node = document.createElement tag
         for key, value of attributes
+          if (desc = Object.getOwnPropertyDescriptor(HTMLElement::,key))
+            if desc.writeable or desc.set
+              node[key] = value
+              continue
           node.setAttribute key, value
       else
         node = document.createElement 'div'

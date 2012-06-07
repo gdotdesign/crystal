@@ -1,6 +1,47 @@
 define ['source/dom/element','source/dom/node-list','source/dom/document-fragment'], ->
   describe "Element", ->
     describe "create", ->
+      it "should create a new div element", ->
+        div = Element.create("div")
+        expect(div.tagName.toLowerCase()).toEqual "div"
+        expect(not div.className and div.className.length is 0).toBeTruthy()
+        expect(not div.id and div.id.length is 0).toBeTruthy()
+
+      it "should create a new element with id and class", ->
+        p = Element.create("p",
+          id: "myParagraph"
+          class: "test className"
+        )
+        expect(p.tagName.toLowerCase()).toEqual "p"
+        expect(p.className).toEqual "test className"
+
+      it "should create a new element with id and class from css expression", ->
+        p = Element.create("p#myParagraph.test.className")
+        expect(p.tagName.toLowerCase()).toEqual "p"
+        expect(p.className).toEqual "test className"
+
+      it "should not reset attributes and classes with null", ->
+        div = Element.create("div#myDiv.myClass",
+          id: null
+          class: null
+        )
+        expect(div.tagName.toLowerCase()).toEqual "div"
+        expect(div.id).toEqual "myDiv"
+        expect(div.className).toEqual "myClass"
+
+      it "should not reset attributes and classes with undefined", ->
+        div = Element.create("div#myDiv.myClass",
+          id: `undefined`
+          class: `undefined`
+        )
+        expect(div.tagName.toLowerCase()).toEqual "div"
+        expect(div.id).toEqual "myDiv"
+        expect(div.className).toEqual "myClass"
+
+      it "should fall back to a div tag", ->
+        someElement = Element.create("#myId")
+        expect(someElement.tagName.toLowerCase()).toEqual "div"
+        expect(someElement.id).toEqual "myId"
       it "should create a arbitary element from tagname", ->
         e = Element.create 'div'
         expect(e instanceof HTMLElement).toBe true
