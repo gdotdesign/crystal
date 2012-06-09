@@ -1,8 +1,8 @@
 define ->
   methods = 
     forEach: (fn, bound = @) ->
-      for node in @
-        fn.call bound, node
+      for node,i in @
+        fn.call bound, node, i
       @
     map: (fn, bound = @) ->
       for node in @

@@ -1,7 +1,7 @@
 define ['source/types/date'], ->
   describe "Date", ->
     beforeEach ->
-      @d = new Date('2012-04-06 05:09')
+      @d = new Date('Fri Apr 06 2012 05:09:00 GMT+0200 (CEST)')
     describe 'format', ->
       it 'should format days', ->
         expect(@d.format("%d")).toBe '6'

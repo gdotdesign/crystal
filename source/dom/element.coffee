@@ -124,7 +124,7 @@ define ['../types/object','../types/array'], ->
       if @chidren.include(el)
         @selectedIndex = @children.indexOf el
 
-  Object.defineProperties HTMLElement::,
+  properties =
     tag:
       get: ->
         @tagName.toLowerCase()
@@ -149,6 +149,7 @@ define ['../types/object','../types/array'], ->
         @getAttribute 'class'
       set: (value) ->
         @setAttribute 'class', value
+  Object.defineProperties HTMLElement::, properties
 
   Object.defineProperty Node::, 'delegateEventListener', value: (event,listener,useCapture) ->
     [baseEvent,selector] = event.split(':')
@@ -167,10 +168,9 @@ define ['../types/object','../types/array'], ->
         {tag,attributes} = _parseName node, atts
         node = document.createElement tag
         for key, value of attributes
-          if (desc = Object.getOwnPropertyDescriptor(HTMLElement::,key))
-            if desc.writeable or desc.set
-              node[key] = value
-              continue
+          if (desc = properties[key])
+            node[key] = value
+            continue
           node.setAttribute key, value
       else
         node = document.createElement 'div'
