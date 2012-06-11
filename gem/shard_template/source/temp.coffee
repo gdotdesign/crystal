@@ -1,3 +1,0 @@
-define ->
-  class {{name}}
-    constructor: ->
