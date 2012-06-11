@@ -51,90 +51,55 @@ Index = '''
 
 $layout = Haml::Engine.new Layout
 $index = Haml::Engine.new Index
-
-class SpecSever < Renee::Application
-  app do
-    files = []
-    Dir.glob './specs/**/*' do |f|
-      if File.file? f
-        filename = File.basename f
-        extname = File.extname f
-        if extname == '.coffee'
-          package = File.dirname(f).split(/\//).last
-          files.push({
-            :package => if package == '.' then '' else package+"/" end,
-            :file => filename.gsub(extname,'')
-          })
-        end
-      end
-    end
-    part 'all' do
-      specs = []
-      files.each do |f| 
-        specs.push 'specs/'+f[:package]+f[:file]
-      end
-      respond! do
-        status 200
-        headers({'Content-Type' => 'text/html'})
-        body $layout.render nil, {:specs => specs.to_json }
-      end
-    end
-    complete do
-      respond! do
-        status 200
-        headers({'Content-Type' => 'text/html'})
-        body $index.render nil, {:files => files }
-      end
-    end
-    part "specs" do
-      var do |package|
-        remainder do |file|
-          if file == ".js"
-            file = package 
-            package = ''
-          end
-          package += "/"
-          file.gsub! /\.js/, ''
-          body = CoffeeScript.compile File.read(Dir.pwd+"/specs/#{package}#{file}.coffee"), {:bare => true}
-          respond! do 
-            status 200
-            headers({'Content-Type' => 'text/javascript'})
-            body body
+module Shard
+  class SpecSever < Renee::Application
+    app do
+      files = []
+      Dir.glob './specs/**/*' do |f|
+        if File.file? f
+          filename = File.basename f
+          extname = File.extname f
+          if extname == '.coffee'
+            package = File.dirname(f).split(/\//).last
+            files.push({
+              :package => if package == '.' then '' else package+"/" end,
+              :file => filename.gsub(extname,'')
+            })
           end
         end
       end
-    end
-    part "source" do
-      var do |package|
-        remainder do |file|
-          if file == ".js"
-            file = package 
-            package = ''
-          end
-          package += "/"
-          file.gsub! /\.js/, ''
-          body = CoffeeScript.compile File.read(Dir.pwd+"/source/#{package}#{file}.coffee"), {:bare => true}
-          respond! do 
-            status 200
-            headers({'Content-Type' => 'text/javascript'})
-            body body
-          end
+      part 'all' do
+        specs = []
+        files.each do |f| 
+          specs.push 'specs/'+f[:package]+f[:file]
+        end
+        respond! do
+          status 200
+          headers({'Content-Type' => 'text/html'})
+          body $layout.render nil, {:specs => specs.to_json }
         end
       end
-    end
-    var do |package|
       complete do
         respond! do
           status 200
           headers({'Content-Type' => 'text/html'})
-          body $layout.render nil, {:specs => ["specs/#{package}"].to_json }
+          body $index.render nil, {:files => files }
         end
       end
-      var do |file|
-        respond! do
-          status 200
-          headers({'Content-Type' => 'text/html'})
-          body $layout.render nil, {:specs => ["specs/#{package}/#{file}"].to_json }
+      var do |package|
+        complete do
+          respond! do
+            status 200
+            headers({'Content-Type' => 'text/html'})
+            body $layout.render nil, {:specs => ["specs/#{package}"].to_json }
+          end
+        end
+        var do |file|
+          respond! do
+            status 200
+            headers({'Content-Type' => 'text/html'})
+            body $layout.render nil, {:specs => ["specs/#{package}/#{file}"].to_json }
+          end
         end
       end
     end

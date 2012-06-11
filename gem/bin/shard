@@ -3,15 +3,28 @@
 
 require 'rack'
 require "pathname"
+require 'coffee-script'
 require 'commander/import'
 
 bin_file = Pathname.new(__FILE__).realpath
 $:.unshift File.expand_path("../../lib", bin_file)
 $dirname = File.dirname(File.expand_path(File.dirname bin_file))
 
+require 'rack-adapter'
+
 program :name, 'Shard CLI'
 program :version, '0.0.1'
 program :description, 'Shard CLI'
+
+command :build do |c|
+	c.syntax = ''
+	c.description = ''
+	c.action do |args,options|
+		puts 'Building'
+		require 'builder'
+		b = Builder.new Dir.pwd
+	end
+end
 
 command :generate do |c|
 	c.syntax = ''
@@ -35,19 +48,31 @@ command :generate do |c|
 	end
 end
 
+command :server do |c|
+	c.syntax = ''
+	c.description = ''
+	c.action do |args,options|
+		builder = Rack::Builder.new do
+			use Shard::RackAdapter
+			run Proc.new { |env| [404, {'Content-Type' => 'text/html'}, ['Not Found']] }
+		end
+
+		Rack::Handler::Thin.run builder, :Port => 5000
+	end
+end
+
 command :specserver do |c|
 	c.syntax = ''
 	c.description = ''
 	c.action do |args,options|
 		require 'spec_server'
 		builder = Rack::Builder.new do
-		  use Rack::CommonLogger
-			use Rack::Reloader
 			use Rack::Static, :urls => ['/vendor'], :root => $dirname+"/public"
+			use Shard::RackAdapter
 			
-			run SpecSever
+			run Shard::SpecSever
 		end
 
-		Rack::Handler::Thin.run builder, :Port => 9292
+		Rack::Handler::Thin.run builder, :Port => 5000
 	end
 end
