@@ -10,7 +10,7 @@ define ['../types/object','../types/array'], ->
     type:
       prefix: "%"
       unique: true
-    id: 
+    id:
       prefix: "#"
       unique: true
     class:
@@ -23,20 +23,12 @@ define ['../types/object','../types/array'], ->
   prefixes = Object.pluck(Attributes,'prefix')._push("$").join("|")
   Object.each Attributes, (key,value) ->
     value.regexp = new RegExp value.prefix+"(.*?)(?=#{prefixes})", "g"
-    
+
   # Utility Functions
   _wrap = (fn) ->
     (args...) ->
       for el in @
         fn.apply el, args
-
-  _matchesSelector = (el, selector) ->
-    if el.webkitMatchesSelector
-      el.webkitMatchesSelector selector
-    else if el.mozMatchesSelector
-      el.mozMatchesSelector selector
-    else
-      document.querySelectorAll(selector).include el
 
   _find = (property, selector, el) ->
     elements = document.querySelectorAll selector
@@ -45,13 +37,13 @@ define ['../types/object','../types/array'], ->
         if elements.include el
           return el
 
-  # Parse attributes from string (#id.class!title)  
+  # Parse attributes from string (#id.class!title)
   _parseName = (name,atts = {}) ->
-    ret = 
+    ret =
       tag: name.match(new RegExp("^.*?(?=#{prefixes})"))[0] or 'div'
       attributes: {}
     Object.each Attributes, (key,value) ->
-      if (m = name.match(value.regexp)) isnt null 
+      if (m = name.match(value.regexp)) isnt null
         name = name.replace(value.regexp, "")
         if value.unique
           if atts[key]
@@ -69,10 +61,10 @@ define ['../types/object','../types/array'], ->
           ret.attributes[key] = map.join(" ")
       else
         ret.attributes[key] = atts[key] if atts[key] isnt null and atts[key] isnt undefined
-    ret 
+    ret
 
   # Methods for Node
-  methods_node = 
+  methods_node =
     append: (elements...) ->
       for el in elements
         @appendChild el
@@ -86,7 +78,7 @@ define ['../types/object','../types/array'], ->
       @querySelectorAll("*").dispose()
 
   # Methods only for HTMLElement, NodeList
-  methods_element = 
+  methods_element =
     dispose: ->
       @parent?.removeChild @
     ancestor: (selector = "*") ->
@@ -95,7 +87,7 @@ define ['../types/object','../types/array'], ->
       _find 'nextSibling', selector, @
     prev: (selector = "*") ->
       _find 'previousSibling', selector, @
-      
+
     # http://www.quirksmode.org/dom/getstyles.html
     css: (args...) ->
       property = args[0]
@@ -118,11 +110,9 @@ define ['../types/object','../types/array'], ->
 
   Object.defineProperty HTMLSelectElement::, 'selectedOption',
     get: ->
-      if @children
-        @children[@selectedIndex]
+      @children[@selectedIndex] if @children
     set: (el) ->
-      if @chidren.include(el)
-        @selectedIndex = @children.indexOf el
+      @selectedIndex = @children.indexOf el if @chidren.include(el)
 
   properties =
     tag:
@@ -154,13 +144,12 @@ define ['../types/object','../types/array'], ->
   Object.defineProperty Node::, 'delegateEventListener', value: (event,listener,useCapture) ->
     [baseEvent,selector] = event.split(':')
     @addEventListener baseEvent, (e) ->
-      if _matchesSelector e.target, selector
-        listener e
+      listener e if e.target.webkitMatchesSelector selector
 
   ['addEventListener','removeEventListener','delegateEventListener'].each (prop) ->
     Object.defineProperty Node::, prop.replace("Listener",''), value: Node::[prop]
     Object.defineProperty window, prop.replace("Listener",''), value: window[prop]
-    
+
   Element.create = (node, atts = {}) ->
     return node if node instanceof Node
     switch typeof node
