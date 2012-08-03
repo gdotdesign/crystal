@@ -11,7 +11,7 @@ define ['./path','../types/object'], (Path) ->
         locale = arguments[2]
         params = arguments[1]
       locale ?= document.querySelector('html').getAttribute('lang') or 'en'
-      _path = new Path(i18n.locales[locale])
+      _path = new Path @locales[locale]
       str = _path.lookup path
       unless str
         console.warn "No translation found for '#{path}' for locale '#{locale}'"

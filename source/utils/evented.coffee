@@ -10,7 +10,7 @@ define ->
       removeListener: (type) ->
         delete @listeners[type]
     }
-    
+
   class Event
     constructor: (type,target) ->
       @cancelled = false
@@ -29,29 +29,31 @@ define ->
       event = new Event type, @
       args.push event
       Mediator.fireEvent type, args
-      
+
     trigger: (type,args...) ->
-      @_events ?= {}
+      @ensureEvents()
       event = new Event type, @
       args.push event
-      if @_events[type] 
-        for callback in @_events[type]
+      if @__events__[type]
+        for callback in @__events__[type]
           callback.apply @, args
-      event.destroy()
 
-    on: (type, callback) ->
-      @_events ?= {}
-      @_events[type] ?= []
-      @_events[type].push callback
-    
+    ensureEvents: ->
+      unless @__events__
+        Object.defineProperty @, '__events__', value: {}
+
+    on: (type, callback, bind) ->
+      @ensureEvents()
+      @__events__[type] ?= []
+      callback = callback.bind bind if bind
+      @__events__[type].push callback
+
     off: (type,callback) ->
-      @_events ?= {}
-      if @_events[type]
-        if @_events[type].include callback
-          @_events[type].remove callback
-      if @_events[type].length is 0
-        delete Mediator.events[type]
-        
+      @ensureEvents()
+      if @__events__[type]
+        if @__events__[type].include callback
+          @__events__[type].remove callback
+
     subscribe: (type,callback) ->
       unless Mediator.events[type]
         Mediator.addListener type, (event) ->

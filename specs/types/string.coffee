@@ -20,10 +20,10 @@ define ['source/types/string'], ->
       it "should capitalize", ->
         a = "i like cookies"
         expect(a.capitalize()).toBe 'I Like Cookies'
-    describe "clean", ->
+    describe "compact", ->
       it "should remove extra whitespace", ->
         a = ' i      like     cookies      \n\n'
-        expect(a.clean()).toBe 'i like cookies'
+        expect(a.compact()).toBe 'i like cookies'
     describe "entities", ->
       it "should convert entities", ->
         a = '&<>"'

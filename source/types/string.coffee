@@ -1,6 +1,6 @@
 define ['./number'], ->
-  methods = 
-    clean: ->
+  methods =
+    compact: ->
       s = @valueOf().trim()
       s.replace /\s+/g, ' '
     camelCase: ->
@@ -27,7 +27,7 @@ define ['./number'], ->
   String.random = (length) ->
     chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXTZabcdefghiklmnopqrstuvwxyz'.split('')
     if not length
-      length = Math.floor(Math.random() * chars.length)    
+      length = Math.floor(Math.random() * chars.length)
     str = ''
     for i in [0..length]
       str += chars[Math.floor(Math.random() * chars.length)]

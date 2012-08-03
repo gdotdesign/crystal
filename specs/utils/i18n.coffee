@@ -1,4 +1,4 @@
-define ['source/utils/i18n'], ->
+define ['source/utils/i18n'], (i18n) ->
 
   oldconsole = window.console
   beforeEach ->
