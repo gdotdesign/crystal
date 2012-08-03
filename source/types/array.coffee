@@ -2,7 +2,7 @@ define ->
   # Iterators
   Object.defineProperty Array::, 'each', value: Array::forEach
 
-  # Mutator Methods  
+  # Mutator Methods
   ['compact','uniq','pluck','shuffle'].each (method) ->
     Object.defineProperty Array::, "_"+method, value: (args...) ->
       newArray = Array::[method].call @, args
@@ -11,7 +11,7 @@ define ->
         @push item
       @
 
-  methods = 
+  methods =
     _shift: ->
       @splice 0, 1
       @
@@ -29,7 +29,7 @@ define ->
         @splice index , 1
       @
     _push: (args...) ->
-      Array::push.apply @, args
+      @push.apply @, args
       @
     # Accessor Methods
     remove: (item) ->
@@ -43,7 +43,7 @@ define ->
         b.splice index , 1
       b
     uniq: ->
-      b = []
+      b = new @__proto__.constructor
       @filter (item) ->
         b.push(item) unless b.include item
       b
@@ -62,17 +62,17 @@ define ->
     include: (item) ->
       @indexOf(item) != -1
     dup: (item) ->
-      @filter -> true   
-      
+      @filter -> true
+
   for key, method of methods
-    Object.defineProperty Array::, key, value: method    
-      
+    Object.defineProperty Array::, key, value: method
+
   Object.defineProperties Array::,
     first:
       get: ->
         @[0]
     last:
       get: ->
-        @[@length - 1]    
-  
+        @[@length - 1]
+
   Array

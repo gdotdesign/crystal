@@ -1,9 +1,11 @@
-define ['../types/array','../utils/evented'], (asd, Evented)->
+define ['../types/array','../utils/evented','./collectionElement'], (asd, Evented,collectionElement)->
+  window.CollectionElement = collectionElement
   class Collection extends Array
     constructor: (args...) ->
       super
       @push.apply @, args
       @
+
     pop: ->
       item = super
       @trigger 'remove', item
