@@ -3,10 +3,16 @@ define ->
   # Object::clone
   # Object::extend
 
+  Object.defineProperty Object::, 'toFormData', value: ->
+    ret = new FormData()
+    for own key, value of @
+      ret.append key, value
+    ret
+
   Object.each = (object, fn) ->
     for own key, value of object
       fn.call object, key, value
-      
+
   Object.pluck = (object, prop) ->
     for own key, value of object
       value[prop]

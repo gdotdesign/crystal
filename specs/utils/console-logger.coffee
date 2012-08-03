@@ -1,11 +1,14 @@
 define ['source/logger/console-logger'], (ConsoleLogger)->
   describe 'ConsoleLogger', ->
-    window.console = {}
-    ['log','error','info', 'warn'].forEach (type)->
-      window.console[type] = ->
+    oldconsole = window.console
     beforeEach ->
+      window.console = {}
+      ['log','error','info', 'warn'].forEach (type)->
+        window.console[type] = ->
       ['log','error','info', 'warn'].forEach (type)->
         spyOn(console, type)
+    afterEach ->
+      window.console = oldconsole
 
     ['debug','error', 'fatal', 'info', 'warn',].forEach (type)->
       describe type, ->
