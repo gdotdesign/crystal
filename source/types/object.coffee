@@ -1,8 +1,14 @@
-Object.defineProperty Object::, 'toFormData', value: ->
-  ret = new FormData()
-  for own key, value of @
-    ret.append key, value
-  ret
+Object.defineProperties Object::, 
+  toFormData:
+    value: ->
+      ret = new FormData()
+      for own key, value of @
+        ret.append key, value
+      ret
+  toQueryString:
+    value: ->
+      (for own key, value of @
+        "#{key}=#{value.toString()}").join "&"
 
 Object.each = (object, fn) ->
   for own key, value of object

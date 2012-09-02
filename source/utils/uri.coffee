@@ -1,19 +1,6 @@
 # @requires ../types/array
-parseQueryString = (queryString) ->
-  ret = {}
-  regexp = /([^&=]+)=([^&]*)/g
-  while match = regexp.exec(queryString)
-    ret[decodeURIComponent(match[1])] = decodeURIComponent(match[2])
-  ret
-
-toQueryString = (data) ->
-  (for own key, value of data
-    "#{key}=#{value.toString()}").join "&"
 
 class URI
-  @parseQueryString: parseQueryString
-  @toQueryString: toQueryString
-
   constructor: (uri = '') ->
     regexp = /(.+):\/\/(.+?)\/(.*)/
     if uri
