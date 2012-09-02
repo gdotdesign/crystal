@@ -7,15 +7,12 @@ Layout = '''
   %script{:src => "/crystal.js", :type => "text/javascript"}
   %script{:src => "/specs.js", :type => "text/javascript"}
   :javascript
-    (function() {
-      var console_reporter = new jasmine.ConsoleReporter()
-      var jasmineEnv = jasmine.getEnv();
-      jasmineEnv.addReporter(console_reporter);
-      window.onload = function(){
-        jasmineEnv.execute();
-      }
-
-    })();
+    var console_reporter = new jasmine.ConsoleReporter()
+    var jasmineEnv = jasmine.getEnv();
+    jasmineEnv.addReporter(console_reporter);
+    window.onload = function(){
+      jasmineEnv.execute();
+    }
 %body
 '''
 class SpecSever < Renee::Application
