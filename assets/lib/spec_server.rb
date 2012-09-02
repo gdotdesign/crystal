@@ -38,7 +38,7 @@ class SpecSever < Renee::Application
         type = 'text/javascript' if file =~ /\.js$/
         respond! do
           headers({'Content-Type' => type})
-          body File.read('./vendor/'+file)
+          body File.read('./assets/vendor/'+file)
         end
       end
     end

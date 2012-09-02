@@ -4,8 +4,8 @@ Bundler.require(:default)
 
 require 'pathname'
 require 'json'
-require './lib/builder'
-require './lib/spec_server'
+require './assets/lib/builder'
+require './assets/lib/spec_server'
 
 def silence_stream(stream)
   old_stream = stream.dup
@@ -29,10 +29,7 @@ namespace :build do
 end
 
 task :specserver do
-  builder = Rack::Builder.new do
-    use Rack::Static, :urls => ['./vendor'], :root => "./public"
-    run SpecSever
-  end
+  builder = Rack::Builder.new { run SpecSever }
   Rack::Handler::Thin.run builder, :Port => 5000
 end
 
@@ -45,6 +42,10 @@ task :specs do
   end
   sleep 5
   Process.detach(job1)
-  puts `phantomjs vendor/script.coffee http://localhost:5000/`
+  puts `phantomjs assets/vendor/script.coffee http://localhost:5000/`
   Process.kill "KILL", job1
+end
+
+task :docs do
+  `codo ./source`  
 end
