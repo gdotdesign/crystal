@@ -2,6 +2,8 @@
 # @requires ../types/string
 # @requires ../types/object
 
+# TODO Errors, FileUpload, Progress Events etc...
+
 class Response
   constructor: (headers,body,status) ->
     @headers = headers
@@ -16,7 +18,10 @@ class Response
           df.appendChild node
         df
       when "text/json", "application/json"
-        JSON.parse(body)
+        try
+          JSON.parse(body)
+        catch e
+          body
       else
         body
 
@@ -38,7 +43,7 @@ class Request
     @_request = new XMLHttpRequest()
     @_request.onreadystatechange = @handleStateChange
 
-  request: (method,data,callback) ->
+  request: (method = 'GET' ,data, callback) ->
     if (@_request.readyState is 4) or (@_request.readyState is 0)
       if method.toUpperCase() is 'GET' and data isnt undefined and data isnt null
         @_request.open method, @uri+"?"+data.toQueryString()
@@ -55,6 +60,7 @@ class Request
       [key,value] = header.split(/:\s/)
       r[key.trim()] = value.trim()
     r
+
   handleStateChange: =>
     if @_request.readyState is 4
       headers = @parseResponseHeaders()

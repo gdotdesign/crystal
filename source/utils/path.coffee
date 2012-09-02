@@ -5,24 +5,21 @@ class Path
   create: (path,value) ->
     path = path.toString()
     last = @context
-    end = (path = path.split(/\./)).pop()
-    if path isnt ""
-      path = path.split /\./
-      prop = path.pop()
-      for segment in path
-        if not last.hasOwnProperty(segment)
-          last[segment] = {}
-        last = last[segment]
-    last.prop = value
+    prop = (path = path.split(/\./)).pop()
+    for segment in path
+      if not last.hasOwnProperty(segment)
+        last[segment] = {}
+      last = last[segment]
+    last[prop] = value
 
   # path.exstist 'social.facebook.title' -> true / false
-  exstist: (path) ->
+  exists: (path) ->
     @lookup(path) isnt undefined
 
   # path.lookup 'social.facebook.title' -> 'asd'
   lookup: (path) ->
     end = (path = path.split(/\./)).pop()
-    if path.length is 0 and not  @context.hasOwnProperty(end) then return false
+    if path.length is 0 and not @context.hasOwnProperty(end) then return undefined
     last = @context
     for segment in path
       if last.hasOwnProperty(segment) then last = last[segment] else return undefined
