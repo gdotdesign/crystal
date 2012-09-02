@@ -1,4 +1,4 @@
-describe "Request", ->
+xdescribe "Request", ->
   ['get','post','put','delete','patch'].forEach (type) ->
     describe type, ->
       it 'should return Response', ->
