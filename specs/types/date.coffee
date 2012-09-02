@@ -16,9 +16,12 @@ describe "Date", ->
       expect(@d.format("%M")).toBe '04'
 
     it 'should format hours', ->
-      expect(@d.format("%h")).toBe '5'
+      hours = @d.getHours().toString()
+      expect(@d.format("%h")).toBe hours
     it 'should format hours (with leading zero)', ->
-      expect(@d.format("%H")).toBe '05'
+      hours = @d.getHours()
+      h = if hours < 10 then "0"+hours else ""+hours
+      expect(@d.format("%H")).toBe h
 
     it 'should format mintues', ->
       expect(@d.format("%t")).toBe '9'
