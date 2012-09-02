@@ -1,29 +1,25 @@
-define ->
-  methods = 
-    forEach: (fn, bound = @) ->
+Object.defineProperties NodeList::,
+  forEach:
+    value: (fn, bound = @) ->
       for node,i in @
         fn.call bound, node, i
       @
-    map: (fn, bound = @) ->
+  map:
+    value: (fn, bound = @) ->
       for node in @
         fn.call bound, node
-    pluck: (property) ->
+  pluck:
+    value: (property) ->
       for node in @
         node[property]
-    include: (el) ->
+  include:
+    value: (el) ->
       for node in @
         return true if node is el
       false
-      
-  for key, method of methods
-    Object.defineProperty NodeList::, key, value: method  
-
-  Object.defineProperties NodeList::,
-    first:
-      get: ->
-        @[0]
-    last:
-      get: ->
-        @[@length - 1]    
-  
-  NodeList
+  first:
+    get: ->
+      @[0]
+  last:
+    get: ->
+      @[@length - 1]    
