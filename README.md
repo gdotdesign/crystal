@@ -1,5 +1,5 @@
-Crystal
-=======
+# Crystal [![Build Status](https://secure.travis-ci.org/gdotdesign/crystal.png?branch=master)](http://travis-ci.org/gdotdesign/crystal)
+
 Crystal is a JavaScript library (written in CoffeeScript) which extends native prototypes, and adds utility classes.
 
 The basic principle is to not to try to fix old browsers, but to add utility to modern browsers, with that in mind
