@@ -3,4 +3,6 @@ rvm:
 before_script:
   - "export DISPLAY=:99.0"
   - "sh -e /etc/init.d/xvfb start"
-script: - bundle exec rake specs
+  - "bunlde exec rake specsever"
+  - "sleep 5"
+script: phantomjs assets/vendor/script.coffee http://localhost:5000
