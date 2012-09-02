@@ -19,7 +19,7 @@ end
 namespace :build do
   task :crystal do
     b = Builder.new()
-    puts b.build(Dir.glob('./source/**/*.coffee'))
+    puts b.build(Dir.glob('./source/**/*.coffee'), !!ENV['ugly'])
   end
 
   task :specs do
