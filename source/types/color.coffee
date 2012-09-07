@@ -1,5 +1,5 @@
 # @requires ./number
-class window.Color
+window.Color = class Color
   constructor: (color = "FFFFFF") ->
     if (match = color.match /^#?([0-9a-f]{3}|[0-9a-f]{6})$/i)
       if color.match /^#/
@@ -32,14 +32,14 @@ class window.Color
       @_update 'rgb'
     else
       throw 'Wrong color format!'
-    
+
   invert: ->
     @_red = 255 - @_red
     @_green = 255 - @_green
     @_blue = 255 - @_blue
     @_update 'rgb'
     @
-    
+
   ###
   TODO refactor
   mix: (color2, alpha) ->
@@ -48,7 +48,7 @@ class window.Color
     @_update 'rgb'
     @
   ###
-  
+
   _hsl2rgb: ->
     h = @_hue / 360
     s = @_saturation / 100
@@ -81,7 +81,7 @@ class window.Color
     @_red = rgb[0]
     @_green = rgb[1]
     @_blue = rgb[2]
-    
+
   _hex2rgb: ->
     value = parseInt(@_hex, 16)
     @_red = value >> 16
@@ -93,7 +93,7 @@ class window.Color
     x = value.toString(16)
     x = '000000'.substr(0, 6 - x.length) + x
     @_hex = x.toUpperCase()
-    
+
   _rgb2hsl: ->
     r = @_red / 255
     g = @_green / 255
@@ -120,7 +120,7 @@ class window.Color
     @_hue = h
     @_saturation = s * 100
     @_lightness = l *100
-  
+
   _update: (type) ->
     switch type
       when 'rgb'
@@ -132,7 +132,7 @@ class window.Color
       when 'hex'
         @_hex2rgb()
         @_rgb2hsl()
-      
+
   toString: ->
     switch @type
       when "rgb"
@@ -153,7 +153,7 @@ class window.Color
     set: (value) ->
       @["_"+item] = parseInt(value).clamp 0, 255
       @_update 'rgb'
-      
+
 ['lightness','saturation'].forEach (item) ->
   Object.defineProperty Color::, item,
     get: ->

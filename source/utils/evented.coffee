@@ -10,7 +10,7 @@ Mediator = {
       delete @listeners[type]
   }
 
-class Event
+class Utils.Event
   constructor: (type,target) ->
     @cancelled = false
     @target = target
@@ -21,7 +21,7 @@ class Event
   stop: ->
     @cancelled = true
 
-class Evented
+window.Evented = class Utils.Evented
 
   publish: (type,args...) ->
     @trigger.apply @, Array::slice arguments

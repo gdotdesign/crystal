@@ -19,7 +19,7 @@ end
 namespace :build do
   task :crystal do
     b = Builder.new()
-    compiled = b.build(Dir.glob('./source/**/*.coffee'), !!ENV['ugly'])
+    compiled = b.build(Dir.glob('./source/**/*.coffee'), "Types = {}\nLogging = {}\nUtils = {}\n\n", !!ENV['ugly'])
     puts "(function(Crystal){\n #{compiled} \n })(window.Crystal={Utils:{}})"
   end
 
@@ -48,5 +48,5 @@ task :specs do
 end
 
 task :docs do
-  `codo ./source`  
+  `codo ./source`
 end

@@ -2,7 +2,7 @@
 # @requires ../utils/evented
 # @requires ./collectionElement
 
-class Collection extends Array
+window.Collection = class MVC.Collection extends Array
   constructor: (args...) ->
     super
     @push.apply @, args

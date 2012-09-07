@@ -1,4 +1,4 @@
-class Crystal.Utils.Path
+window.Path = class Utils.Path
   constructor: (@context = {}) ->
 
   # path.create 'social.facebook.title', 'asd'

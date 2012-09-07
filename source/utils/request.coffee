@@ -4,7 +4,7 @@
 
 # TODO Errors, FileUpload, Progress Events etc...
 
-class Response
+window.Response = class Utils.Response
   constructor: (headers,body,status) ->
     @headers = headers
     @raw = body
@@ -35,7 +35,7 @@ Object.each types, (key,value) ->
   Object.defineProperty Response::, 'is'+key.capitalize(), value: ->
     value.map( (type) => @headers['Content-Type'] is type).compact().length > 0
 
-class Crystal.Utils.Request
+window.Request = class Utils.Request
   constructor: (url, data = {}, headers = {}) ->
     @uri = url
     @headers = headers
@@ -70,6 +70,6 @@ class Crystal.Utils.Request
       @_request.responseText
 
 ['get','post','put','delete','patch'].forEach (type) ->
-  Crystal.Utils.Request::[type] = (data, callback) ->
+  Request::[type] = (data, callback) ->
     @request type.toUpperCase(), data, callback
 

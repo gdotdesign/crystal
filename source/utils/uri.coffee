@@ -1,6 +1,6 @@
 # @requires ../types/array
 
-class Crystal.Utils.URI
+window.URI = class Utils.URI
   constructor: (uri = '') ->
     parser = document.createElement('a')
     parser.href = uri

@@ -1,5 +1,6 @@
+
 Object.defineProperty Date::, 'format', value: (str) ->
-  str.replace /%([a-zA-z])/g, ($0,$1) =>  
+  str.replace /%([a-zA-z])/g, ($0,$1) =>
     switch $1
       # Day
       when 'D'
@@ -26,3 +27,11 @@ Object.defineProperty Date::, 'format', value: (str) ->
         @getMinutes()
       else
         ""
+
+
+# @docs
+
+# @method #format()
+#   asd
+#
+class Date

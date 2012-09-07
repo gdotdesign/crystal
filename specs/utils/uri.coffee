@@ -24,5 +24,5 @@ describe 'URI', ->
   ]
   cases.forEach (test)->
     it "should parse and return '#{test}'", ->
-      uri = new Crystal.Utils.URI(test[0])
+      uri = new URI(test[0])
       expect(uri.toString()).toBe test[1] or test[0]

@@ -1,4 +1,4 @@
-class Base64
+class Utils.Base64
   _keyStr: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/="
   encode: (input) ->
     output = ""

@@ -5,10 +5,11 @@ class Builder
     @files = []
   end
 
-  def build(files = [], ugly = false)
+  def build(files = [], content = "", ugly = false)
     files.each do |f|
       add f
     end
+    @content = content
     assemble
     compile
     if ugly
@@ -31,11 +32,16 @@ class Builder
   end
 
   def assemble
-    @contents = ""
+    @contents = @content
     @files.each do |path|
       if File.exists?(path)
         @contents += "\n###\n--------------- #{path}--------------\n###\n"
-        @contents += File.read(path)+"\n"
+        content = File.read(path)
+        if content =~ /@docs/
+          @contents += content.split(/#\s@docs[\n|\r\$]/)[0]+"\n"
+        else
+          @contents += content
+        end
       end
     end
     @contents

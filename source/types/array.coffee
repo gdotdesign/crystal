@@ -70,3 +70,9 @@ Object.defineProperties Array::,
   last:
     get: ->
       @[@length - 1]
+
+# @docs
+
+# @method #include(item)
+#   asd
+class Array

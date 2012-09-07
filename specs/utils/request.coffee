@@ -3,7 +3,7 @@ describe "Request", ->
     describe type, ->
       it 'should return Response', ->
         runs =>
-          request = new Crystal.Utils.Request('/xhr')
+          request = new Request('/xhr')
           @response = null
           request[type] null, (resp) =>
             @response = resp
@@ -16,7 +16,7 @@ describe "Request", ->
 
       it 'should send data', ->
         runs =>
-          request = new Crystal.Utils.Request('/xhr')
+          request = new Request('/xhr')
           @response = null
           @data = String.random(10)
           request[type] {random: @data}, (resp) =>
@@ -39,7 +39,7 @@ describe "Request", ->
         do (key, value) ->
           it 'should parse response based on Content-Type', =>
             runs =>
-              request = new Crystal.Utils.Request('/xhr.'+key.toLowerCase())
+              request = new Request('/xhr.'+key.toLowerCase())
               @response = null
               @data = String.random(10)
               request[type] {random: @data}, (resp) =>
