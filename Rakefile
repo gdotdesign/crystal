@@ -20,7 +20,7 @@ namespace :build do
   task :crystal do
     b = Builder.new()
     compiled = b.build(Dir.glob('./source/**/*.coffee'), !!ENV['ugly'])
-    puts "(function(Crystal){ #{compiled} })(window.Crystal={Utils:{}})"
+    puts "(function(Crystal){\n #{compiled} \n })(window.Crystal={Utils:{}})"
   end
 
   task :specs do
