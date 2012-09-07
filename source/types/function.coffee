@@ -1,4 +1,4 @@
-Object.defineProperties Function::, 
+Object.defineProperties Function::,
   delay:
     value: (ms,bind = @,args...) ->
       id = setTimeout ms, ->
@@ -8,5 +8,11 @@ Object.defineProperties Function::,
     value: (ms,bind = @, args...) ->
       setInterval ms, ->
         @apply bind, args
-        
-Function
+
+# @docs
+
+# @method #delay()
+#   aasd
+# @method #periodical()
+#   aasd
+class Function

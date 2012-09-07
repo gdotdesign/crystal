@@ -1,4 +1,4 @@
-Object.defineProperties Object::, 
+Object.defineProperties Object::,
   toFormData:
     value: ->
       ret = new FormData()
@@ -27,3 +27,27 @@ Object.canRespondTo = (object, args...) ->
   for arg in args
     ret = false unless typeof object[arg] is 'function'
   ret
+
+# @docs
+
+#
+# Extends native Object with utilility functions.
+#
+# @method #toFormData()
+#   Creates a form data representation of the object.
+#   This method is used for sending data to the server via XMLHTTPRequest.
+#   @return [FormData] The FormData object
+#
+# @method #toQueryString()
+#   Creates query string representation of the object.
+#   @return [FormData] The FormData object
+#
+# @method .each()
+#   Iterate thorugh the objects porperties
+# @method .pluck()
+#   Iterate thorugh the objects values and pull a single porperty of the value.
+# @method .values()
+#   Returns the object values (flattern as value)
+# @method .canRespondTo()
+#   Checks if the given function can be called on the object.
+class Object

@@ -1,5 +1,5 @@
 class Unit
-  @UNITS: {'px': 0,  em: 1,    pt: 2}
+  @UNITS: {px: 0,  em: 1,    pt: 2}
   @TABLE: [1,     16,      16/12]
   constructor: (value = "0px") ->
     @set value
@@ -7,7 +7,7 @@ class Unit
   toString: (type = "px") ->
     return @_value+"px" unless type of Unit.UNITS
     Math.round(@_value / Unit.TABLE[Unit.UNITS[type]]*100)/100+type
-    
+
   set: (value) ->
     if(m = value.match /(\d+)(\w{2,5})$/)
       v = parseInt(m[1]) or 0
@@ -17,7 +17,7 @@ class Unit
       v = 0
       factor = 0
     @_value = v * factor
-    
+
 ['px','em','pt'].forEach (type) ->
   Object.defineProperty Unit::, type,
     get: ->

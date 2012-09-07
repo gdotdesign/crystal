@@ -21,8 +21,11 @@ class Utils.Event
   stop: ->
     @cancelled = true
 
-window.Evented = class Utils.Evented
+#
+# This is a base class that implements an Event and a Pub/Sub system
+class Utils.Evented
 
+  # Publishes args to the given channel
   publish: (type,args...) ->
     @trigger.apply @, Array::slice arguments
     event = new Event type, @
@@ -37,6 +40,7 @@ window.Evented = class Utils.Evented
       for callback in @__events__[type]
         callback.apply @, args
 
+  # @private
   ensureEvents: ->
     unless @__events__
       Object.defineProperty @, '__events__', value: {}
@@ -72,3 +76,5 @@ window.Evented = class Utils.Evented
     if Mediator.events[type].length is 0
       delete Mediator.events[type]
       Mediator.removeListener type
+
+window.Evented = Utils.Evented
