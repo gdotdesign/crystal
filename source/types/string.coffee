@@ -20,10 +20,10 @@ methods =
     @replace new RegExp("^\\s{#{spaces}}","gm"), ""
   entities: ->
     @replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
-  parseQueryString: (queryString) ->
+  parseQueryString: ->
     ret = {}
     regexp = /([^&=]+)=([^&]*)/g
-    while match = regexp.exec(queryString)
+    while match = regexp.exec(@)
       ret[decodeURIComponent(match[1])] = decodeURIComponent(match[2])
     ret
 
