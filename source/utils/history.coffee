@@ -1,4 +1,5 @@
-# @requries ../evented
+# @requires ./evented
+
 class History extends Evented
   constructor: ->
     @_type = if 'pushState' of history then 'popstate' else 'hashchange'
@@ -10,10 +11,10 @@ class History extends Evented
           window.location.hash
       @trigger 'change', url
     @stateid = 0
-  push: (url) ->  
+  push: (url) ->
     switch @_type
       when 'popstate'
         history.pushState {}, @stateid++, url
       when 'hashchange'
         window.location.hash = url
-      
+

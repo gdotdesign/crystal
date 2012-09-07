@@ -12,7 +12,7 @@ class Builder
     assemble
     compile
     if ugly
-      uglify 
+      uglify
     else
       @compiled
     end

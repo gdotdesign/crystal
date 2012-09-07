@@ -6,7 +6,10 @@ class Crystal.Utils.URI
     parser.href = uri
     @host = parser.host
     @protocol = parser.protocol.replace /:$/, ''
-    @port = parser.port or 80
+    if parser.port == "0"
+      @port = 80
+    else
+      @port = parser.port or 80
     @hash = parser.hash.replace /^#/, ''
     @query = uri.match(/\?(.*?)(?:#|$)/)?[1].parseQueryString() or {}
     @path = parser.pathname.replace /\/$/, ''
