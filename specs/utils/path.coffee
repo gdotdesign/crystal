@@ -2,18 +2,18 @@ describe 'Path', ->
   describe 'create', ->
     it 'should create a single property', ->
       a = {}
-      p = new Path(a)
+      p = new Crystal.Utils.Path(a)
       p.create 'property', 'value'
       expect(a.property).toBe 'value'
     it 'should create deep property', ->
       a = {}
-      p = new Path(a)
+      p = new Crystal.Utils.Path(a)
       p.create 'obj.property', 'value'
       expect(a.obj instanceof Object).toBe true
       expect(a.obj.property).toBe 'value'
     it 'should create really deep property', ->
       a = {}
-      p = new Path(a)
+      p = new Crystal.Utils.Path(a)
       p.create 'b.c.d.e.f', 'value'
       expect(a.b.c.d.e.f).toBe 'value'
 
@@ -26,7 +26,7 @@ describe 'Path', ->
       d:
        e:
         f: 'value'
-  p = new Path a
+  p = new Crystal.Utils.Path a
   
   describe 'exists', ->
     it 'should retrun true for a single property', ->

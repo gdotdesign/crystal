@@ -42,7 +42,7 @@ class Builder
   end
 
   def compile
-    @compiled = CoffeeScript.compile(@contents, bare: true)
+    @compiled = CoffeeScript.compile(@contents)
   end
 
   def uglify

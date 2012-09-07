@@ -35,7 +35,7 @@ Object.each types, (key,value) ->
   Object.defineProperty Response::, 'is'+key.capitalize(), value: ->
     value.map( (type) => @headers['Content-Type'] is type).compact().length > 0
 
-class Request
+class Crystal.Utils.Request
   constructor: (url, data = {}, headers = {}) ->
     @uri = url
     @headers = headers
@@ -70,6 +70,6 @@ class Request
       @_request.responseText
 
 ['get','post','put','delete','patch'].forEach (type) ->
-  Request::[type] = (data, callback) ->
+  Crystal.Utils.Request::[type] = (data, callback) ->
     @request type.toUpperCase(), data, callback
 

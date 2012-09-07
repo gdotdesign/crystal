@@ -3,7 +3,7 @@
 # @requires ../types/number
 # @requires ../types/date
 
-class Logger
+class Crystal.Logger
   @DEBUG: 4
   @INFO: 3
   @WARN: 2
@@ -21,12 +21,12 @@ class Logger
     line += args.map((arg) -> args.toString()).join ","
 
 ['debug', 'error', 'fatal', 'info', 'warn'].forEach (type) ->
-  Logger::["_"+type] = ->
-  Logger::[type] = (args...) ->
-    if @level >= Logger[type.toUpperCase()]
+  Crystal.Logger::["_"+type] = ->
+  Crystal.Logger::[type] = (args...) ->
+    if @level >= Crystal.Logger[type.toUpperCase()]
       @["_"+type] @_format args
 
-Object.defineProperties Logger::,
+Object.defineProperties Crystal.Logger::,
   timestamp:
     set: (value) ->
       @_timestamp = !!value

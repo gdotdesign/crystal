@@ -1,4 +1,4 @@
-class Path
+class Crystal.Utils.Path
   constructor: (@context = {}) ->
 
   # path.create 'social.facebook.title', 'asd'

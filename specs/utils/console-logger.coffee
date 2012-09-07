@@ -12,7 +12,7 @@ describe 'ConsoleLogger', ->
   ['debug','error', 'fatal', 'info', 'warn',].forEach (type)->
     describe type, ->
       it "should add #{type} class", ->
-        logger = new ConsoleLogger()
+        logger = new Crystal.ConsoleLogger()
         logger[type] 'Hello'
         type = 'log' if type is 'debug'
         type = 'error' if type is 'fatal'

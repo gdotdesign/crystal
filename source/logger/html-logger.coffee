@@ -14,14 +14,14 @@ css =
   debig:
     color: 'black'
 
-class HTMLLogger extends Logger
+class Crystal.HTMLLogger extends Crystal.Logger
   constructor: (el, level) ->
     throw "Base Element must be HTMLElement" unless el instanceof HTMLElement
     super level
     @el = el
 
 ['debug', 'error', 'fatal', 'info', 'warn'].forEach (type) ->
-  HTMLLogger::["_"+type] = (text) ->  
+  Crystal.HTMLLogger::["_"+type] = (text) ->  
     el = Element.create 'div.'+type
     for prop, value of css[type]
       el.css prop, value

@@ -1,5 +1,5 @@
 # @requires ./number
-class Color
+class window.Color
   constructor: (color = "FFFFFF") ->
     if (match = color.match /^#?([0-9a-f]{3}|[0-9a-f]{6})$/i)
       if color.match /^#/

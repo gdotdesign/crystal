@@ -1,5 +1,6 @@
 # requires ./path
 # requires ../types/object
+
 window.i18n =
   locales: {}
   t: (path) ->
@@ -12,7 +13,7 @@ window.i18n =
       locale = arguments[2]
       params = arguments[1]
     locale ?= document.querySelector('html').getAttribute('lang') or 'en'
-    _path = new Path @locales[locale]
+    _path = new Crystal.Utils.Path @locales[locale]
     str = _path.lookup path
     unless str
       console.warn "No translation found for '#{path}' for locale '#{locale}'"
