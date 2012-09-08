@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html>
   <head>
-  <title>Crystal Documentation</title>
+  <meta charset='UTF-8'>
+  <title>CoffeeScript API Documentation</title>
   <link rel='stylesheet' href='assets/codo.css' type='text/css'>
   <script src='assets/codo.js'></script>
   <script src='assets/search_data.js'></script>
@@ -19,9 +20,9 @@
     </nav>
     <div id='search'>
       <a id='class_list_link' href='class_list.html'>Classes</a>
-      <a id='mixin_list_link' href='mixin_list.html'>Mixins</a>
-      <a id='method_list_link' href='method_list.html'>Methods</a>
       <a id='file_list_link' href='file_list.html'>Files</a>
+      <a id='method_list_link' href='method_list.html'>Methods</a>
+      <a id='extra_list_link' href='extra_list.html'>Extras</a>
     </div>
   </div>
   <iframe id='search_frame'></iframe>
@@ -61,12 +62,16 @@
         Mixin list
       </li>
       <li>
+        <span>Ctrl-F</span>
+        File list
+      </li>
+      <li>
         <span>Ctrl-M</span>
         Method list
       </li>
       <li>
-        <span>Ctrl-F</span>
-        File list
+        <span>Ctrl-E</span>
+        Extras list
       </li>
     </ul>
     <p>
@@ -94,17 +99,17 @@
   </div>
 </div>
     <div id='content'>
-      <h1 class='noborder title'>Crystal Documentation</h1>
+      <h1 class='noborder title'>CoffeeScript API Documentation</h1>
       <div id='listing'>
         <h1 class='alphaindex'>Alphabetic Index</h1>
-        <h2>File Listing</h2>
+        <h2>Extra File Listing</h2>
         <ul id='files'>
           <li>
             <a href='README.md.html' title='README.md'>README.md</a>
           </li>
         </ul>
-        <h2>Namespace Listing A-Z</h2>
-        <div id='index'>
+        <h2>Class Listing A-Z</h2>
+        <div class='index'>
           <ul>
             <li class='letter'>a</li>
             <ul>
@@ -128,12 +133,6 @@
             <li class='letter'>c</li>
             <ul>
               <li>
-                <a href='classes/Logging/ConsoleLogger.html'>ConsoleLogger</a>
-                <small>
-                  (Logging)
-                </small>
-              </li>
-              <li>
                 <a href='classes/MVC/Collection.html'>Collection</a>
                 <small>
                   (MVC)
@@ -141,6 +140,12 @@
               </li>
               <li>
                 <a href='classes/Color.html'>Color</a>
+              </li>
+              <li>
+                <a href='classes/Logging/ConsoleLogger.html'>ConsoleLogger</a>
+                <small>
+                  (Logging)
+                </small>
               </li>
             </ul>
           </ul>
@@ -181,16 +186,24 @@
             <li class='letter'>h</li>
             <ul>
               <li>
+                <a href='classes/Utils/History.html'>History</a>
+                <small>
+                  (Utils)
+                </small>
+              </li>
+              <li>
                 <a href='classes/Logging/HTMLLogger.html'>HTMLLogger</a>
                 <small>
                   (Logging)
                 </small>
               </li>
+            </ul>
+          </ul>
+          <ul>
+            <li class='letter'>i</li>
+            <ul>
               <li>
-                <a href='classes/Utils/History.html'>History</a>
-                <small>
-                  (Utils)
-                </small>
+                <a href='classes/i18n.html'>i18n</a>
               </li>
             </ul>
           </ul>
@@ -256,15 +269,101 @@
             </ul>
           </ul>
         </div>
+        <h2>File Listing A-Z</h2>
+        <div class='index'>
+          <ul>
+            <li class='letter'>c</li>
+            <ul>
+              <li>
+                <a href='files/logger/console-logger.coffee.html'>console-logger.coffee</a>
+                <small>
+                  (logger)
+                </small>
+              </li>
+            </ul>
+          </ul>
+          <ul>
+            <li class='letter'>d</li>
+            <ul>
+              <li>
+                <a href='files/dom/document-fragment.coffee.html'>document-fragment.coffee</a>
+                <small>
+                  (dom)
+                </small>
+              </li>
+            </ul>
+          </ul>
+          <ul>
+            <li class='letter'>e</li>
+            <ul>
+              <li>
+                <a href='files/dom/element.coffee.html'>element.coffee</a>
+                <small>
+                  (dom)
+                </small>
+              </li>
+              <li>
+                <a href='files/utils/evented.coffee.html'>evented.coffee</a>
+                <small>
+                  (utils)
+                </small>
+              </li>
+            </ul>
+          </ul>
+          <ul>
+            <li class='letter'>i</li>
+            <ul>
+              <li>
+                <a href='files/utils/i18n.coffee.html'>i18n.coffee</a>
+                <small>
+                  (utils)
+                </small>
+              </li>
+            </ul>
+          </ul>
+          <ul>
+            <li class='letter'>l</li>
+            <ul>
+              <li>
+                <a href='files/logger/logger.coffee.html'>logger.coffee</a>
+                <small>
+                  (logger)
+                </small>
+              </li>
+            </ul>
+          </ul>
+          <ul>
+            <li class='letter'>o</li>
+            <ul>
+              <li>
+                <a href='files/types/object.coffee.html'>object.coffee</a>
+                <small>
+                  (types)
+                </small>
+              </li>
+            </ul>
+          </ul>
+          <ul>
+            <li class='letter'>s</li>
+            <ul>
+              <li>
+                <a href='files/types/string.coffee.html'>string.coffee</a>
+                <small>
+                  (types)
+                </small>
+              </li>
+            </ul>
+          </ul>
+        </div>
       </div>
     </div>
     <div id='footer'>
   Generated on
-  Fri Sep 07 2012 13:21:20 GMT+0200 (CEST)
+  Sat Sep 08 2012 07:36:10 GMT+0200 (CEST)
   by
   <a href='https://github.com/netzpirat/codo' title='CoffeeScript API documentation generator'>Codo</a>
-  v1.0.1
-  (Node.js v0.8.2).
+  v1.4.0
+  (Node.js v0.8.7).
   &#10034;
   Press Ctrl-h to see the keyboard shortcuts
   &#10034;

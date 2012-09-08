@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html>
   <head>
-  <title>Crystal Documentation</title>
+  <meta charset='UTF-8'>
+  <title>CoffeeScript API Documentation</title>
   <link rel='stylesheet' href='assets/codo.css' type='text/css'>
   <script src='assets/codo.js'></script>
   <script src='assets/search_data.js'></script>
@@ -22,9 +23,9 @@
     </nav>
     <div id='search'>
       <a id='class_list_link' href='class_list.html'>Classes</a>
-      <a id='mixin_list_link' href='mixin_list.html'>Mixins</a>
-      <a id='method_list_link' href='method_list.html'>Methods</a>
       <a id='file_list_link' href='file_list.html'>Files</a>
+      <a id='method_list_link' href='method_list.html'>Methods</a>
+      <a id='extra_list_link' href='extra_list.html'>Extras</a>
     </div>
   </div>
   <iframe id='search_frame'></iframe>
@@ -64,12 +65,16 @@
         Mixin list
       </li>
       <li>
+        <span>Ctrl-F</span>
+        File list
+      </li>
+      <li>
         <span>Ctrl-M</span>
         Method list
       </li>
       <li>
-        <span>Ctrl-F</span>
-        File list
+        <span>Ctrl-E</span>
+        Extras list
       </li>
     </ul>
     <p>
@@ -108,78 +113,16 @@
         </p>
       </nav>
       <div id='filecontents'>
-        <h1>Crystal <a href="http://travis-ci.org/gdotdesign/crystal"><img src="https://secure.travis-ci.org/gdotdesign/crystal.png?branch=master" alt="Build Status"></a></h1>
-<p>Crystal is a JavaScript library (written in CoffeeScript) which extends native prototypes, and adds utility classes.
-
-</p>
-<p>The basic principle is to not to try to fix old browsers, but to add utility to modern browsers, with that in mind
-Crystal expects the following:
-
-</p>
-<ul>
-<li>ES5 compilance</li>
-<li>querySelector and querySelectorAll</li>
-<li>addEventListener</li>
-<li>Object.definePropert(y|ies)</li>
-<li>FormData</li>
-</ul>
-<h2>Hacking</h2>
-<h3>Dependencies</h3>
-<ul>
-<li>Ruby 1.9.2+</li>
-<li>NodeJS</li>
-<li>Phantomjs for running specs in terminal / console</li>
-</ul>
-<h3>Setup</h3>
-<ul>
-<li>Clone the repository</li>
-<li>bundle install</li>
-</ul>
-<h3>Running specs</h3>
-<p>There are two ways to run specs:
-
-</p>
-<p>Terminal (requires phantomjs):
-
-</p>
-<ul>
-<li><code>rake specs</code></li>
-</ul>
-<p>Browser:
-
-</p>
-<ul>
-<li><code>rake specserver</code></li>
-<li>Open <strong><a href="http://localhost:5000">http://localhost:5000</a></strong> in your browser</li>
-</ul>
-<h3>Building</h3>
-<p>Simple compile to <strong>crystal.js</strong>
-
-</p>
-<p><code>rake build &gt; crystal.js</code>
-
-</p>
-<p>Compile and uglify to <strong>crystal.js</strong>
-
-</p>
-<p><code>rake build ugly=true &gt; crystal.js</code>
-
-</p>
-<h2>Known Bugs</h2>
-<ul>
-<li>querySelectorAll not returning proper NodeList in Opera<pre><code> http://my.opera.com/community/forums/topic.dml?id=1377232</code></pre>
-</li>
-</ul>
-
+        <h1>Crystal <a href="http://travis-ci.org/gdotdesign/crystal"><img src="https://secure.travis-ci.org/gdotdesign/crystal.png?branch=master" alt="Build Status"></a></h1><p>Crystal is a JavaScript library (written in CoffeeScript) which extends native prototypes, and adds utility classes.</p><p>The basic principle is to not to try to fix old browsers, but to add utility to modern browsers, with that in mind<br />Crystal expects the following:</p><ul><li>ES5 compilance</li><li>querySelector and querySelectorAll</li><li>addEventListener</li><li>Object.definePropert(y|ies)</li><li>FormData</li></ul><h2>Hacking</h2><h3>Dependencies</h3><ul><li>Ruby 1.9.2+</li><li>NodeJS</li><li>Phantomjs for running specs in terminal / console</li></ul><h3>Setup</h3><ul><li>Clone the repository</li><li>bundle install</li></ul><h3>Running specs</h3><p>There are two ways to run specs:</p><p>Terminal (requires phantomjs):</p><ul><li><code>rake specs</code></li></ul><p>Browser:</p><ul><li><code>rake specserver</code></li><li>Open <strong><a href="http://localhost:5000">http://localhost:5000</a></strong> in your browser</li></ul><h3>Building</h3><p>Simple compile to <strong>crystal.js</strong></p><p><code>rake build &gt; crystal.js</code></p><p>Compile and uglify to <strong>crystal.js</strong></p><p><code>rake build ugly=true &gt; crystal.js</code></p><h2>Known Bugs</h2><ul><li>querySelectorAll not returning proper NodeList in Opera<pre><code> http://my.opera.com/community/forums/topic.dml?id=1377232</code></pre></li></ul>
       </div>
     </div>
     <div id='footer'>
   Generated on
-  Fri Sep 07 2012 13:21:20 GMT+0200 (CEST)
+  Sat Sep 08 2012 07:36:10 GMT+0200 (CEST)
   by
   <a href='https://github.com/netzpirat/codo' title='CoffeeScript API documentation generator'>Codo</a>
-  v1.0.1
-  (Node.js v0.8.2).
+  v1.4.0
+  (Node.js v0.8.7).
   &#10034;
   Press Ctrl-h to see the keyboard shortcuts
   &#10034;

@@ -3,12 +3,30 @@
 # @requires ../types/number
 # @requires ../types/date
 
+get = (props,obj) -> obj::__defineGetter__ name, getter for name, getter of props
+set = (props,obj) -> obj::__defineSetter__ name, setter for name, setter of props
+
 window.Logger = class Logging.Logger
   @DEBUG: 4
   @INFO: 3
   @WARN: 2
   @ERROR: 1
   @FATAL: 0
+
+  get {timestamp: ->
+    @_timestamp
+  }, @
+  set {timestamp: (value)->
+    @_timestamp = !!value
+  }, @
+
+  get {level: ->
+    @_level
+  }, @
+  set {level: (value)->
+    @_level = parseInt(value).clamp 0, 4
+  }, @
+
   constructor: (level = 4) ->
     throw "Level must be Number" if isNaN parseInt(level)
     @_level = parseInt(level).clamp 0, 4
@@ -25,15 +43,3 @@ window.Logger = class Logging.Logger
   Logger::[type] = (args...) ->
     if @level >= Logger[type.toUpperCase()]
       @["_"+type] @_format args
-
-Object.defineProperties Logger::,
-  timestamp:
-    set: (value) ->
-      @_timestamp = !!value
-    get: ->
-      @_timestamp
-  level:
-    set: (value) ->
-      @_level = parseInt(value).clamp 0, 4
-    get: ->
-      @_level

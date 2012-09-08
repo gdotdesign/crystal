@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html>
   <head>
-  <title>Crystal Documentation</title>
+  <meta charset='UTF-8'>
+  <title>CoffeeScript API Documentation</title>
   <link rel='stylesheet' href='../assets/codo.css' type='text/css'>
   <script src='../assets/codo.js'></script>
   <script src='../assets/search_data.js'></script>
@@ -22,9 +23,9 @@
     </nav>
     <div id='search'>
       <a id='class_list_link' href='../class_list.html'>Classes</a>
-      <a id='mixin_list_link' href='../mixin_list.html'>Mixins</a>
-      <a id='method_list_link' href='../method_list.html'>Methods</a>
       <a id='file_list_link' href='../file_list.html'>Files</a>
+      <a id='method_list_link' href='../method_list.html'>Methods</a>
+      <a id='extra_list_link' href='../extra_list.html'>Extras</a>
     </div>
   </div>
   <iframe id='search_frame'></iframe>
@@ -64,12 +65,16 @@
         Mixin list
       </li>
       <li>
+        <span>Ctrl-F</span>
+        File list
+      </li>
+      <li>
         <span>Ctrl-M</span>
         Method list
       </li>
       <li>
-        <span>Ctrl-F</span>
-        File list
+        <span>Ctrl-E</span>
+        Extras list
       </li>
     </ul>
     <p>
@@ -109,7 +114,7 @@
       </table>
       <h2>Overview</h2>
       <div class='docstring'>
-  <p>Extends native Object with utilility functions. </p> 
+  <p>Extends native Object with utilility functions.</p>
 </div>
 <div class='tags'>
 </div>
@@ -186,7 +191,7 @@
       + (void) <strong>each</strong>()
     </p>
     <div class='docstring'>
-  <p>Iterate thorugh the objects porperties</p> 
+  <p>Iterate thorugh the objects porperties</p>
 </div>
 <div class='tags'>
 </div>
@@ -196,7 +201,7 @@
       + (void) <strong>pluck</strong>()
     </p>
     <div class='docstring'>
-  <p>Iterate thorugh the objects values and pull a single porperty of the value.</p> 
+  <p>Iterate thorugh the objects values and pull a single porperty of the value.</p>
 </div>
 <div class='tags'>
 </div>
@@ -206,7 +211,7 @@
       + (void) <strong>values</strong>()
     </p>
     <div class='docstring'>
-  <p>Returns the object values (flattern as value)</p> 
+  <p>Returns the object values (flattern as value)</p>
 </div>
 <div class='tags'>
 </div>
@@ -216,7 +221,7 @@
       + (void) <strong>canRespondTo</strong>()
     </p>
     <div class='docstring'>
-  <p>Checks if the given function can be called on the object.</p> 
+  <p>Checks if the given function can be called on the object.</p>
 </div>
 <div class='tags'>
 </div>
@@ -229,15 +234,14 @@
       - (FormData) <strong>toFormData</strong>()
     </p>
     <div class='docstring'>
-  <p>Creates a form data representation of the object. This method is used for sending data to the server via XMLHTTPRequest.</p> 
+  <p>Creates a form data representation of the object.<br />This method is used for sending data to the server via XMLHTTPRequest.</p>
 </div>
 <div class='tags'>
   <h3>Returns:</h3>
   <ul class='return'>
     <li>
-      <span class='type'>
-        (<tt>FormData</tt>)
-      </span>
+      <span class='type'></span>
+      (<tt>FormData</tt>)
       &mdash;
       <span class='desc'>The FormData object</span>
     </li>
@@ -249,15 +253,14 @@
       - (FormData) <strong>toQueryString</strong>()
     </p>
     <div class='docstring'>
-  <p>Creates query string representation of the object.</p> 
+  <p>Creates query string representation of the object.</p>
 </div>
 <div class='tags'>
   <h3>Returns:</h3>
   <ul class='return'>
     <li>
-      <span class='type'>
-        (<tt>FormData</tt>)
-      </span>
+      <span class='type'></span>
+      (<tt>FormData</tt>)
       &mdash;
       <span class='desc'>The FormData object</span>
     </li>
@@ -268,11 +271,11 @@
     </div>
     <div id='footer'>
   Generated on
-  Fri Sep 07 2012 13:21:20 GMT+0200 (CEST)
+  Sat Sep 08 2012 07:36:10 GMT+0200 (CEST)
   by
   <a href='https://github.com/netzpirat/codo' title='CoffeeScript API documentation generator'>Codo</a>
-  v1.0.1
-  (Node.js v0.8.2).
+  v1.4.0
+  (Node.js v0.8.7).
   &#10034;
   Press Ctrl-h to see the keyboard shortcuts
   &#10034;
