@@ -8,11 +8,3 @@ Object.defineProperties Function::,
     value: (ms,bind = @, args...) ->
       setInterval ms, ->
         @apply bind, args
-
-# @docs
-
-# @method #delay()
-#   aasd
-# @method #periodical()
-#   aasd
-class Function

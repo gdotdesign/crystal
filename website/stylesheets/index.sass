@@ -1,0 +1,219 @@
+@import url(http://fonts.googleapis.com/css?family=Ubuntu+Mono|Ubuntu:400,700,400italic)
+@import font-awesome
+@import mixins
+@import noise
+@import theme
+
+body
+  font-family: Ubuntu
+  background-color: #DCD8C9
+  color: #514C3D
+  -webkit-user-select: none
+nav
+  :position fixed
+  :z-index 2
+  :top 0
+  :left 0
+  :right 0
+  :background-color #241E1B
+  :height 40px
+  a
+    :color #eee
+    :font-size 16px
+    :text-decoration none
+  ul
+    :width 940px
+    :margin 0 auto
+    :padding 0
+    :list-style none
+    li + li
+      :margin-left 13px
+    li
+      :line-height 36px
+      :float left
+
+
+.class
+  &:hover
+    h2 [class*=icon]
+      :color rgba(#514C3D, 1)
+  :-webkit-transition-duration 320ms
+  :position absolute
+  :top 60px
+  :left 0
+  :right 0
+  &:target
+    :opacity 1
+    :-webkit-transform translateX(0)
+    :z-index 1
+  &:not(:target)
+    &:nth-child(even)
+      :-webkit-transform translateX(-200px)
+    &:nth-child(odd)
+      :-webkit-transform translateX(200px)
+    :z-index 0
+    :opacity 0
+
+#console
+  :position fixed
+  :bottom 50px
+  :left 50%
+  :margin-left -200px
+  :overflow hidden
+  :padding 15px 0
+  :line-height 28px
+  :text-align center
+  :background rgba(0,0,0,0.8)
+  :color #eee
+  :border-radius 7px
+  :box-shadow 0 0 25px rgba(0,0,0,0.4)
+  :width 400px
+  :-webkit-transition-duration 320ms
+  :pointer-events none
+  :z-index 10
+  &.hidden
+    :opacity 0
+
+.content
+  :width 960px
+  :margin 0 auto
+  :position relative
+
+.circle
+  :box-sizing border-box
+  :width 114px
+  :height 114px
+  :font-size 50px
+  :background-color #e8e6dc
+  :text-align center
+  :border-radius 50%
+  :border 7px solid #d4d0be
+  :line-height 100px
+  :box-shadow 0 0 10px #eceae3 inset
+  :-webkit-transition-duration 320ms
+  :color #514C3D
+
+.clear
+  :clear both
+
+p
+  :margin 10px 0
+
+.panel
+  :position relative
+  :background-color #e8e6dc
+  :border-radius 5px 5px 0 0
+  :padding 10px 20px
+
+span
+  &.fn
+    :color #259c55
+  &.prop
+    :color #30a4ba
+  &.self
+    :color #D4642A
+  &.new
+    :color #A82DA1
+.method
+  :font-size 14px
+  :background-color #e4e2d6
+  :border-top 1px solid #d8d5c4
+  code.js
+    :display none
+  pre
+    code
+      :font-family 'Ubuntu Mono'
+    :float right
+    :width 350px
+    :padding 0 10px
+    :border-left 1px solid rgba(0,0,0,0.07)
+    :margin 0
+    :font-size 14px
+  :padding 10px 20px
+  :position relative
+  :-webkit-transition-duration 200ms
+  &:hover
+    :background-color lighten(#e4e2d6,3%)
+    [class*=icon]
+      :opacity 1
+  [class*=icon]
+    :cursor pointer
+    &:hover
+      :color #514C3D
+    &:before
+      :color inherit
+    :color rgba(#514C3D,0.5)
+    :right -37px
+    :-webkit-transition-duration 200ms
+    :opacity 0
+    :position absolute
+    :border-left 1px solid #d8d5c4
+    :text-align center
+    :line-height 34px
+    :width 36px
+    :height 36px
+    :background-color lighten(#e4e2d6,3%)
+  &:last-child
+    :border-radius 0 0 5px 5px
+  .icon-link
+    :border-radius 0 0 5px 0
+    :top 37px
+  .icon-play
+    :border-radius 0 5px 0 0
+    :top 0
+
+.class
+  :border-radius 5px
+
+h3
+  :margin 10px 0
+h2
+  :margin 15px 0
+h2 [class*=icon]
+  @extend .circle
+  :color rgba(#514C3D, 0.5)
+  :position absolute
+  :top -30px
+  :right -30px
+  :border none
+  :font-size 35px
+  :width 80px
+  :height 80px
+  :line-height 80px
+  background-color: #DCD8C9
+  :box-shadow none
+
+.btn-circle
+  :cursor pointer
+  :line-height 114px
+  @extend .circle
+  :float left
+  :margin-right 40px
+  :margin-bottom 40px
+  [class*=icon]
+    :width 114px
+    :height 114px
+    :position absolute
+    :top -7px
+    :left -7px
+  &:hover
+    :box-shadow 0 0 10px #eceae3 inset, 0 0 10px #b0a786
+    :border-width 4px
+    .tooltip
+      :opacity 1
+      :bottom -50px
+  :position relative
+  .tooltip
+    :-webkit-transition-duration 320ms
+    :bottom 0px
+    :opacity 0
+    :font-size 16px
+    :line-height 20px
+    :width 170px
+    :height 43px
+    :line-height 40px
+    :border-radius 5px
+    :position absolute
+    :left -32px
+    :z-index 2
+    :text-align center

@@ -1,0 +1,40 @@
+=transform($value)
+  :-webkit-transform $value
+  :-moz-transform $value
+  :-o-transform $value
+
+=position($top,$left,$right,$bottom)
+  :position absolute
+  :top $top
+  :left $left
+  :right $right
+  :bottom $bottom
+
+=border-radius($value)
+  :-webkit-border-radius $value
+  :-moz-border-radius $value
+  :-o-border-radius $value
+  :-ms-border-radius $value
+  :border-radius $value
+
+=box-shadow($value)
+  :-webkit-box-shadow $value
+  :-moz-box-shadow $value
+  :-ms-box-shadow $value
+  :-o-box-shadow $value
+
+=gradient($top, $bottom)
+  :background-color $bottom
+  :background-image linear-gradient(top, $top 0%, $bottom 100%)
+  :background-image -webkit-linear-gradient(top, $top 0%, $bottom 100%)
+  :background-image -moz-linear-gradient(top, $top 0%, $bottom 100%)
+  :background-image -ms-linear-gradient(top, $top 0%, $bottom 100%)
+  :background-image -o-linear-gradient(top, $top 0%, $bottom 100%)
+
+=radial-gradient($size, $center, $side)
+  :background-color $center
+  :background-image radial-gradient(center $size, circle cover, $center 15%, $side 100%)
+  :background-image -webkit-radial-gradient(center $size, circle cover, $center 15%, $side 100%)
+  :background-image -moz-radial-gradient(center $size, circle cover, $center 15%, $side 100%)
+  :background-image -ms-radial-gradient(center $size, circle cover, $center 15%, $side 100%)
+  :background-image -o-radial-gradient(center $size, circle cover, $center 15%, $side 100%)

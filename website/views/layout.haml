@@ -1,0 +1,24 @@
+!!! 5
+%html
+  %head
+    %title CrystalJS
+    %meta{charset: "utf-8"}
+    %meta{name: 'description', content: ''}
+    %meta{name: 'keywords', content: ''}
+    %meta{name: 'robots', content: 'all'}
+    %link{rel: "stylesheet", href: "style.css"}
+    %script{src: '/js/crystal.js'}
+    %script{src: "//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.6/html5shiv.min.js"}
+    %script{src: "//cdnjs.cloudflare.com/ajax/libs/prettify/188.0.0/prettify.js"}
+  %body
+    = yield
+    #console.hidden
+    :javascript
+      window.console = new FlashLogger(document.first("#console"))
+      console.timestamp = false
+      window.addEvent('load',function(){prettyPrint()})
+      window.addEvent('hashchange',function(e){window.scrollTo(0)})
+      document.body.delegateEvent('click:nav li a',function(e){window.scrollTo(0)})
+      document.body.delegateEvent('click:.icon-play', function(e){
+         eval(e.target.parent.first('.js').text)
+      })

@@ -8,9 +8,10 @@
 #     r.get (response) ->
 #       i18n.locales = response.json
 #    i18n.t 'menu.home'
-#
 class i18n
+
   @locales: {}
+
   # Gets translation for given path
   # 
   # @example Default locale

@@ -36,10 +36,9 @@ Object.each types, (key,value) ->
     value.map( (type) => @headers['Content-Type'] is type).compact().length > 0
 
 window.Request = class Utils.Request
-  constructor: (url, data = {}, headers = {}) ->
+  constructor: (url, headers = {}) ->
     @uri = url
     @headers = headers
-    @data = data
     @_request = new XMLHttpRequest()
     @_request.onreadystatechange = @handleStateChange
 
@@ -70,6 +69,11 @@ window.Request = class Utils.Request
       @_request.responseText
 
 ['get','post','put','delete','patch'].forEach (type) ->
-  Request::[type] = (data, callback) ->
+  Request::[type] = ->
+    if arguments.length is 2
+      data = arguments[0]
+      callback = arguments[1]
+    else
+      callback = arguments[0]
     @request type.toUpperCase(), data, callback
 

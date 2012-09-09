@@ -11,7 +11,9 @@ css =
   fatal:
     color: 'red'
     'font-weight': 'bold'
-  debig:
+  debug:
+    color: 'black'
+  log:
     color: 'black'
 
 window.HTMLLogger = class Logging.HTMLLogger extends Logging.Logger
@@ -20,7 +22,7 @@ window.HTMLLogger = class Logging.HTMLLogger extends Logging.Logger
     super level
     @el = el
 
-['debug', 'error', 'fatal', 'info', 'warn'].forEach (type) ->
+['debug', 'error', 'fatal', 'info', 'warn','log'].forEach (type) ->
   HTMLLogger::["_"+type] = (text) ->
     el = Element.create 'div.'+type
     for prop, value of css[type]

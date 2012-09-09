@@ -11,5 +11,3 @@ Object.defineProperties DocumentFragment::
 
 DocumentFragment.create = ->
   document.createDocumentFragment()
-
-DocumentFragment

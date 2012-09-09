@@ -27,3 +27,7 @@ describe "Date", ->
       expect(@d.format("%t")).toBe '9'
     it 'should format mintues (with leading zero)', ->
       expect(@d.format("%T")).toBe '09'
+
+  describe 'month', ->
+    it "should return month", ->
+      expect(@d.month).toBe 4

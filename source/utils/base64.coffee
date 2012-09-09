@@ -40,7 +40,6 @@ class Utils.Base64
     string = string.replace(/\r\n/g, "\n")
     utftext = ""
     n = 0
-
     while n < string.length
       c = string.charCodeAt(n)
       if c < 128

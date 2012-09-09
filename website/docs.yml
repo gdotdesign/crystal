@@ -1,0 +1,142 @@
+classes:
+  History:
+    description: |
+    icon: 'bookmark'
+    methods:
+      - a
+  i18n:
+    description: |
+      Locale Management
+      </br>
+      Default locale is read from the html lang attribute.
+    icon: 'globe'
+    methods:
+      - type: self
+        name: t(path, *data = {}, *locale = 'en' )
+        description: "Get translation for given path."
+        example: |
+          i18n.locales.en = social: {join: 'Joins us today!'}
+          console.log i18n.t 'social.join'
+          # "Join us today!"
+      - type: self
+        name: locales = {}
+        description: 'This property contanes the  translations'
+        example: |
+  Request:
+    description: "A very simple XMLHTTPRequest wrapper."
+    icon: "link"
+    methods:
+      - type: new
+        name: "constructor(url, headers = {})"
+        description: "Creates a new Request instance."
+        example: |
+          r = new Request('/example.json')
+          r.get (response) ->
+            console.log response.body.message
+            console.log response.raw
+          # Object
+      - type: fn
+        name: "get(*data = {}, callback)"
+        description: "Start a request with GET method."
+        example: |
+          r = new Request('/example.json')
+          r.get (response) ->
+            console.log response.body.message
+            console.log response.raw
+          # Object
+      - type: fn
+        name: "post(*data = {}, callback)"
+        description: "Start a request with POST method."
+        example: |
+          r = new Request('/example.json')
+          r.post (response) ->
+            console.log response.body.message
+            console.log response.raw
+          # Object
+  Array:
+    description: ''
+    icon: 'th'
+    methods:
+      - type: fn
+        name: "compact()"
+        description: 'Returns a new Array with falsy values removed.'
+        example: |
+          a = [null, undefined, false, '',0,'Luke','Leia']
+          console.log a.compact()
+          # Luke, Leia
+      - type: fn
+        name: "uniq()"
+        description: 'Returns a new Array with duplicate values removed.'
+        example: |
+          a = ['Yoda','Wader','Luke','Leia','Yoda','Luke']
+          console.log a.uniq()
+          # Yoda, Wader, Luke, Leia
+      - type: prop
+        name: "sample"
+        description: 'Returns a random item from the array.'
+        example: |
+          a = ['Yoda','Wader','Luke','Leia','Yoda','Luke']
+          console.log a.sample
+          # Any Star Wars character above
+      - type: prop
+        name: "first"
+        description: 'Returns first item from the array'
+        example: |
+          a = ['Yoda','Wader','Luke','Leia','Yoda','Luke']
+          console.log a.first
+          # Yoda
+      - type: prop
+        name: "last"
+        description: 'Returns the last item from the array'
+        example: |
+          a = ['Yoda','Wader','Luke','Leia','Yoda','Luke']
+          console.log a.last
+          # Luke
+
+  Date:
+    description: "Adds utility functions to the Date object."
+    icon: "time"
+    methods:
+      - type: fn
+        name: "format(str)"
+        description: "Formats the date according to the given string."
+        example: |
+          d = new Date("1987-05-28")
+          console.log d.format("%Y.%M.%D")
+          # 1987.05.28
+      - type: prop
+        name: ago
+        description: 'Returns the literal representation of the time passed (10 seconds ago).'
+        example: |
+          d = new Date(Date.now()-(2).days)
+          console.log d.ago
+          # 2 days ago
+      - type: prop
+        name: day
+        description: 'Returns the date portion.'
+        example: |
+          d = new Date('2012-05-28')
+          console.log d.day
+          # 28
+      - type: prop
+        name: hours
+        description: 'Returns the hour portion.'
+        example: |
+          d = new Date('2012-05-28 09:12')
+          console.log d.hours
+          # 9
+      - type: prop
+        name: minutes
+        description: 'Returns the minutes portion.'
+        example: |
+          d = new Date('2012-05-28 09:12')
+          console.log d.minutes
+          # 12
+      - type: self
+        name: Locale
+        description: 'Object that represents the current language data for Date.'
+        example: |
+          # Get the locale format
+          console.log Date.Locale.format
+          # %Y-%M-%D
+        

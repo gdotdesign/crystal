@@ -1,33 +1,4 @@
-# Mutator Methods
-['compact','uniq','pluck','shuffle'].forEach (method) ->
-  Object.defineProperty Array::, "_"+method, value: (args...) ->
-    newArray = Array::[method].call @, args
-    @_empty()
-    for item in newArray
-      @push item
-    @
-
 methods =
-  _shift: ->
-    @splice 0, 1
-    @
-
-  _empty: ->
-    @splice 0, @length
-    @
-
-  _remove: (item) ->
-    if (index = @indexOf(item)) != -1
-      @splice index, 1
-    @
-  _removeAll: (item) ->
-    while (index = @indexOf(item)) != -1
-      @splice index , 1
-    @
-  _push: (args...) ->
-    @push.apply @, args
-    @
-  # Accessor Methods
   remove: (item) ->
     b = @dup()
     if (index = b.indexOf(item)) != -1
@@ -64,15 +35,12 @@ for key, method of methods
   Object.defineProperty Array::, key, value: method
 
 Object.defineProperties Array::,
+  sample:
+    get: ->
+      @[Math.floor(Math.random() * @length)]
   first:
     get: ->
       @[0]
   last:
     get: ->
       @[@length - 1]
-
-# @docs
-
-# @method #include(item)
-#   asd
-class Array

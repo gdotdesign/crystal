@@ -22,7 +22,7 @@ Attributes =
     prefix: "~"
     unique: true
 
-prefixes = Object.pluck(Attributes,'prefix')._push("$").join("|")
+prefixes = Object.pluck(Attributes,'prefix').concat("$").join("|")
 Object.each Attributes, (key,value) ->
   value.regexp = new RegExp value.prefix+"(.*?)(?=#{prefixes})", "g"
 
@@ -59,8 +59,7 @@ _parseName = (name,atts = {}) ->
             map = map.concat atts[key].split(" ")
           else
             map = map.concat atts[key]
-          map._compact()
-        ret.attributes[key] = map.join(" ")
+        ret.attributes[key] = map.compact().join(" ")
     else
       ret.attributes[key] = atts[key] if atts[key] isnt null and atts[key] isnt undefined
   ret
