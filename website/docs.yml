@@ -1,9 +1,57 @@
 classes:
+  Color:
+    description: |
+    icon: 'beaker'
+    methods:
+      - type: new
+        name: "constructor(colorString)"
+        description: "Creates a new Color instance from the given string."
+        example: |
+          c = new Color('#ff0000')
+          console.log c.rgba
+          # rgba(255,0,0,1)
+      - type: prop
+        name: "red"
+        description: "Sets / Gets the red property of the color."
+        example: |
+          c = new Color('#ff0000')
+          c.red = 204
+          console.log c.hex
+          # #cc0000
+      - type: prop
+        name: "green"
+        description: "Sets / Gets the green property of the color."
+        example: |
+          c = new Color('#000000')
+          c.green = 204
+          console.log c.hex
+          # #00cc00
+      - type: prop
+        name: "blue"
+        description: "Sets / Gets the red property of the color."
+        example: |
+          c = new Color('#000000')
+          c.blue = 204
+          console.log c.hex
+          # #0000cc
+      - type: prop
+        name: "rgba"
+        description: "Returns the rgba string representation of the"
+        example: |
+          c = new Color('#ff0000')
+          console.log c.rgba
+          # rgba(255,0,0,1)
+  String:
+    description: |
+    icon: 'align-center'
+    methods:
+      - a
   History:
     description: |
     icon: 'bookmark'
     methods:
       - a
+  
   i18n:
     description: |
       Locale Management
@@ -22,6 +70,7 @@ classes:
         name: locales = {}
         description: 'This property contanes the  translations'
         example: |
+  
   Request:
     description: "A very simple XMLHTTPRequest wrapper."
     icon: "link"
@@ -53,6 +102,7 @@ classes:
             console.log response.body.message
             console.log response.raw
           # Object
+  
   Array:
     description: ''
     icon: 'th'
@@ -71,6 +121,53 @@ classes:
           a = ['Yoda','Wader','Luke','Leia','Yoda','Luke']
           console.log a.uniq()
           # Yoda, Wader, Luke, Leia
+      - type: fn
+        name: "remove(item)"
+        description: 'Removes the first instance of given item from the array.'
+        example: |
+          a = ['Yoda','Wader','Luke','Leia','Yoda','Luke']
+          console.log a.remove('Yoda')
+          # Wader, Luke, Leia, Yoda, Luke
+      - type: fn
+        name: "removeAll(item)"
+        description: 'Removes all instances of given item from the array.'
+        example: |
+          a = ['Yoda','Wader','Luke','Leia','Yoda','Luke']
+          console.log a.removeAll('Yoda')
+          # Wader, Luke, Leia, Luke
+      - type: fn
+        name: "shuffle()"
+        description: 'Arranges items in the array randomly.'
+        example: |
+          a = ['Yoda','Wader','Luke','Leia','Yoda','Luke']
+          console.log a.shuffle('Yoda')
+          # a random combination of the items 
+      - type: fn
+        name: "include()"
+        description: 'Return true if the item is included in the array false if not.'
+        example: |
+          a = ['Yoda','Wader','Luke','Leia','Yoda','Luke']
+          console.log a.include('Yoda')
+          # true
+      - type: fn
+        name: "pluck()"
+        description: 'Returns a new Array of the given property of the items.'
+        example: |
+          a = [
+            {name: 'Wader', side: 'dark'}
+            {name: 'Luke', side: 'light'}
+          ]
+          console.log a.pluck('name')
+          # Wader, Luke
+      - type: fn
+        name: "dup()"
+        description: 'Creates a duplicate of the array.'
+        example: |
+          a = ['Yoda','Wader','Luke','Leia','Yoda','Luke']
+          console.log a.dup()
+          # Yoda, Wader, Luke, Leia, Yoda, Luke
+
+
       - type: prop
         name: "sample"
         description: 'Returns a random item from the array.'

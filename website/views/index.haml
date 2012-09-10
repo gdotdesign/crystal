@@ -5,15 +5,19 @@
         %a{href: "#"+key}
           %div{class: "icon-#{cls['icon']}"}
           = key
+    %li.right
+      %a{href:"#main"} Crystal
 .content
-  //.btn-circle
-  //  .icon-github
-  //  .tooltip
-  //    Source at Github
-  //.btn-circle
-  //  .icon-download
-  //  .tooltip
-  //    Download
+  .class#main
+    .panel
+      .btn-circle
+        .icon-github
+        .tooltip
+          Source at Github
+      .btn-circle
+        .icon-download
+        .tooltip
+          Download
   .clear
   - @docs['classes'].each do |key, cls|
     .class{id: key}

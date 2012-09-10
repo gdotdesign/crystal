@@ -31,28 +31,39 @@ nav
     li
       :line-height 36px
       :float left
-
+      &.right
+        :float right
 
 .class
+  :padding-bottom 50px
   &:hover
     h2 [class*=icon]
       :color rgba(#514C3D, 1)
-  :-webkit-transition-duration 320ms
+  .panel, .method
+    :-webkit-transition-duration 400ms
+    :-webkit-transform-origin top center
   :position absolute
   :top 60px
   :left 0
   :right 0
   &:target
-    :opacity 1
-    :-webkit-transform translateX(0)
     :z-index 1
+    .panel, .method
+      :-webkit-transition-delay 200ms
+      :opacity 1
+      :-webkit-transform rotateX(0)
+    @for $i from 1 through 200
+      .method:nth-child(#{$i})
+        :-webkit-transition-delay 200ms + $i*50
+
   &:not(:target)
-    &:nth-child(even)
-      :-webkit-transform translateX(-200px)
-    &:nth-child(odd)
-      :-webkit-transform translateX(200px)
+    .panel, .method
+      :-webkit-transform perspective(1000) rotateX(90deg)
+      :opacity 0
+    @for $i from 1 through 200
+      .method:nth-child(#{$i})
+        :-webkit-transition-delay 1ms * $i*50
     :z-index 0
-    :opacity 0
 
 #console
   :position fixed

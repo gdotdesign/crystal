@@ -1670,8 +1670,11 @@
       }
     };
 
-    Color.prototype.toString = function() {
-      switch (this.type) {
+    Color.prototype.toString = function(type) {
+      if (type == null) {
+        type = 'hex';
+      }
+      switch (type) {
         case "rgb":
           return "rgb(" + this._red + ", " + this._green + ", " + this._blue + ")";
         case "rgba":
@@ -1709,6 +1712,14 @@
       set: function(value) {
         this["_" + item] = parseInt(value).clamp(0, 100);
         return this._update('hsl');
+      }
+    });
+  });
+
+  ['rgba', 'rgb', 'hsla', 'hsl'].forEach(function(item) {
+    return Object.defineProperty(Color.prototype, item, {
+      get: function() {
+        return this.toString(item);
       }
     });
   });

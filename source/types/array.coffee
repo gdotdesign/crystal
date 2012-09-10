@@ -21,15 +21,15 @@ methods =
       shuffled[index] = shuffled[rand]
       shuffled[rand] = value
     shuffled
+  compact: ->
+    @filter (item) -> !!item
+  dup: (item) ->
+    @filter -> true
   pluck: (property) ->
     @map (item) ->
       item[property]
-  compact: ->
-    @filter (item) -> !!item
   include: (item) ->
     @indexOf(item) != -1
-  dup: (item) ->
-    @filter -> true
 
 for key, method of methods
   Object.defineProperty Array::, key, value: method

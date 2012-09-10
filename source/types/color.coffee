@@ -133,8 +133,8 @@ window.Color = class Color
         @_hex2rgb()
         @_rgb2hsl()
 
-  toString: ->
-    switch @type
+  toString: (type = 'hex')->
+    switch type
       when "rgb"
         "rgb(#{@_red}, #{@_green}, #{@_blue})"
       when "rgba"
@@ -161,6 +161,11 @@ window.Color = class Color
     set: (value) ->
       @["_"+item] = parseInt(value).clamp 0, 100
       @_update 'hsl'
+
+['rgba','rgb','hsla','hsl'].forEach (item) ->
+  Object.defineProperty Color::, item,
+    get: ->
+      @toString(item)
 
 Object.defineProperties Color::,
   hex:
