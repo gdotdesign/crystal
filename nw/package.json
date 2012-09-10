@@ -1,0 +1,15 @@
+{
+  "main": "index.html",
+  "name": "Crystal Playground",
+  "window": {
+    "icon": "link.png",
+    "toolbar": false,
+    "width": 800,
+    "height": 500,
+    "position": "center",
+    "min_width": 400,
+    "min_height": 200,
+    "max_width": 800,
+    "max_height": 600
+  }
+ }

@@ -1,0 +1,12 @@
+<html>
+	<head>
+		<script type="text/javascript" src="./crystal.js"></script>
+	</head>
+	<body>
+		<input type="button" value="open file" onclick="NW.Dialogs.open(function(file){this.next('textarea').value = file.read()}.bind(this))"/>
+		</br>
+		<textarea></textarea>
+		</br>
+		<input type="button" value="save file as" onclick="NW.Dialogs.save(this.prev('textarea').value)"/>
+	</body>
+</html>

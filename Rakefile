@@ -16,11 +16,27 @@ ensure
   stream.reopen(old_stream)
 end
 
+def build
+  b = Builder.new()
+  compiled = b.build(Dir.glob('./source/**/*.coffee'), "MVC = {}\nLogging = {}\nUtils = {}\n\n", !!ENV['ugly'])
+  "(function(Crystal){\n #{compiled} \n })(window.Crystal={Utils:{}})"
+end
+
+task :nw do
+  File.open('./nw/crystal.js','w+') do |f|
+    f.write build()
+  end
+  p = Process.fork do
+    silence_stream(STDERR) do
+      `nw ./nw --developer`
+    end
+  end
+  Process.detach p
+end
+
 namespace :build do
   task :crystal do
-    b = Builder.new()
-    compiled = b.build(Dir.glob('./source/**/*.coffee'), "MVC = {}\nLogging = {}\nUtils = {}\n\n", !!ENV['ugly'])
-    puts "(function(Crystal){\n #{compiled} \n })(window.Crystal={Utils:{}})"
+    puts build
   end
 
   task :specs do
