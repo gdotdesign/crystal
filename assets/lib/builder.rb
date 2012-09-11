@@ -1,18 +1,19 @@
 class Builder
   attr_reader :files
 
-  def initialize
+  def initialize(excludePatter = /^$/)
     @files = []
+    @excludePatter = excludePatter
   end
 
   def build(files = [], content = "", ugly = false)
     files.each do |f|
-      add f
+       add f unless f =~ @excludePatter
     end
     @content = content
     assemble
     compile
-    if ugly
+    if !!ENV['ugly']
       uglify
     else
       @compiled

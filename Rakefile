@@ -16,9 +16,9 @@ ensure
   stream.reopen(old_stream)
 end
 
-def build
-  b = Builder.new()
-  compiled = b.build(Dir.glob('./source/**/*.coffee'), "MVC = {}\nLogging = {}\nUtils = {}\n\n", !!ENV['ugly'])
+def build(exclude = /^$/)
+  b = Builder.new(exclude)
+  compiled = b.build(Dir.glob('./source/**/*.coffee'), "MVC = {}\nLogging = {}\nUtils = {}\n\n",)
   "(function(Crystal){\n #{compiled} \n })(window.Crystal={Utils:{}})"
 end
 
@@ -36,7 +36,7 @@ end
 
 namespace :build do
   task :crystal do
-    puts build
+    puts build(/nw\//)
   end
 
   task :specs do

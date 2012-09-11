@@ -13,7 +13,156 @@
   Utils = {};
 
   /*
-  --------------- /home/gszikszai/git/crystal/source/types/array.coffee--------------
+  --------------- /home/gdot/github/crystal/source/dom/node-list.coffee--------------
+  */
+
+
+  Object.defineProperties(NodeList.prototype, {
+    forEach: {
+      value: function(fn, bound) {
+        var i, node, _i, _len;
+        if (bound == null) {
+          bound = this;
+        }
+        for (i = _i = 0, _len = this.length; _i < _len; i = ++_i) {
+          node = this[i];
+          fn.call(bound, node, i);
+        }
+        return this;
+      }
+    },
+    map: {
+      value: function(fn, bound) {
+        var node, _i, _len, _results;
+        if (bound == null) {
+          bound = this;
+        }
+        _results = [];
+        for (_i = 0, _len = this.length; _i < _len; _i++) {
+          node = this[_i];
+          _results.push(fn.call(bound, node));
+        }
+        return _results;
+      }
+    },
+    pluck: {
+      value: function(property) {
+        var node, _i, _len, _results;
+        _results = [];
+        for (_i = 0, _len = this.length; _i < _len; _i++) {
+          node = this[_i];
+          _results.push(node[property]);
+        }
+        return _results;
+      }
+    },
+    include: {
+      value: function(el) {
+        var node, _i, _len;
+        for (_i = 0, _len = this.length; _i < _len; _i++) {
+          node = this[_i];
+          if (node === el) {
+            return true;
+          }
+        }
+        return false;
+      }
+    },
+    first: {
+      get: function() {
+        return this[0];
+      }
+    },
+    last: {
+      get: function() {
+        return this[this.length - 1];
+      }
+    }
+  });
+
+  /*
+  --------------- /home/gdot/github/crystal/source/types/object.coffee--------------
+  */
+
+
+  Object.defineProperties(Object.prototype, {
+    toFormData: {
+      value: function() {
+        var key, ret, value;
+        ret = new FormData();
+        for (key in this) {
+          if (!__hasProp.call(this, key)) continue;
+          value = this[key];
+          ret.append(key, value);
+        }
+        return ret;
+      }
+    },
+    toQueryString: {
+      value: function() {
+        var key, value;
+        return ((function() {
+          var _results;
+          _results = [];
+          for (key in this) {
+            if (!__hasProp.call(this, key)) continue;
+            value = this[key];
+            _results.push("" + key + "=" + (value.toString()));
+          }
+          return _results;
+        }).call(this)).join("&");
+      }
+    }
+  });
+
+  Object.each = function(object, fn) {
+    var key, value, _results;
+    _results = [];
+    for (key in object) {
+      if (!__hasProp.call(object, key)) continue;
+      value = object[key];
+      _results.push(fn.call(object, key, value));
+    }
+    return _results;
+  };
+
+  Object.pluck = function(object, prop) {
+    var key, value, _results;
+    _results = [];
+    for (key in object) {
+      if (!__hasProp.call(object, key)) continue;
+      value = object[key];
+      _results.push(value[prop]);
+    }
+    return _results;
+  };
+
+  Object.values = function(object) {
+    var key, value, _results;
+    _results = [];
+    for (key in object) {
+      if (!__hasProp.call(object, key)) continue;
+      value = object[key];
+      _results.push(value);
+    }
+    return _results;
+  };
+
+  Object.canRespondTo = function() {
+    var arg, args, object, ret, _i, _len;
+    object = arguments[0], args = 2 <= arguments.length ? __slice.call(arguments, 1) : [];
+    ret = true;
+    for (_i = 0, _len = args.length; _i < _len; _i++) {
+      arg = args[_i];
+      if (typeof object[arg] !== 'function') {
+        ret = false;
+      }
+    }
+    return ret;
+  };
+
+  /*
+  --------------- /home/gdot/github/crystal/source/types/array.coffee--------------
   */
 
 
@@ -101,357 +250,7 @@
   });
 
   /*
-  --------------- /home/gszikszai/git/crystal/source/types/object.coffee--------------
-  */
-
-
-  Object.defineProperties(Object.prototype, {
-    toFormData: {
-      value: function() {
-        var ret, value;
-        ret = new FormData();
-        for (key in this) {
-          if (!__hasProp.call(this, key)) continue;
-          value = this[key];
-          ret.append(key, value);
-        }
-        return ret;
-      }
-    },
-    toQueryString: {
-      value: function() {
-        var value;
-        return ((function() {
-          var _results;
-          _results = [];
-          for (key in this) {
-            if (!__hasProp.call(this, key)) continue;
-            value = this[key];
-            _results.push("" + key + "=" + (value.toString()));
-          }
-          return _results;
-        }).call(this)).join("&");
-      }
-    }
-  });
-
-  Object.each = function(object, fn) {
-    var value, _results;
-    _results = [];
-    for (key in object) {
-      if (!__hasProp.call(object, key)) continue;
-      value = object[key];
-      _results.push(fn.call(object, key, value));
-    }
-    return _results;
-  };
-
-  Object.pluck = function(object, prop) {
-    var value, _results;
-    _results = [];
-    for (key in object) {
-      if (!__hasProp.call(object, key)) continue;
-      value = object[key];
-      _results.push(value[prop]);
-    }
-    return _results;
-  };
-
-  Object.values = function(object) {
-    var value, _results;
-    _results = [];
-    for (key in object) {
-      if (!__hasProp.call(object, key)) continue;
-      value = object[key];
-      _results.push(value);
-    }
-    return _results;
-  };
-
-  Object.canRespondTo = function() {
-    var arg, args, object, ret, _i, _len;
-    object = arguments[0], args = 2 <= arguments.length ? __slice.call(arguments, 1) : [];
-    ret = true;
-    for (_i = 0, _len = args.length; _i < _len; _i++) {
-      arg = args[_i];
-      if (typeof object[arg] !== 'function') {
-        ret = false;
-      }
-    }
-    return ret;
-  };
-
-  /*
-  --------------- /home/gszikszai/git/crystal/source/types/number.coffee--------------
-  */
-
-
-  Object.defineProperties(Number.prototype, {
-    seconds: {
-      get: function() {
-        return this.valueOf() * 1000;
-      }
-    },
-    minutes: {
-      get: function() {
-        return this.seconds * 60;
-      }
-    },
-    hours: {
-      get: function() {
-        return this.minutes * 60;
-      }
-    },
-    days: {
-      get: function() {
-        return this.hours * 24;
-      }
-    },
-    upto: {
-      value: function(limit, func, bound) {
-        var i, _results;
-        if (bound == null) {
-          bound = this;
-        }
-        i = parseInt(this);
-        _results = [];
-        while (i <= limit) {
-          func.call(bound, i);
-          _results.push(i++);
-        }
-        return _results;
-      }
-    },
-    downto: {
-      value: function(limit, func, bound) {
-        var i, _results;
-        if (bound == null) {
-          bound = this;
-        }
-        i = parseInt(this);
-        _results = [];
-        while (i >= limit) {
-          func.call(bound, i);
-          _results.push(i--);
-        }
-        return _results;
-      }
-    },
-    times: {
-      value: function(func, bound) {
-        var i, _i, _ref, _results;
-        if (bound == null) {
-          bound = this;
-        }
-        _results = [];
-        for (i = _i = 1, _ref = parseInt(this); 1 <= _ref ? _i <= _ref : _i >= _ref; i = 1 <= _ref ? ++_i : --_i) {
-          _results.push(func.call(bound, i));
-        }
-        return _results;
-      }
-    },
-    clamp: {
-      value: function(min, max) {
-        var val;
-        min = parseFloat(min);
-        max = parseFloat(max);
-        val = this.valueOf();
-        if (val > max) {
-          return max;
-        } else if (val < min) {
-          return min;
-        } else {
-          return val;
-        }
-      }
-    },
-    clampRange: {
-      value: function(min, max) {
-        var val;
-        min = parseFloat(min);
-        max = parseFloat(max);
-        val = this.valueOf();
-        if (val > max) {
-          return val % max;
-        } else if (val < min) {
-          return max - val % max;
-        } else {
-          return val;
-        }
-      }
-    }
-  });
-
-  /*
-  --------------- /home/gszikszai/git/crystal/source/types/date.coffee--------------
-  */
-
-
-  Date.Locale = {
-    ago: {
-      seconds: " seconds ago",
-      minutes: " minutes ago",
-      hours: " hours ago",
-      days: " days ago",
-      now: "just no"
-    },
-    format: "%Y-%M-%D"
-  };
-
-  Object.defineProperties(Date.prototype, {
-    ago: {
-      get: function() {
-        var diff;
-        diff = +new Date() - this;
-        if (diff < 1..seconds) {
-          return "just now";
-        } else if (diff < 1..minutes) {
-          return Math.round(diff / 1000) + Date.Locale.ago.seconds;
-        } else if (diff < 1..seconds) {
-          return Math.round(diff / 1..minutes) + Date.Locale.ago.minues;
-        } else if (diff < 1..days) {
-          return Math.round(diff / 1..hours) + Date.Locale.ago.hours;
-        } else if (diff < 30..days) {
-          return Math.round(diff / 1..days) + Date.Locale.ago.days;
-        } else {
-          return this.format(Date.Locale.format);
-        }
-      }
-    },
-    format: {
-      value: function(str) {
-        var _this = this;
-        if (str == null) {
-          str = Date.Locale.format;
-        }
-        return str.replace(/%([a-zA-z])/g, function($0, $1) {
-          switch ($1) {
-            case 'D':
-              return _this.getDate().toString().replace(/^\d$/, "0$&");
-            case 'd':
-              return _this.getDate();
-            case 'Y':
-              return _this.getFullYear();
-            case 'h':
-              return _this.getHours();
-            case 'H':
-              return _this.getHours().toString().replace(/^\d$/, "0$&");
-            case 'M':
-              return (_this.getMonth() + 1).toString().replace(/^\d$/, "0$&");
-            case 'm':
-              return _this.getMonth() + 1;
-            case "T":
-              return _this.getMinutes().toString().replace(/^\d$/, "0$&");
-            case "t":
-              return _this.getMinutes();
-            default:
-              return "";
-          }
-        });
-      }
-    }
-  });
-
-  ['day:Date', 'year:FullYear', 'hours:Hours', 'minutes:Minutes', 'seconds:Seconds'].forEach(function(item) {
-    var meth, prop, _ref;
-    _ref = item.split(/:/), prop = _ref[0], meth = _ref[1];
-    return Object.defineProperty(Date.prototype, prop, {
-      get: function() {
-        return this["get" + meth]();
-      },
-      set: function(value) {
-        return this["set" + meth](parseInt(value));
-      }
-    });
-  });
-
-  Object.defineProperty(Date.prototype, 'month', {
-    get: function() {
-      return this.getMonth() + 1;
-    },
-    set: function(value) {
-      return this.setMonth(value - 1);
-    }
-  });
-
-  /*
-  --------------- /home/gszikszai/git/crystal/source/logger/logger.coffee--------------
-  */
-
-
-  window.Logger = Logging.Logger = (function() {
-
-    Logger.DEBUG = 4;
-
-    Logger.INFO = 3;
-
-    Logger.WARN = 2;
-
-    Logger.ERROR = 1;
-
-    Logger.FATAL = 0;
-
-    Logger.LOG = 4;
-
-    function Logger(level) {
-      if (level == null) {
-        level = 4;
-      }
-      if (isNaN(parseInt(level))) {
-        throw "Level must be Number";
-      }
-      this._level = parseInt(level).clamp(0, 4);
-      this._timestamp = true;
-    }
-
-    Logger.prototype._format = function() {
-      var args, line;
-      args = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
-      line = "";
-      if (this.timestamp) {
-        line += "[" + new Date().format("%Y-%M-%D %H:%T") + "] ";
-      }
-      return line += args.map(function(arg) {
-        return args.toString();
-      }).join(",");
-    };
-
-    return Logger;
-
-  })();
-
-  Object.defineProperties(Logger.prototype, {
-    timestamp: {
-      set: function(value) {
-        return this._timestamp = !!value;
-      },
-      get: function() {
-        return this._timestamp;
-      }
-    },
-    level: {
-      set: function(value) {
-        return this._level = parseInt(value).clamp(0, 4);
-      },
-      get: function() {
-        return this._level;
-      }
-    }
-  });
-
-  ['debug', 'log', 'error', 'fatal', 'info', 'warn'].forEach(function(type) {
-    Logger.prototype["_" + type] = function() {};
-    return Logger.prototype[type] = function() {
-      var args;
-      args = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
-      if (this.level >= Logger[type.toUpperCase()]) {
-        return this["_" + type](this._format(args));
-      }
-    };
-  });
-
-  /*
-  --------------- /home/gszikszai/git/crystal/source/dom/element.coffee--------------
+  --------------- /home/gdot/github/crystal/source/dom/element.coffee--------------
   */
 
 
@@ -759,152 +558,313 @@
 
 
   /*
-  --------------- /home/gszikszai/git/crystal/source/logger/flash-logger.coffee--------------
+  --------------- /home/gdot/github/crystal/source/dom/document-fragment.coffee--------------
   */
 
 
-  window.FlashLogger = Logging.FlashLogger = (function(_super) {
-
-    __extends(FlashLogger, _super);
-
-    function FlashLogger(el, level) {
-      if (!(el instanceof HTMLElement)) {
-        throw "Base Element must be HTMLElement";
+  Object.defineProperties(DocumentFragment.prototype, {
+    children: {
+      get: function() {
+        return this.childNodes;
       }
-      FlashLogger.__super__.constructor.call(this, level);
-      this.visible = false;
-      this.el = el;
+    },
+    remove: {
+      value: function(el) {
+        var node, _i, _len, _ref;
+        _ref = this.childNodes;
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          node = _ref[_i];
+          if (node === el) {
+            this.removeChild(el);
+          }
+        }
+        return this;
+      }
     }
+  });
 
-    FlashLogger.prototype.hide = function() {
-      var _this = this;
-      clearTimeout(this.id);
-      return this.id = setTimeout(function() {
-        _this.visible = false;
-        _this.el.classList.toggle('hidden');
-        return _this.el.classList.toggle('visible');
-      }, 2000);
-    };
+  DocumentFragment.create = function() {
+    return document.createDocumentFragment();
+  };
 
-    return FlashLogger;
+  /*
+  --------------- /home/gdot/github/crystal/source/mvc/collectionElement.coffee--------------
+  */
 
-  })(Logging.Logger);
 
-  ['debug', 'error', 'fatal', 'info', 'warn', 'log'].forEach(function(type) {
-    return FlashLogger.prototype["_" + type] = function(text) {
-      if (this.visible) {
-        this.el.html += "</br>" + text;
-        return this.hide();
-      } else {
-        this.el.text = text;
-        this.el.classList.toggle('hidden');
-        this.el.classList.toggle('visible');
-        this.visible = true;
-        return this.hide();
+  Object.defineProperty(Node.prototype, 'context', {
+    set: function(value) {
+      this.templates = Array.prototype.slice.call(this.children);
+      this.emtpy();
+      if (value instanceof Collection) {
+        value.on('add', function(item) {});
+        value.on('remove');
+        return value.on('change');
       }
-    };
+    }
   });
 
   /*
-  --------------- /home/gszikszai/git/crystal/source/logger/console-logger.coffee--------------
+  --------------- /home/gdot/github/crystal/source/utils/evented.coffee--------------
   */
 
 
-  window.ConsoleLogger = Logging.ConsoleLogger = (function(_super) {
-
-    __extends(ConsoleLogger, _super);
-
-    function ConsoleLogger() {
-      return ConsoleLogger.__super__.constructor.apply(this, arguments);
-    }
-
-    return ConsoleLogger;
-
-  })(Logging.Logger);
-
-  ({
-    constructor: function() {
-      return constructor.__super__.constructor.apply(this, arguments);
-    }
-  });
-
-  ['debug', 'error', 'fatal', 'info', 'warn'].forEach(function(type) {
-    return ConsoleLogger.prototype["_" + type] = function(text) {
-      if (type === 'debug') {
-        type = 'log';
+  Mediator = {
+    events: {},
+    listeners: {},
+    fireEvent: function(type, event) {
+      if (this.listeners[type]) {
+        return this.listeners[type].apply(this, event);
       }
-      if (type === 'fatal') {
-        type = 'error';
-      }
-      return console[type](text);
-    };
-  });
-
-  /*
-  --------------- /home/gszikszai/git/crystal/source/logger/html-logger.coffee--------------
-  */
-
-
-  css = {
-    error: {
-      color: 'orangered'
     },
-    info: {
-      color: 'blue'
+    addListener: function(type, callback) {
+      return this.listeners[type] = callback;
     },
-    warn: {
-      color: 'orange'
-    },
-    fatal: {
-      color: 'red',
-      'font-weight': 'bold'
-    },
-    debug: {
-      color: 'black'
-    },
-    log: {
-      color: 'black'
+    removeListener: function(type) {
+      return delete this.listeners[type];
     }
   };
 
-  window.HTMLLogger = Logging.HTMLLogger = (function(_super) {
+  Utils.Event = (function() {
 
-    __extends(HTMLLogger, _super);
-
-    function HTMLLogger(el, level) {
-      if (!(el instanceof HTMLElement)) {
-        throw "Base Element must be HTMLElement";
-      }
-      HTMLLogger.__super__.constructor.call(this, level);
-      this.el = el;
+    function Event(type, target) {
+      this.cancelled = false;
+      this.target = target;
+      this.type = type;
     }
 
-    return HTMLLogger;
-
-  })(Logging.Logger);
-
-  ['debug', 'error', 'fatal', 'info', 'warn', 'log'].forEach(function(type) {
-    return HTMLLogger.prototype["_" + type] = function(text) {
-      var el, prop, value, _ref;
-      el = Element.create('div.' + type);
-      _ref = css[type];
-      for (prop in _ref) {
-        value = _ref[prop];
-        el.css(prop, value);
+    Event.prototype.destroy = function() {
+      var value, _results;
+      _results = [];
+      for (key in this) {
+        value = this[key];
+        _results.push(this[key] = null);
       }
-      el.text = text;
-      this.el.append(el);
-      return el;
+      return _results;
     };
-  });
+
+    Event.prototype.stop = function() {
+      return this.cancelled = true;
+    };
+
+    return Event;
+
+  })();
+
+  Utils.Evented = (function() {
+
+    function Evented() {}
+
+    Evented.prototype.publish = function() {
+      var args, event, type;
+      type = arguments[0], args = 2 <= arguments.length ? __slice.call(arguments, 1) : [];
+      this.trigger.apply(this, Array.prototype.slice(arguments));
+      event = new Event(type, this);
+      args.push(event);
+      return Mediator.fireEvent(type, args);
+    };
+
+    Evented.prototype.trigger = function() {
+      var args, callback, event, type, _i, _len, _ref, _results;
+      type = arguments[0], args = 2 <= arguments.length ? __slice.call(arguments, 1) : [];
+      this.ensureEvents();
+      event = new Event(type, this);
+      args.push(event);
+      if (this.__events__[type]) {
+        _ref = this.__events__[type];
+        _results = [];
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          callback = _ref[_i];
+          _results.push(callback.apply(this, args));
+        }
+        return _results;
+      }
+    };
+
+    Evented.prototype.ensureEvents = function() {
+      if (!this.__events__) {
+        return Object.defineProperty(this, '__events__', {
+          value: {}
+        });
+      }
+    };
+
+    Evented.prototype.on = function(type, callback, bind) {
+      var _base, _ref;
+      this.ensureEvents();
+      if ((_ref = (_base = this.__events__)[type]) == null) {
+        _base[type] = [];
+      }
+      if (bind) {
+        callback = callback.bind(bind);
+      }
+      return this.__events__[type].push(callback);
+    };
+
+    Evented.prototype.off = function(type, callback) {
+      this.ensureEvents();
+      if (this.__events__[type]) {
+        if (this.__events__[type].include(callback)) {
+          return this.__events__[type].remove(callback);
+        }
+      }
+    };
+
+    Evented.prototype.subscribe = function(type, callback) {
+      if (!Mediator.events[type]) {
+        Mediator.addListener(type, function(event) {
+          var cb, _i, _len, _ref;
+          _ref = Mediator.events[event.type];
+          for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+            cb = _ref[_i];
+            if (event.cancelled) {
+              break;
+            }
+            cb(event);
+          }
+          return event.destroy();
+        });
+        Mediator.events[type] = [];
+      }
+      return Mediator.events[type].push(callback);
+    };
+
+    Evented.prototype.unsubscribe = function(type, callback) {
+      if (Mediator.events[type] === void 0) {
+        console.error("No channel '" + type + "' exists");
+        return false;
+      }
+      if (Mediator.events[type].include(callback)) {
+        Mediator.events[type].remove(callback);
+      }
+      if (Mediator.events[type].length === 0) {
+        delete Mediator.events[type];
+        return Mediator.removeListener(type);
+      }
+    };
+
+    return Evented;
+
+  })();
+
+  window.Evented = Utils.Evented;
 
   /*
-  --------------- /home/gszikszai/git/crystal/source/nw/file.coffee--------------
+  --------------- /home/gdot/github/crystal/source/mvc/collection.coffee--------------
+  */
+
+
+  window.Collection = MVC.Collection = (function(_super) {
+
+    __extends(Collection, _super);
+
+    function Collection() {
+      var args;
+      args = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
+      Collection.__super__.constructor.apply(this, arguments);
+      this.push.apply(this, args);
+      this;
+
+    }
+
+    Collection.prototype.pop = function() {
+      var item;
+      item = Collection.__super__.pop.apply(this, arguments);
+      this.trigger('remove', item);
+      this.trigger('change');
+      return item;
+    };
+
+    Collection.prototype.push = function() {
+      var item, l, oldl, _i, _len;
+      oldl = this.length;
+      l = Collection.__super__.push.apply(this, arguments);
+      for (_i = 0, _len = arguments.length; _i < _len; _i++) {
+        item = arguments[_i];
+        this.trigger('add', item);
+        this.trigger('change');
+      }
+      return l;
+    };
+
+    Collection.prototype.shift = function() {
+      var item;
+      item = Collection.__super__.shift.apply(this, arguments);
+      this.trigger('remove', item);
+      this.trigger('change');
+      return item;
+    };
+
+    Collection.prototype.reverse = function() {
+      var r;
+      r = Collection.__super__.reverse.apply(this, arguments);
+      this.trigger('change');
+      return r;
+    };
+
+    Collection.prototype.sort = function() {
+      var r;
+      r = Collection.__super__.sort.apply(this, arguments);
+      this.trigger('change');
+      return r;
+    };
+
+    Collection.prototype.splice = function() {
+      var a, args, i, index, item, length, r, _i, _j, _len, _len1;
+      index = arguments[0], length = arguments[1], args = 3 <= arguments.length ? __slice.call(arguments, 2) : [];
+      a = (function() {
+        var _i, _ref, _results;
+        _results = [];
+        for (i = _i = index, _ref = index + length - 1; index <= _ref ? _i <= _ref : _i >= _ref; i = index <= _ref ? ++_i : --_i) {
+          _results.push(this[i]);
+        }
+        return _results;
+      }).call(this);
+      r = Collection.__super__.splice.apply(this, arguments);
+      for (_i = 0, _len = a.length; _i < _len; _i++) {
+        item = a[_i];
+        if (item) {
+          this.trigger('remove', item);
+        }
+      }
+      for (_j = 0, _len1 = args.length; _j < _len1; _j++) {
+        item = args[_j];
+        this.trigger('add', item);
+      }
+      return r;
+    };
+
+    Collection.prototype.unshift = function() {
+      var item, l, _i, _len;
+      l = Collection.__super__.unshift.apply(this, arguments);
+      for (_i = 0, _len = arguments.length; _i < _len; _i++) {
+        item = arguments[_i];
+        this.trigger('add', item);
+        this.trigger('change');
+      }
+      return l;
+    };
+
+    return Collection;
+
+  })(Array);
+
+  _ref = Evented.prototype;
+  for (key in _ref) {
+    value = _ref[key];
+    Collection.prototype[key] = value;
+  }
+
+  Collection;
+
+
+  /*
+  --------------- /home/gdot/github/crystal/source/nw/file.coffee--------------
   */
 
 
   if (require) {
-    if ((_ref = window.NW) == null) {
+    if ((_ref1 = window.NW) == null) {
       window.NW = {};
     }
     window.NW.File = NW.File = (function() {
@@ -928,12 +888,12 @@
   }
 
   /*
-  --------------- /home/gszikszai/git/crystal/source/nw/dialogs.coffee--------------
+  --------------- /home/gdot/github/crystal/source/nw/dialogs.coffee--------------
   */
 
 
   if (require) {
-    if ((_ref1 = window.NW) == null) {
+    if ((_ref2 = window.NW) == null) {
       window.NW = {};
     }
     window.NW.Dialogs = new (Dialogs = (function() {
@@ -988,14 +948,7 @@
   }
 
   /*
-  --------------- /home/gszikszai/git/crystal/source/crystal.coffee--------------
-  */
-
-
-  Types = {};
-
-  /*
-  --------------- /home/gszikszai/git/crystal/source/utils/base64.coffee--------------
+  --------------- /home/gdot/github/crystal/source/utils/base64.coffee--------------
   */
 
 
@@ -1106,192 +1059,66 @@
   })();
 
   /*
-  --------------- /home/gszikszai/git/crystal/source/utils/evented.coffee--------------
+  --------------- /home/gdot/github/crystal/source/utils/uri.coffee--------------
   */
 
 
-  Mediator = {
-    events: {},
-    listeners: {},
-    fireEvent: function(type, event) {
-      if (this.listeners[type]) {
-        return this.listeners[type].apply(this, event);
+  window.URI = Utils.URI = (function() {
+
+    function URI(uri) {
+      var m, parser, _ref3, _ref4;
+      if (uri == null) {
+        uri = '';
       }
-    },
-    addListener: function(type, callback) {
-      return this.listeners[type] = callback;
-    },
-    removeListener: function(type) {
-      return delete this.listeners[type];
-    }
-  };
-
-  Utils.Event = (function() {
-
-    function Event(type, target) {
-      this.cancelled = false;
-      this.target = target;
-      this.type = type;
-    }
-
-    Event.prototype.destroy = function() {
-      var value, _results;
-      _results = [];
-      for (key in this) {
-        value = this[key];
-        _results.push(this[key] = null);
+      parser = document.createElement('a');
+      parser.href = uri;
+      if (!!(m = uri.match(/\/\/(.*?):(.*?)@/))) {
+        _ref3 = m, m = _ref3[0], this.user = _ref3[1], this.password = _ref3[2];
       }
-      return _results;
+      this.host = parser.hostname;
+      this.protocol = parser.protocol.replace(/:$/, '');
+      if (parser.port === "0") {
+        this.port = 80;
+      } else {
+        this.port = parser.port || 80;
+      }
+      this.hash = parser.hash.replace(/^#/, '');
+      this.query = ((_ref4 = uri.match(/\?(.*?)(?:#|$)/)) != null ? _ref4[1].parseQueryString() : void 0) || {};
+      this.path = parser.pathname.replace(/^\//, '');
+      this.parser = parser;
+      this;
+
+    }
+
+    URI.prototype.toString = function() {
+      var uri;
+      uri = this.protocol;
+      uri += "://";
+      if (this.user && this.password) {
+        uri += this.user.toString() + ":" + this.password.toString() + "@";
+      }
+      uri += this.host;
+      if (this.port !== 80) {
+        uri += ":" + this.port;
+      }
+      if (this.path !== "") {
+        uri += "/" + this.path;
+      }
+      if (Object.keys(this.query).length > 0) {
+        uri += "?" + this.query.toQueryString();
+      }
+      if (this.hash !== "") {
+        uri += "#" + this.hash;
+      }
+      return uri;
     };
 
-    Event.prototype.stop = function() {
-      return this.cancelled = true;
-    };
-
-    return Event;
+    return URI;
 
   })();
 
-  Utils.Evented = (function() {
-
-    function Evented() {}
-
-    Evented.prototype.publish = function() {
-      var args, event, type;
-      type = arguments[0], args = 2 <= arguments.length ? __slice.call(arguments, 1) : [];
-      this.trigger.apply(this, Array.prototype.slice(arguments));
-      event = new Event(type, this);
-      args.push(event);
-      return Mediator.fireEvent(type, args);
-    };
-
-    Evented.prototype.trigger = function() {
-      var args, callback, event, type, _i, _len, _ref2, _results;
-      type = arguments[0], args = 2 <= arguments.length ? __slice.call(arguments, 1) : [];
-      this.ensureEvents();
-      event = new Event(type, this);
-      args.push(event);
-      if (this.__events__[type]) {
-        _ref2 = this.__events__[type];
-        _results = [];
-        for (_i = 0, _len = _ref2.length; _i < _len; _i++) {
-          callback = _ref2[_i];
-          _results.push(callback.apply(this, args));
-        }
-        return _results;
-      }
-    };
-
-    Evented.prototype.ensureEvents = function() {
-      if (!this.__events__) {
-        return Object.defineProperty(this, '__events__', {
-          value: {}
-        });
-      }
-    };
-
-    Evented.prototype.on = function(type, callback, bind) {
-      var _base, _ref2;
-      this.ensureEvents();
-      if ((_ref2 = (_base = this.__events__)[type]) == null) {
-        _base[type] = [];
-      }
-      if (bind) {
-        callback = callback.bind(bind);
-      }
-      return this.__events__[type].push(callback);
-    };
-
-    Evented.prototype.off = function(type, callback) {
-      this.ensureEvents();
-      if (this.__events__[type]) {
-        if (this.__events__[type].include(callback)) {
-          return this.__events__[type].remove(callback);
-        }
-      }
-    };
-
-    Evented.prototype.subscribe = function(type, callback) {
-      if (!Mediator.events[type]) {
-        Mediator.addListener(type, function(event) {
-          var cb, _i, _len, _ref2;
-          _ref2 = Mediator.events[event.type];
-          for (_i = 0, _len = _ref2.length; _i < _len; _i++) {
-            cb = _ref2[_i];
-            if (event.cancelled) {
-              break;
-            }
-            cb(event);
-          }
-          return event.destroy();
-        });
-        Mediator.events[type] = [];
-      }
-      return Mediator.events[type].push(callback);
-    };
-
-    Evented.prototype.unsubscribe = function(type, callback) {
-      if (Mediator.events[type] === void 0) {
-        console.error("No channel '" + type + "' exists");
-        return false;
-      }
-      if (Mediator.events[type].include(callback)) {
-        Mediator.events[type].remove(callback);
-      }
-      if (Mediator.events[type].length === 0) {
-        delete Mediator.events[type];
-        return Mediator.removeListener(type);
-      }
-    };
-
-    return Evented;
-
-  })();
-
-  window.Evented = Utils.Evented;
-
   /*
-  --------------- /home/gszikszai/git/crystal/source/utils/history.coffee--------------
-  */
-
-
-  window.History = Utils.History = (function(_super) {
-
-    __extends(History, _super);
-
-    function History() {
-      var _this = this;
-      this._type = 'pushState' in history ? 'popstate' : 'hashchange';
-      window.addEventListener(this._type, function(event) {
-        var url;
-        url = (function() {
-          switch (this._type) {
-            case 'popstate':
-              return window.location.pathname;
-            case 'hashchange':
-              return window.location.hash;
-          }
-        }).call(_this);
-        return _this.trigger('change', url);
-      });
-      this.stateid = 0;
-    }
-
-    History.prototype.push = function(url) {
-      switch (this._type) {
-        case 'popstate':
-          return history.pushState({}, this.stateid++, url);
-        case 'hashchange':
-          return window.location.hash = url;
-      }
-    };
-
-    return History;
-
-  })(Evented);
-
-  /*
-  --------------- /home/gszikszai/git/crystal/source/utils/i18n.coffee--------------
+  --------------- /home/gdot/github/crystal/source/utils/i18n.coffee--------------
   */
 
 
@@ -1339,7 +1166,7 @@
   window.i18n = i18n;
 
   /*
-  --------------- /home/gszikszai/git/crystal/source/utils/path.coffee--------------
+  --------------- /home/gdot/github/crystal/source/utils/path.coffee--------------
   */
 
 
@@ -1394,66 +1221,148 @@
   })();
 
   /*
-  --------------- /home/gszikszai/git/crystal/source/utils/uri.coffee--------------
+  --------------- /home/gdot/github/crystal/source/utils/history.coffee--------------
   */
 
 
-  window.URI = Utils.URI = (function() {
+  window.History = Utils.History = (function(_super) {
 
-    function URI(uri) {
-      var m, parser, _ref2, _ref3;
-      if (uri == null) {
-        uri = '';
-      }
-      parser = document.createElement('a');
-      parser.href = uri;
-      if (!!(m = uri.match(/\/\/(.*?):(.*?)@/))) {
-        _ref2 = m, m = _ref2[0], this.user = _ref2[1], this.password = _ref2[2];
-      }
-      this.host = parser.hostname;
-      this.protocol = parser.protocol.replace(/:$/, '');
-      if (parser.port === "0") {
-        this.port = 80;
-      } else {
-        this.port = parser.port || 80;
-      }
-      this.hash = parser.hash.replace(/^#/, '');
-      this.query = ((_ref3 = uri.match(/\?(.*?)(?:#|$)/)) != null ? _ref3[1].parseQueryString() : void 0) || {};
-      this.path = parser.pathname.replace(/^\//, '');
-      this.parser = parser;
-      this;
+    __extends(History, _super);
 
+    function History() {
+      var _this = this;
+      this._type = 'pushState' in history ? 'popstate' : 'hashchange';
+      window.addEventListener(this._type, function(event) {
+        var url;
+        url = (function() {
+          switch (this._type) {
+            case 'popstate':
+              return window.location.pathname;
+            case 'hashchange':
+              return window.location.hash;
+          }
+        }).call(_this);
+        return _this.trigger('change', url);
+      });
+      this.stateid = 0;
     }
 
-    URI.prototype.toString = function() {
-      var uri;
-      uri = this.protocol;
-      uri += "://";
-      if (this.user && this.password) {
-        uri += this.user.toString() + ":" + this.password.toString() + "@";
+    History.prototype.push = function(url) {
+      switch (this._type) {
+        case 'popstate':
+          return history.pushState({}, this.stateid++, url);
+        case 'hashchange':
+          return window.location.hash = url;
       }
-      uri += this.host;
-      if (this.port !== 80) {
-        uri += ":" + this.port;
-      }
-      if (this.path !== "") {
-        uri += "/" + this.path;
-      }
-      if (Object.keys(this.query).length > 0) {
-        uri += "?" + this.query.toQueryString();
-      }
-      if (this.hash !== "") {
-        uri += "#" + this.hash;
-      }
-      return uri;
     };
 
-    return URI;
+    return History;
 
-  })();
+  })(Evented);
 
   /*
-  --------------- /home/gszikszai/git/crystal/source/types/string.coffee--------------
+  --------------- /home/gdot/github/crystal/source/types/number.coffee--------------
+  */
+
+
+  Object.defineProperties(Number.prototype, {
+    seconds: {
+      get: function() {
+        return this.valueOf() * 1000;
+      }
+    },
+    minutes: {
+      get: function() {
+        return this.seconds * 60;
+      }
+    },
+    hours: {
+      get: function() {
+        return this.minutes * 60;
+      }
+    },
+    days: {
+      get: function() {
+        return this.hours * 24;
+      }
+    },
+    upto: {
+      value: function(limit, func, bound) {
+        var i, _results;
+        if (bound == null) {
+          bound = this;
+        }
+        i = parseInt(this);
+        _results = [];
+        while (i <= limit) {
+          func.call(bound, i);
+          _results.push(i++);
+        }
+        return _results;
+      }
+    },
+    downto: {
+      value: function(limit, func, bound) {
+        var i, _results;
+        if (bound == null) {
+          bound = this;
+        }
+        i = parseInt(this);
+        _results = [];
+        while (i >= limit) {
+          func.call(bound, i);
+          _results.push(i--);
+        }
+        return _results;
+      }
+    },
+    times: {
+      value: function(func, bound) {
+        var i, _i, _ref3, _results;
+        if (bound == null) {
+          bound = this;
+        }
+        _results = [];
+        for (i = _i = 1, _ref3 = parseInt(this); 1 <= _ref3 ? _i <= _ref3 : _i >= _ref3; i = 1 <= _ref3 ? ++_i : --_i) {
+          _results.push(func.call(bound, i));
+        }
+        return _results;
+      }
+    },
+    clamp: {
+      value: function(min, max) {
+        var val;
+        min = parseFloat(min);
+        max = parseFloat(max);
+        val = this.valueOf();
+        if (val > max) {
+          return max;
+        } else if (val < min) {
+          return min;
+        } else {
+          return val;
+        }
+      }
+    },
+    clampRange: {
+      value: function(min, max) {
+        var val;
+        min = parseFloat(min);
+        max = parseFloat(max);
+        val = this.valueOf();
+        if (val > max) {
+          return val % max;
+        } else if (val < min) {
+          return max - val % max;
+        } else {
+          return val;
+        }
+      }
+    }
+  });
+
+  /*
+  --------------- /home/gdot/github/crystal/source/types/string.coffee--------------
   */
 
 
@@ -1539,7 +1448,7 @@
   };
 
   /*
-  --------------- /home/gszikszai/git/crystal/source/utils/request.coffee--------------
+  --------------- /home/gdot/github/crystal/source/utils/request.coffee--------------
   */
 
 
@@ -1551,15 +1460,15 @@
       this.raw = body;
       this.status = status;
       this.body = (function() {
-        var _i, _len, _ref2;
+        var _i, _len, _ref3;
         switch (this.headers['Content-Type']) {
           case "text/html":
             div = document.createElement('div');
             div.innerHTML = body;
             df = document.createDocumentFragment();
-            _ref2 = div.childNodes;
-            for (_i = 0, _len = _ref2.length; _i < _len; _i++) {
-              node = _ref2[_i];
+            _ref3 = div.childNodes;
+            for (_i = 0, _len = _ref3.length; _i < _len; _i++) {
+              node = _ref3[_i];
               df.appendChild(node);
             }
             return df;
@@ -1614,7 +1523,7 @@
     }
 
     Request.prototype.request = function(method, data, callback) {
-      var value, _ref2;
+      var _ref3;
       if (method == null) {
         method = 'GET';
       }
@@ -1624,10 +1533,10 @@
         } else {
           this._request.open(method, this.uri);
         }
-        _ref2 = this.headers;
-        for (key in _ref2) {
-          if (!__hasProp.call(_ref2, key)) continue;
-          value = _ref2[key];
+        _ref3 = this.headers;
+        for (key in _ref3) {
+          if (!__hasProp.call(_ref3, key)) continue;
+          value = _ref3[key];
           this._request.setRequestHeader(key.toString(), value.toString());
         }
         this._callback = callback;
@@ -1639,8 +1548,8 @@
       var r;
       r = {};
       this._request.getAllResponseHeaders().split(/\n/).compact().forEach(function(header) {
-        var value, _ref2;
-        _ref2 = header.split(/:\s/), key = _ref2[0], value = _ref2[1];
+        var _ref3;
+        _ref3 = header.split(/:\s/), key = _ref3[0], value = _ref3[1];
         return r[key.trim()] = value.trim();
       });
       return r;
@@ -1675,133 +1584,14 @@
   });
 
   /*
-  --------------- /home/gszikszai/git/crystal/source/mvc/collectionElement.coffee--------------
+  --------------- /home/gdot/github/crystal/source/crystal.coffee--------------
   */
 
 
-  Object.defineProperty(Node.prototype, 'context', {
-    set: function(value) {
-      this.templates = Array.prototype.slice.call(this.children);
-      this.emtpy();
-      if (value instanceof Collection) {
-        value.on('add', function(item) {});
-        value.on('remove');
-        return value.on('change');
-      }
-    }
-  });
+  Types = {};
 
   /*
-  --------------- /home/gszikszai/git/crystal/source/mvc/collection.coffee--------------
-  */
-
-
-  window.Collection = MVC.Collection = (function(_super) {
-
-    __extends(Collection, _super);
-
-    function Collection() {
-      var args;
-      args = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
-      Collection.__super__.constructor.apply(this, arguments);
-      this.push.apply(this, args);
-      this;
-
-    }
-
-    Collection.prototype.pop = function() {
-      var item;
-      item = Collection.__super__.pop.apply(this, arguments);
-      this.trigger('remove', item);
-      this.trigger('change');
-      return item;
-    };
-
-    Collection.prototype.push = function() {
-      var item, l, oldl, _i, _len;
-      oldl = this.length;
-      l = Collection.__super__.push.apply(this, arguments);
-      for (_i = 0, _len = arguments.length; _i < _len; _i++) {
-        item = arguments[_i];
-        this.trigger('add', item);
-        this.trigger('change');
-      }
-      return l;
-    };
-
-    Collection.prototype.shift = function() {
-      var item;
-      item = Collection.__super__.shift.apply(this, arguments);
-      this.trigger('remove', item);
-      this.trigger('change');
-      return item;
-    };
-
-    Collection.prototype.reverse = function() {
-      var r;
-      r = Collection.__super__.reverse.apply(this, arguments);
-      this.trigger('change');
-      return r;
-    };
-
-    Collection.prototype.sort = function() {
-      var r;
-      r = Collection.__super__.sort.apply(this, arguments);
-      this.trigger('change');
-      return r;
-    };
-
-    Collection.prototype.splice = function() {
-      var a, args, i, index, item, length, r, _i, _j, _len, _len1;
-      index = arguments[0], length = arguments[1], args = 3 <= arguments.length ? __slice.call(arguments, 2) : [];
-      a = (function() {
-        var _i, _ref2, _results;
-        _results = [];
-        for (i = _i = index, _ref2 = index + length - 1; index <= _ref2 ? _i <= _ref2 : _i >= _ref2; i = index <= _ref2 ? ++_i : --_i) {
-          _results.push(this[i]);
-        }
-        return _results;
-      }).call(this);
-      r = Collection.__super__.splice.apply(this, arguments);
-      for (_i = 0, _len = a.length; _i < _len; _i++) {
-        item = a[_i];
-        if (item) {
-          this.trigger('remove', item);
-        }
-      }
-      for (_j = 0, _len1 = args.length; _j < _len1; _j++) {
-        item = args[_j];
-        this.trigger('add', item);
-      }
-      return r;
-    };
-
-    Collection.prototype.unshift = function() {
-      var item, l, _i, _len;
-      l = Collection.__super__.unshift.apply(this, arguments);
-      for (_i = 0, _len = arguments.length; _i < _len; _i++) {
-        item = arguments[_i];
-        this.trigger('add', item);
-        this.trigger('change');
-      }
-      return l;
-    };
-
-    return Collection;
-
-  })(Array);
-
-  _ref2 = Evented.prototype;
-  for (key in _ref2) {
-    value = _ref2[key];
-    Collection.prototype[key] = value;
-  }
-
-  Collection;
-
-
-  /*
-  --------------- /home/gszikszai/git/crystal/source/types/color.coffee--------------
+  --------------- /home/gdot/github/crystal/source/types/color.coffee--------------
   */
 
 
@@ -2053,7 +1843,7 @@
   });
 
   /*
-  --------------- /home/gszikszai/git/crystal/source/types/unit.coffee--------------
+  --------------- /home/gdot/github/crystal/source/types/unit.coffee--------------
   */
 
 
@@ -2112,7 +1902,7 @@
   });
 
   /*
-  --------------- /home/gszikszai/git/crystal/source/types/function.coffee--------------
+  --------------- /home/gdot/github/crystal/source/types/function.coffee--------------
   */
 
 
@@ -2145,102 +1935,312 @@
   });
 
   /*
-  --------------- /home/gszikszai/git/crystal/source/dom/node-list.coffee--------------
+  --------------- /home/gdot/github/crystal/source/types/date.coffee--------------
   */
 
 
-  Object.defineProperties(NodeList.prototype, {
-    forEach: {
-      value: function(fn, bound) {
-        var i, node, _i, _len;
-        if (bound == null) {
-          bound = this;
+  Date.Locale = {
+    ago: {
+      seconds: " seconds ago",
+      minutes: " minutes ago",
+      hours: " hours ago",
+      days: " days ago",
+      now: "just no"
+    },
+    format: "%Y-%M-%D"
+  };
+
+  Object.defineProperties(Date.prototype, {
+    ago: {
+      get: function() {
+        var diff;
+        diff = +new Date() - this;
+        if (diff < 1..seconds) {
+          return "just now";
+        } else if (diff < 1..minutes) {
+          return Math.round(diff / 1000) + Date.Locale.ago.seconds;
+        } else if (diff < 1..seconds) {
+          return Math.round(diff / 1..minutes) + Date.Locale.ago.minues;
+        } else if (diff < 1..days) {
+          return Math.round(diff / 1..hours) + Date.Locale.ago.hours;
+        } else if (diff < 30..days) {
+          return Math.round(diff / 1..days) + Date.Locale.ago.days;
+        } else {
+          return this.format(Date.Locale.format);
         }
-        for (i = _i = 0, _len = this.length; _i < _len; i = ++_i) {
-          node = this[i];
-          fn.call(bound, node, i);
-        }
-        return this;
       }
     },
-    map: {
-      value: function(fn, bound) {
-        var node, _i, _len, _results;
-        if (bound == null) {
-          bound = this;
+    format: {
+      value: function(str) {
+        var _this = this;
+        if (str == null) {
+          str = Date.Locale.format;
         }
-        _results = [];
-        for (_i = 0, _len = this.length; _i < _len; _i++) {
-          node = this[_i];
-          _results.push(fn.call(bound, node));
-        }
-        return _results;
-      }
-    },
-    pluck: {
-      value: function(property) {
-        var node, _i, _len, _results;
-        _results = [];
-        for (_i = 0, _len = this.length; _i < _len; _i++) {
-          node = this[_i];
-          _results.push(node[property]);
-        }
-        return _results;
-      }
-    },
-    include: {
-      value: function(el) {
-        var node, _i, _len;
-        for (_i = 0, _len = this.length; _i < _len; _i++) {
-          node = this[_i];
-          if (node === el) {
-            return true;
+        return str.replace(/%([a-zA-z])/g, function($0, $1) {
+          switch ($1) {
+            case 'D':
+              return _this.getDate().toString().replace(/^\d$/, "0$&");
+            case 'd':
+              return _this.getDate();
+            case 'Y':
+              return _this.getFullYear();
+            case 'h':
+              return _this.getHours();
+            case 'H':
+              return _this.getHours().toString().replace(/^\d$/, "0$&");
+            case 'M':
+              return (_this.getMonth() + 1).toString().replace(/^\d$/, "0$&");
+            case 'm':
+              return _this.getMonth() + 1;
+            case "T":
+              return _this.getMinutes().toString().replace(/^\d$/, "0$&");
+            case "t":
+              return _this.getMinutes();
+            default:
+              return "";
           }
-        }
-        return false;
+        });
       }
-    },
-    first: {
+    }
+  });
+
+  ['day:Date', 'year:FullYear', 'hours:Hours', 'minutes:Minutes', 'seconds:Seconds'].forEach(function(item) {
+    var meth, prop, _ref3;
+    _ref3 = item.split(/:/), prop = _ref3[0], meth = _ref3[1];
+    return Object.defineProperty(Date.prototype, prop, {
       get: function() {
-        return this[0];
+        return this["get" + meth]();
+      },
+      set: function(value) {
+        return this["set" + meth](parseInt(value));
       }
+    });
+  });
+
+  Object.defineProperty(Date.prototype, 'month', {
+    get: function() {
+      return this.getMonth() + 1;
     },
-    last: {
-      get: function() {
-        return this[this.length - 1];
-      }
+    set: function(value) {
+      return this.setMonth(value - 1);
     }
   });
 
   /*
-  --------------- /home/gszikszai/git/crystal/source/dom/document-fragment.coffee--------------
+  --------------- /home/gdot/github/crystal/source/logger/logger.coffee--------------
   */
 
 
-  Object.defineProperties(DocumentFragment.prototype, {
-    children: {
+  window.Logger = Logging.Logger = (function() {
+
+    Logger.DEBUG = 4;
+
+    Logger.INFO = 3;
+
+    Logger.WARN = 2;
+
+    Logger.ERROR = 1;
+
+    Logger.FATAL = 0;
+
+    Logger.LOG = 4;
+
+    function Logger(level) {
+      if (level == null) {
+        level = 4;
+      }
+      if (isNaN(parseInt(level))) {
+        throw "Level must be Number";
+      }
+      this._level = parseInt(level).clamp(0, 4);
+      this._timestamp = true;
+    }
+
+    Logger.prototype._format = function() {
+      var args, line;
+      args = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
+      line = "";
+      if (this.timestamp) {
+        line += "[" + new Date().format("%Y-%M-%D %H:%T") + "] ";
+      }
+      return line += args.map(function(arg) {
+        return args.toString();
+      }).join(",");
+    };
+
+    return Logger;
+
+  })();
+
+  Object.defineProperties(Logger.prototype, {
+    timestamp: {
+      set: function(value) {
+        return this._timestamp = !!value;
+      },
       get: function() {
-        return this.childNodes;
+        return this._timestamp;
       }
     },
-    remove: {
-      value: function(el) {
-        var node, _i, _len, _ref3;
-        _ref3 = this.childNodes;
-        for (_i = 0, _len = _ref3.length; _i < _len; _i++) {
-          node = _ref3[_i];
-          if (node === el) {
-            this.removeChild(el);
-          }
-        }
-        return this;
+    level: {
+      set: function(value) {
+        return this._level = parseInt(value).clamp(0, 4);
+      },
+      get: function() {
+        return this._level;
       }
     }
   });
 
-  DocumentFragment.create = function() {
-    return document.createDocumentFragment();
+  ['debug', 'log', 'error', 'fatal', 'info', 'warn'].forEach(function(type) {
+    Logger.prototype["_" + type] = function() {};
+    return Logger.prototype[type] = function() {
+      var args;
+      args = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
+      if (this.level >= Logger[type.toUpperCase()]) {
+        return this["_" + type](this._format(args));
+      }
+    };
+  });
+
+  /*
+  --------------- /home/gdot/github/crystal/source/logger/html-logger.coffee--------------
+  */
+
+
+  css = {
+    error: {
+      color: 'orangered'
+    },
+    info: {
+      color: 'blue'
+    },
+    warn: {
+      color: 'orange'
+    },
+    fatal: {
+      color: 'red',
+      'font-weight': 'bold'
+    },
+    debug: {
+      color: 'black'
+    },
+    log: {
+      color: 'black'
+    }
   };
+
+  window.HTMLLogger = Logging.HTMLLogger = (function(_super) {
+
+    __extends(HTMLLogger, _super);
+
+    function HTMLLogger(el, level) {
+      if (!(el instanceof HTMLElement)) {
+        throw "Base Element must be HTMLElement";
+      }
+      HTMLLogger.__super__.constructor.call(this, level);
+      this.el = el;
+    }
+
+    return HTMLLogger;
+
+  })(Logging.Logger);
+
+  ['debug', 'error', 'fatal', 'info', 'warn', 'log'].forEach(function(type) {
+    return HTMLLogger.prototype["_" + type] = function(text) {
+      var el, prop, _ref3;
+      el = Element.create('div.' + type);
+      _ref3 = css[type];
+      for (prop in _ref3) {
+        value = _ref3[prop];
+        el.css(prop, value);
+      }
+      el.text = text;
+      this.el.append(el);
+      return el;
+    };
+  });
+
+  /*
+  --------------- /home/gdot/github/crystal/source/logger/console-logger.coffee--------------
+  */
+
+
+  window.ConsoleLogger = Logging.ConsoleLogger = (function(_super) {
+
+    __extends(ConsoleLogger, _super);
+
+    function ConsoleLogger() {
+      return ConsoleLogger.__super__.constructor.apply(this, arguments);
+    }
+
+    return ConsoleLogger;
+
+  })(Logging.Logger);
+
+  ({
+    constructor: function() {
+      return constructor.__super__.constructor.apply(this, arguments);
+    }
+  });
+
+  ['debug', 'error', 'fatal', 'info', 'warn'].forEach(function(type) {
+    return ConsoleLogger.prototype["_" + type] = function(text) {
+      if (type === 'debug') {
+        type = 'log';
+      }
+      if (type === 'fatal') {
+        type = 'error';
+      }
+      return console[type](text);
+    };
+  });
+
+  /*
+  --------------- /home/gdot/github/crystal/source/logger/flash-logger.coffee--------------
+  */
+
+
+  window.FlashLogger = Logging.FlashLogger = (function(_super) {
+
+    __extends(FlashLogger, _super);
+
+    function FlashLogger(el, level) {
+      if (!(el instanceof HTMLElement)) {
+        throw "Base Element must be HTMLElement";
+      }
+      FlashLogger.__super__.constructor.call(this, level);
+      this.visible = false;
+      this.el = el;
+    }
+
+    FlashLogger.prototype.hide = function() {
+      var _this = this;
+      clearTimeout(this.id);
+      return this.id = setTimeout(function() {
+        _this.visible = false;
+        _this.el.classList.toggle('hidden');
+        return _this.el.classList.toggle('visible');
+      }, 2000);
+    };
+
+    return FlashLogger;
+
+  })(Logging.Logger);
+
+  ['debug', 'error', 'fatal', 'info', 'warn', 'log'].forEach(function(type) {
+    return FlashLogger.prototype["_" + type] = function(text) {
+      if (this.visible) {
+        this.el.html += "</br>" + text;
+        return this.hide();
+      } else {
+        this.el.text = text;
+        this.el.classList.toggle('hidden');
+        this.el.classList.toggle('visible');
+        this.visible = true;
+        return this.hide();
+      }
+    };
+  });
 
 }).call(this);
  
