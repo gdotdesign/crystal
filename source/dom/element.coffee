@@ -68,11 +68,12 @@ _parseName = (name,atts = {}) ->
 methods_node =
   append: (elements...) ->
     for el in elements
-      @appendChild el
+      if el instanceof Node
+        @appendChild el
   first: (selector = "*") ->
     @querySelector selector
   last: (selector = "*") ->
-    @querySelectorAll(selector).last()
+    @querySelectorAll(selector).last
   all: (selector = "*") ->
     @querySelectorAll(selector)
   empty: ->

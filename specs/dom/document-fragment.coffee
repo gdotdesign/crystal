@@ -1,6 +1,6 @@
 beforeEach ->
   @d = DocumentFragment.create()
-  
+
 describe "DocumentFragment", ->
   describe "create", ->
     it "should create a DocumentFragment", ->
