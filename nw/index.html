@@ -3,10 +3,10 @@
 		<script type="text/javascript" src="./crystal.js"></script>
 	</head>
 	<body>
-		<input type="button" value="open file" onclick="NW.Dialogs.open(function(file){this.next('textarea').value = file.read()}.bind(this))"/>
+		<input type="button" value="open file" onclick="NWDialogs.open(function(file){this.next('textarea').value = file.read()}.bind(this))"/>
 		</br>
-		<textarea></textarea>
+		<textarea cols="60" rows="30"></textarea>
 		</br>
-		<input type="button" value="save file as" onclick="NW.Dialogs.save(this.prev('textarea').value)"/>
+		<input type="button" value="save file as" onclick="NWDialogs.save(function(file){file.write(this.prev('textarea').value)})"/>
 	</body>
 </html>

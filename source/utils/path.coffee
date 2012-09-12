@@ -1,7 +1,6 @@
 window.Path = class Utils.Path
   constructor: (@context = {}) ->
 
-  # path.create 'social.facebook.title', 'asd'
   create: (path,value) ->
     path = path.toString()
     last = @context
@@ -12,11 +11,9 @@ window.Path = class Utils.Path
       last = last[segment]
     last[prop] = value
 
-  # path.exstist 'social.facebook.title' -> true / false
   exists: (path) ->
     @lookup(path) isnt undefined
 
-  # path.lookup 'social.facebook.title' -> 'asd'
   lookup: (path) ->
     end = (path = path.split(/\./)).pop()
     if path.length is 0 and not @context.hasOwnProperty(end) then return undefined

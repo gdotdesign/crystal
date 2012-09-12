@@ -21,11 +21,7 @@ class Utils.Event
   stop: ->
     @cancelled = true
 
-#
-# This is a base class that implements an Event and a Pub/Sub system
 class Utils.Evented
-
-  # Publishes args to the given channel
   publish: (type,args...) ->
     @trigger.apply @, Array::slice arguments
     event = new Event type, @
@@ -40,7 +36,6 @@ class Utils.Evented
       for callback in @__events__[type]
         callback.apply @, args
 
-  # @private
   ensureEvents: ->
     unless @__events__
       Object.defineProperty @, '__events__', value: {}
