@@ -10,16 +10,20 @@ body
   color: #514C3D
   -webkit-user-select: none
 nav
-  :position fixed
+  :position absolute
   :z-index 2
-  :top 0
+  :top 30px
   :left 0
-  :right 0
-  :background-color #241E1B
-  :height 40px
+  :width 12%
+  :padding 10px
+  h1
+    a
+      :font-size 30px
+    :margin 0
+      :bottom 20px
   a
-    :color #eee
     :font-size 16px
+    color: #514C3D
     :text-decoration none
   ul
     :width 940px
@@ -27,10 +31,9 @@ nav
     :padding 0
     :list-style none
     li + li
-      :margin-left 13px
+      :margin-left 20px
     li
-      :line-height 36px
-      :float left
+      :line-height 24px
       &.right
         :float right
 
@@ -43,8 +46,8 @@ nav
     :-webkit-transition-duration 400ms
     :-webkit-transform-origin top center
   :position absolute
-  :top 60px
-  :left 0
+  :top 30px
+  :left 15%
   :right 0
   &:target
     :z-index 1
@@ -86,7 +89,8 @@ nav
     :opacity 0
 
 .content
-  :width 960px
+  :width 75%
+  :min-width 900px
   :margin 0 auto
   :position relative
 

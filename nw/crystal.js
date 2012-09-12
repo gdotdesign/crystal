@@ -1,6 +1,6 @@
 (function(Crystal){
  (function() {
-  var Attributes, Color, Dialogs, Logging, MVC, Mediator, Types, Unit, Utils, css, i18n, key, method, methods, methods_element, methods_node, prefixes, properties, types, value, _find, _parseName, _ref, _ref1, _ref2, _wrap,
+  var Attributes, Color, Logging, MVC, Mediator, NWDialogs, NWFile, Types, Unit, Utils, css, i18n, key, method, methods, methods_element, methods_node, prefixes, properties, types, value, _find, _parseName, _ref, _wrap,
     __hasProp = {}.hasOwnProperty,
     __slice = [].slice,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
@@ -863,89 +863,68 @@
   */
 
 
-  if (require) {
-    if ((_ref1 = window.NW) == null) {
-      window.NW = {};
+  window.NWFile = NWFile = (function() {
+
+    function NWFile(path) {
+      this.path = path;
+      this.fs = window.fs || require('fs');
     }
-    window.NW.File = NW.File = (function() {
 
-      function File(path) {
-        this.path = path;
-        this.fs = window.fs || require('fs');
-      }
+    NWFile.prototype.read = function() {
+      return this.fs.readFileSync(this.path, 'UTF-8');
+    };
 
-      File.prototype.read = function() {
-        return this.fs.readFileSync(this.path, 'UTF-8');
-      };
+    NWFile.prototype.write = function(data) {
+      return this.fs.writeFileSync(this.path, data.toString(), 'UTF-8');
+    };
 
-      File.prototype.write = function(data) {
-        return this.fs.writeFileSync(this.path, data.toString(), 'UTF-8');
-      };
+    return NWFile;
 
-      return File;
-
-    })();
-  }
+  })();
 
   /*
   --------------- /home/gdot/github/crystal/source/nw/dialogs.coffee--------------
   */
 
 
-  if (require) {
-    if ((_ref2 = window.NW) == null) {
-      window.NW = {};
+  window.NWDialogs = new (NWDialogs = (function() {
+
+    function NWDialogs() {
+      var _this = this;
+      this.input = Element.create('input');
+      this.input.setAttribute('type', 'file');
+      this.input.addEventListener('change', function() {
+        var file;
+        if (_this.input.files.length > 0) {
+          file = new NWFile(_this.input.files[0].path);
+          return _this.callback(file);
+        }
+      });
     }
-    window.NW.Dialogs = new (Dialogs = (function() {
 
-      function Dialogs() {
-        var _this = this;
-        this.input = Element.create('input');
-        this.input.setAttribute('type', 'file');
-        this.input.addEventListener('change', function() {
-          var file;
-          switch (_this.type) {
-            case 'open':
-              if (_this.input.files.length > 0) {
-                file = new NW.File(_this.input.files[0].path);
-                return _this.callback(file);
-              }
-              break;
-            case 'save':
-              if (_this.input.files.length > 0) {
-                file = new NW.File(_this.input.files[0].path);
-                file.write(_this.data);
-                return _this.callback();
-              }
-          }
-        });
+    NWDialogs.prototype.open = function(callback) {
+      if (callback == null) {
+        callback = function() {};
       }
+      this.input.removeAttribute('nwsaveas');
+      this.input.click();
+      this.type = "open";
+      return this.callback = callback;
+    };
 
-      Dialogs.prototype.open = function(callback) {
-        if (callback == null) {
-          callback = function() {};
-        }
-        this.input.removeAttribute('nwsaveas');
-        this.input.click();
-        this.type = "open";
-        return this.callback = callback;
-      };
+    NWDialogs.prototype.save = function(callback) {
+      if (callback == null) {
+        callback = function() {};
+      }
+      this.input.setAttribute('nwsaveas', 'true');
+      this.callback = callback;
+      this.type = "save";
+      return this.input.click();
+    };
 
-      Dialogs.prototype.save = function(data, callback) {
-        if (callback == null) {
-          callback = function() {};
-        }
-        this.input.setAttribute('nwsaveas', 'true');
-        this.data = data;
-        this.callback = callback;
-        this.type = "save";
-        return this.input.click();
-      };
+    return NWDialogs;
 
-      return Dialogs;
-
-    })());
-  }
+  })());
 
   /*
   --------------- /home/gdot/github/crystal/source/utils/base64.coffee--------------
@@ -1066,14 +1045,14 @@
   window.URI = Utils.URI = (function() {
 
     function URI(uri) {
-      var m, parser, _ref3, _ref4;
+      var m, parser, _ref1, _ref2;
       if (uri == null) {
         uri = '';
       }
       parser = document.createElement('a');
       parser.href = uri;
       if (!!(m = uri.match(/\/\/(.*?):(.*?)@/))) {
-        _ref3 = m, m = _ref3[0], this.user = _ref3[1], this.password = _ref3[2];
+        _ref1 = m, m = _ref1[0], this.user = _ref1[1], this.password = _ref1[2];
       }
       this.host = parser.hostname;
       this.protocol = parser.protocol.replace(/:$/, '');
@@ -1083,7 +1062,7 @@
         this.port = parser.port || 80;
       }
       this.hash = parser.hash.replace(/^#/, '');
-      this.query = ((_ref4 = uri.match(/\?(.*?)(?:#|$)/)) != null ? _ref4[1].parseQueryString() : void 0) || {};
+      this.query = ((_ref2 = uri.match(/\?(.*?)(?:#|$)/)) != null ? _ref2[1].parseQueryString() : void 0) || {};
       this.path = parser.pathname.replace(/^\//, '');
       this.parser = parser;
       this;
@@ -1318,12 +1297,12 @@
     },
     times: {
       value: function(func, bound) {
-        var i, _i, _ref3, _results;
+        var i, _i, _ref1, _results;
         if (bound == null) {
           bound = this;
         }
         _results = [];
-        for (i = _i = 1, _ref3 = parseInt(this); 1 <= _ref3 ? _i <= _ref3 : _i >= _ref3; i = 1 <= _ref3 ? ++_i : --_i) {
+        for (i = _i = 1, _ref1 = parseInt(this); 1 <= _ref1 ? _i <= _ref1 : _i >= _ref1; i = 1 <= _ref1 ? ++_i : --_i) {
           _results.push(func.call(bound, i));
         }
         return _results;
@@ -1460,15 +1439,15 @@
       this.raw = body;
       this.status = status;
       this.body = (function() {
-        var _i, _len, _ref3;
+        var _i, _len, _ref1;
         switch (this.headers['Content-Type']) {
           case "text/html":
             div = document.createElement('div');
             div.innerHTML = body;
             df = document.createDocumentFragment();
-            _ref3 = div.childNodes;
-            for (_i = 0, _len = _ref3.length; _i < _len; _i++) {
-              node = _ref3[_i];
+            _ref1 = div.childNodes;
+            for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
+              node = _ref1[_i];
               df.appendChild(node);
             }
             return df;
@@ -1523,7 +1502,7 @@
     }
 
     Request.prototype.request = function(method, data, callback) {
-      var _ref3;
+      var _ref1;
       if (method == null) {
         method = 'GET';
       }
@@ -1533,10 +1512,10 @@
         } else {
           this._request.open(method, this.uri);
         }
-        _ref3 = this.headers;
-        for (key in _ref3) {
-          if (!__hasProp.call(_ref3, key)) continue;
-          value = _ref3[key];
+        _ref1 = this.headers;
+        for (key in _ref1) {
+          if (!__hasProp.call(_ref1, key)) continue;
+          value = _ref1[key];
           this._request.setRequestHeader(key.toString(), value.toString());
         }
         this._callback = callback;
@@ -1548,8 +1527,8 @@
       var r;
       r = {};
       this._request.getAllResponseHeaders().split(/\n/).compact().forEach(function(header) {
-        var _ref3;
-        _ref3 = header.split(/:\s/), key = _ref3[0], value = _ref3[1];
+        var _ref1;
+        _ref1 = header.split(/:\s/), key = _ref1[0], value = _ref1[1];
         return r[key.trim()] = value.trim();
       });
       return r;
@@ -2005,8 +1984,8 @@
   });
 
   ['day:Date', 'year:FullYear', 'hours:Hours', 'minutes:Minutes', 'seconds:Seconds'].forEach(function(item) {
-    var meth, prop, _ref3;
-    _ref3 = item.split(/:/), prop = _ref3[0], meth = _ref3[1];
+    var meth, prop, _ref1;
+    _ref1 = item.split(/:/), prop = _ref1[0], meth = _ref1[1];
     return Object.defineProperty(Date.prototype, prop, {
       get: function() {
         return this["get" + meth]();
@@ -2147,11 +2126,11 @@
 
   ['debug', 'error', 'fatal', 'info', 'warn', 'log'].forEach(function(type) {
     return HTMLLogger.prototype["_" + type] = function(text) {
-      var el, prop, _ref3;
+      var el, prop, _ref1;
       el = Element.create('div.' + type);
-      _ref3 = css[type];
-      for (prop in _ref3) {
-        value = _ref3[prop];
+      _ref1 = css[type];
+      for (prop in _ref1) {
+        value = _ref1[prop];
         el.css(prop, value);
       }
       el.text = text;

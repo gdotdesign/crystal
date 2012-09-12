@@ -1,13 +1,17 @@
-%nav
-  %ul
-    - @docs['classes'].each do |key, cls|
-      %li
-        %a{href: "#"+key}
-          %div{class: "icon-#{cls['icon']}"}
-          = key
-    %li.right
-      %a{href:"#main"} Crystal
 .content
+  %nav
+    %h1
+      %a{href:"#main"} Crystal
+    - @docs['packages'].each do |name, package|
+      %ul
+        %li.first
+          %div{class: "icon-#{package['icon']}"}
+          = name
+        - package['classes'].each do |key, cls|
+          %li
+            %a{href: "#"+key}
+              %div{class: "icon-#{cls['icon']}"}
+              = key
   .class#main
     .panel
       .btn-circle
@@ -19,29 +23,30 @@
         .tooltip
           Download
   .clear
-  - @docs['classes'].each do |key, cls|
-    .class{id: key}
-      .panel
-        %h2
-          %div{class: "icon-#{cls['icon']}"}
-          = key
-        %p
-          = cls['description']
-      - cls['methods'].each do |method|
-        .method
-          %pre
-            %code.coffee.prettyprint
-              = method["example"]
-          %code.js
-            - begin
-              = CoffeeScript.compile method["example"], bare: true
-            - rescue
-              = ""
-          %h3
-            %span{class: method['type']}= @types[method['type']]
-            = method['name']
+  - @docs['packages'].each do |name, package|
+    - package['classes'].each do |key, cls|
+      .class{id: key}
+        .panel
+          %h2
+            %div{class: "icon-#{cls['icon']}"}
+            = key
           %p
-            = method['description']
-          .clear
-          .icon-link
-          .icon-play
+            = cls['description']
+        - cls['methods'].each do |method|
+          .method
+            %pre
+              %code.coffee.prettyprint
+                = method["example"]
+            %code.js
+              - begin
+                = CoffeeScript.compile method["example"], bare: true
+              - rescue
+                = ""
+            %h3
+              %span{class: method['type']}= @types[method['type']]
+              = method['name']
+            %p
+              = method['description']
+            .clear
+            .icon-link
+            .icon-play

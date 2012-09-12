@@ -1,239 +1,253 @@
-classes:
-  Color:
-    description: |
-    icon: 'beaker'
-    methods:
-      - type: new
-        name: "constructor(colorString)"
-        description: "Creates a new Color instance from the given string."
-        example: |
-          c = new Color('#ff0000')
-          console.log c.rgba
-          # rgba(255,0,0,1)
-      - type: prop
-        name: "red"
-        description: "Sets / Gets the red property of the color."
-        example: |
-          c = new Color('#ff0000')
-          c.red = 204
-          console.log c.hex
-          # #cc0000
-      - type: prop
-        name: "green"
-        description: "Sets / Gets the green property of the color."
-        example: |
-          c = new Color('#000000')
-          c.green = 204
-          console.log c.hex
-          # #00cc00
-      - type: prop
-        name: "blue"
-        description: "Sets / Gets the red property of the color."
-        example: |
-          c = new Color('#000000')
-          c.blue = 204
-          console.log c.hex
-          # #0000cc
-      - type: prop
-        name: "rgba"
-        description: "Returns the rgba string representation of the"
-        example: |
-          c = new Color('#ff0000')
-          console.log c.rgba
-          # rgba(255,0,0,1)
-  String:
-    description: |
-    icon: 'align-center'
-    methods:
-      - a
-  History:
-    description: |
-    icon: 'bookmark'
-    methods:
-      - a
-  
-  i18n:
-    description: |
-      Locale Management
-      </br>
-      Default locale is read from the html lang attribute.
-    icon: 'globe'
-    methods:
-      - type: self
-        name: t(path, *data = {}, *locale = 'en' )
-        description: "Get translation for given path."
-        example: |
-          i18n.locales.en = social: {join: 'Joins us today!'}
-          console.log i18n.t 'social.join'
-          # "Join us today!"
-      - type: self
-        name: locales = {}
-        description: 'This property contanes the  translations'
-        example: |
-  
-  Request:
-    description: "A very simple XMLHTTPRequest wrapper."
-    icon: "link"
-    methods:
-      - type: new
-        name: "constructor(url, headers = {})"
-        description: "Creates a new Request instance."
-        example: |
-          r = new Request('/example.json')
-          r.get (response) ->
-            console.log response.body.message
-            console.log response.raw
-          # Object
-      - type: fn
-        name: "get(*data = {}, callback)"
-        description: "Start a request with GET method."
-        example: |
-          r = new Request('/example.json')
-          r.get (response) ->
-            console.log response.body.message
-            console.log response.raw
-          # Object
-      - type: fn
-        name: "post(*data = {}, callback)"
-        description: "Start a request with POST method."
-        example: |
-          r = new Request('/example.json')
-          r.post (response) ->
-            console.log response.body.message
-            console.log response.raw
-          # Object
-  
-  Array:
-    description: ''
-    icon: 'th'
-    methods:
-      - type: fn
-        name: "compact()"
-        description: 'Returns a new Array with falsy values removed.'
-        example: |
-          a = [null, undefined, false, '',0,'Luke','Leia']
-          console.log a.compact()
-          # Luke, Leia
-      - type: fn
-        name: "uniq()"
-        description: 'Returns a new Array with duplicate values removed.'
-        example: |
-          a = ['Yoda','Wader','Luke','Leia','Yoda','Luke']
-          console.log a.uniq()
-          # Yoda, Wader, Luke, Leia
-      - type: fn
-        name: "remove(item)"
-        description: 'Removes the first instance of given item from the array.'
-        example: |
-          a = ['Yoda','Wader','Luke','Leia','Yoda','Luke']
-          console.log a.remove('Yoda')
-          # Wader, Luke, Leia, Yoda, Luke
-      - type: fn
-        name: "removeAll(item)"
-        description: 'Removes all instances of given item from the array.'
-        example: |
-          a = ['Yoda','Wader','Luke','Leia','Yoda','Luke']
-          console.log a.removeAll('Yoda')
-          # Wader, Luke, Leia, Luke
-      - type: fn
-        name: "shuffle()"
-        description: 'Arranges items in the array randomly.'
-        example: |
-          a = ['Yoda','Wader','Luke','Leia','Yoda','Luke']
-          console.log a.shuffle('Yoda')
-          # a random combination of the items 
-      - type: fn
-        name: "include()"
-        description: 'Return true if the item is included in the array false if not.'
-        example: |
-          a = ['Yoda','Wader','Luke','Leia','Yoda','Luke']
-          console.log a.include('Yoda')
-          # true
-      - type: fn
-        name: "pluck()"
-        description: 'Returns a new Array of the given property of the items.'
-        example: |
-          a = [
-            {name: 'Wader', side: 'dark'}
-            {name: 'Luke', side: 'light'}
-          ]
-          console.log a.pluck('name')
-          # Wader, Luke
-      - type: fn
-        name: "dup()"
-        description: 'Creates a duplicate of the array.'
-        example: |
-          a = ['Yoda','Wader','Luke','Leia','Yoda','Luke']
-          console.log a.dup()
-          # Yoda, Wader, Luke, Leia, Yoda, Luke
+packages:
+  DOM:
+    icon: sitemap
+    classes: []
+  Logger:
+    icon: 'align-left'
+    classes: []
+  MVC:
+    icon: cogs
+    classes: []
+  NW:
+    icon: hdd
+    classes: []
+  Utils:
+    icon: wrench
+    classes:
+      History:
+        description: |
+        icon: 'bookmark'
+        methods:
+          - a
+      i18n:
+        description: |
+          Locale Management
+          </br>
+          Default locale is read from the html lang attribute.
+        icon: 'globe'
+        methods:
+          - type: self
+            name: t(path, *data = {}, *locale = 'en' )
+            description: "Get translation for given path."
+            example: |
+              i18n.locales.en = social: {join: 'Joins us today!'}
+              console.log i18n.t 'social.join'
+              # "Join us today!"
+          - type: self
+            name: locales = {}
+            description: 'This property contanes the  translations'
+            example: |
+      Request:
+        description: "A very simple XMLHTTPRequest wrapper."
+        icon: "link"
+        methods:
+          - type: new
+            name: "constructor(url, headers = {})"
+            description: "Creates a new Request instance."
+            example: |
+              r = new Request('/example.json')
+              r.get (response) ->
+                console.log response.body.message
+                console.log response.raw
+              # Object
+          - type: fn
+            name: "get(*data = {}, callback)"
+            description: "Start a request with GET method."
+            example: |
+              r = new Request('/example.json')
+              r.get (response) ->
+                console.log response.body.message
+                console.log response.raw
+              # Object
+          - type: fn
+            name: "post(*data = {}, callback)"
+            description: "Start a request with POST method."
+            example: |
+              r = new Request('/example.json')
+              r.post (response) ->
+                console.log response.body.message
+                console.log response.raw
+              # Object
+  Types:
+    icon: book
+    classes:
+      Color:
+        description: |
+        icon: 'beaker'
+        methods:
+          - type: new
+            name: "constructor(colorString)"
+            description: "Creates a new Color instance from the given string."
+            example: |
+              c = new Color('#ff0000')
+              console.log c.rgba
+              # rgba(255,0,0,1)
+          - type: prop
+            name: "red"
+            description: "Sets / Gets the red property of the color."
+            example: |
+              c = new Color('#ff0000')
+              c.red = 204
+              console.log c.hex
+              # #cc0000
+          - type: prop
+            name: "green"
+            description: "Sets / Gets the green property of the color."
+            example: |
+              c = new Color('#000000')
+              c.green = 204
+              console.log c.hex
+              # #00cc00
+          - type: prop
+            name: "blue"
+            description: "Sets / Gets the red property of the color."
+            example: |
+              c = new Color('#000000')
+              c.blue = 204
+              console.log c.hex
+              # #0000cc
+          - type: prop
+            name: "rgba"
+            description: "Returns the rgba string representation of the"
+            example: |
+              c = new Color('#ff0000')
+              console.log c.rgba
+              # rgba(255,0,0,1)
+      String:
+        description: |
+        icon: 'align-center'
+        methods:
+          - a
+      Array:
+        description: ''
+        icon: 'th'
+        methods:
+          - type: fn
+            name: "compact()"
+            description: 'Returns a new Array with falsy values removed.'
+            example: |
+              a = [null, undefined, false, '',0,'Luke','Leia']
+              console.log a.compact()
+              # Luke, Leia
+          - type: fn
+            name: "uniq()"
+            description: 'Returns a new Array with duplicate values removed.'
+            example: |
+              a = ['Yoda','Wader','Luke','Leia','Yoda','Luke']
+              console.log a.uniq()
+              # Yoda, Wader, Luke, Leia
+          - type: fn
+            name: "remove(item)"
+            description: 'Removes the first instance of given item from the array.'
+            example: |
+              a = ['Yoda','Wader','Luke','Leia','Yoda','Luke']
+              console.log a.remove('Yoda')
+              # Wader, Luke, Leia, Yoda, Luke
+          - type: fn
+            name: "removeAll(item)"
+            description: 'Removes all instances of given item from the array.'
+            example: |
+              a = ['Yoda','Wader','Luke','Leia','Yoda','Luke']
+              console.log a.removeAll('Yoda')
+              # Wader, Luke, Leia, Luke
+          - type: fn
+            name: "shuffle()"
+            description: 'Arranges items in the array randomly.'
+            example: |
+              a = ['Yoda','Wader','Luke','Leia','Yoda','Luke']
+              console.log a.shuffle('Yoda')
+              # a random combination of the items 
+          - type: fn
+            name: "include()"
+            description: 'Return true if the item is included in the array false if not.'
+            example: |
+              a = ['Yoda','Wader','Luke','Leia','Yoda','Luke']
+              console.log a.include('Yoda')
+              # true
+          - type: fn
+            name: "pluck()"
+            description: 'Returns a new Array of the given property of the items.'
+            example: |
+              a = [
+                {name: 'Wader', side: 'dark'}
+                {name: 'Luke', side: 'light'}
+              ]
+              console.log a.pluck('name')
+              # Wader, Luke
+          - type: fn
+            name: "dup()"
+            description: 'Creates a duplicate of the array.'
+            example: |
+              a = ['Yoda','Wader','Luke','Leia','Yoda','Luke']
+              console.log a.dup()
+              # Yoda, Wader, Luke, Leia, Yoda, Luke
 
 
-      - type: prop
-        name: "sample"
-        description: 'Returns a random item from the array.'
-        example: |
-          a = ['Yoda','Wader','Luke','Leia','Yoda','Luke']
-          console.log a.sample
-          # Any Star Wars character above
-      - type: prop
-        name: "first"
-        description: 'Returns first item from the array'
-        example: |
-          a = ['Yoda','Wader','Luke','Leia','Yoda','Luke']
-          console.log a.first
-          # Yoda
-      - type: prop
-        name: "last"
-        description: 'Returns the last item from the array'
-        example: |
-          a = ['Yoda','Wader','Luke','Leia','Yoda','Luke']
-          console.log a.last
-          # Luke
-
-  Date:
-    description: "Adds utility functions to the Date object."
-    icon: "time"
-    methods:
-      - type: fn
-        name: "format(str)"
-        description: "Formats the date according to the given string."
-        example: |
-          d = new Date("1987-05-28")
-          console.log d.format("%Y.%M.%D")
-          # 1987.05.28
-      - type: prop
-        name: ago
-        description: 'Returns the literal representation of the time passed (10 seconds ago).'
-        example: |
-          d = new Date(Date.now()-(2).days)
-          console.log d.ago
-          # 2 days ago
-      - type: prop
-        name: day
-        description: 'Returns the date portion.'
-        example: |
-          d = new Date('2012-05-28')
-          console.log d.day
-          # 28
-      - type: prop
-        name: hours
-        description: 'Returns the hour portion.'
-        example: |
-          d = new Date('2012-05-28 09:12')
-          console.log d.hours
-          # 9
-      - type: prop
-        name: minutes
-        description: 'Returns the minutes portion.'
-        example: |
-          d = new Date('2012-05-28 09:12')
-          console.log d.minutes
-          # 12
-      - type: self
-        name: Locale
-        description: 'Object that represents the current language data for Date.'
-        example: |
-          # Get the locale format
-          console.log Date.Locale.format
-          # %Y-%M-%D
-        
+          - type: prop
+            name: "sample"
+            description: 'Returns a random item from the array.'
+            example: |
+              a = ['Yoda','Wader','Luke','Leia','Yoda','Luke']
+              console.log a.sample
+              # Any Star Wars character above
+          - type: prop
+            name: "first"
+            description: 'Returns first item from the array'
+            example: |
+              a = ['Yoda','Wader','Luke','Leia','Yoda','Luke']
+              console.log a.first
+              # Yoda
+          - type: prop
+            name: "last"
+            description: 'Returns the last item from the array'
+            example: |
+              a = ['Yoda','Wader','Luke','Leia','Yoda','Luke']
+              console.log a.last
+              # Luke
+      Date:
+        description: "Adds utility functions to the Date object."
+        icon: "time"
+        methods:
+          - type: fn
+            name: "format(str)"
+            description: "Formats the date according to the given string."
+            example: |
+              d = new Date("1987-05-28")
+              console.log d.format("%Y.%M.%D")
+              # 1987.05.28
+          - type: prop
+            name: ago
+            description: 'Returns the literal representation of the time passed (10 seconds ago).'
+            example: |
+              d = new Date(Date.now()-(2).days)
+              console.log d.ago
+              # 2 days ago
+          - type: prop
+            name: day
+            description: 'Returns the date portion.'
+            example: |
+              d = new Date('2012-05-28')
+              console.log d.day
+              # 28
+          - type: prop
+            name: hours
+            description: 'Returns the hour portion.'
+            example: |
+              d = new Date('2012-05-28 09:12')
+              console.log d.hours
+              # 9
+          - type: prop
+            name: minutes
+            description: 'Returns the minutes portion.'
+            example: |
+              d = new Date('2012-05-28 09:12')
+              console.log d.minutes
+              # 12
+          - type: self
+            name: Locale
+            description: 'Object that represents the current language data for Date.'
+            example: |
+              # Get the locale format
+              console.log Date.Locale.format
+              # %Y-%M-%D
+            

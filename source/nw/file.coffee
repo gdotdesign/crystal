@@ -1,6 +1,6 @@
-# @requires ./nw
+# @require ./nw
 
-window.NW.File = class NW.File
+window.NWFile = class NWFile
   constructor: (@path) ->
     @fs = window.fs or require 'fs'
   read: ->

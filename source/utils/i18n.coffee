@@ -1,33 +1,10 @@
 # requires ./path
 # requires ../types/object
 
-# i18n support
-#
-# @example Getting locles from ajax
-#   r = new Request('/locales')
-#     r.get (response) ->
-#       i18n.locales = response.json
-#    i18n.t 'menu.home'
 class i18n
 
   @locales: {}
 
-  # Gets translation for given path
-  # 
-  # @example Default locale
-  #   i18.n.t 'menu.home'
-  #
-  # @example Explicit locale
-  #   i18.n.t 'menu.home', 'en'
-  #
-  # @example Data for replacement
-  #   i18n.locale.en
-  #     site:
-  #       welcome: 'Welcome {{name}}!'
-  #   i18.n.t 'site.welcome', {name: 'Joe'}
-  #
-  # @example Data and locale
-  #   i18.n.t 'menu.home', data, 'en' 
   @t: (path) ->
     if arguments.length is 2
       if (arg = arguments[1]) instanceof Object

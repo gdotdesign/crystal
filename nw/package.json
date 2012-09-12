@@ -4,12 +4,12 @@
   "window": {
     "icon": "link.png",
     "toolbar": false,
-    "width": 800,
-    "height": 500,
+    "width": 1280,
+    "height": 800,
     "position": "center",
     "min_width": 400,
     "min_height": 200,
-    "max_width": 800,
-    "max_height": 600
+    "max_width": 1280,
+    "max_height": 800
   }
  }

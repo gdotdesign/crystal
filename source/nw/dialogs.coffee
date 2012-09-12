@@ -1,20 +1,13 @@
 # @requires ./file
 
-window.NW.Dialogs = new class Dialogs
+window.NWDialogs = new class NWDialogs
   constructor: ->
     @input = Element.create 'input'
     @input.setAttribute 'type', 'file'
     @input.addEventListener 'change', =>
-      switch @type
-        when 'open'
-          if @input.files.length > 0
-            file = new NW.File(@input.files[0].path)
-            @callback file
-        when 'save'
-          if @input.files.length > 0
-            file = new NW.File(@input.files[0].path)
-            file.write @data
-            @callback()
+      if @input.files.length > 0
+        file = new NWFile(@input.files[0].path)
+        @callback file
 
   open: (callback = ->)->
     @input.removeAttribute 'nwsaveas'
@@ -22,9 +15,8 @@ window.NW.Dialogs = new class Dialogs
     @type = "open"
     @callback = callback
 
-  save: (data, callback = ->) ->
+  save: (callback = ->) ->
     @input.setAttribute 'nwsaveas', 'true'
-    @data = data
     @callback = callback
     @type = "save"
     @input.click()
