@@ -6,6 +6,7 @@ require 'pathname'
 require 'json'
 require './assets/lib/builder'
 require './assets/lib/spec_server'
+require './assets/lib/example_server'
 
 def silence_stream(stream)
   old_stream = stream.dup
@@ -47,6 +48,11 @@ end
 
 task :specserver do
   builder = Rack::Builder.new { run SpecSever }
+  Rack::Handler::Thin.run builder, :Port => 5000
+end
+
+task :examples do
+  builder = Rack::Builder.new { run ExampleServer }
   Rack::Handler::Thin.run builder, :Port => 5000
 end
 
