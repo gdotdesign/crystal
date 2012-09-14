@@ -26,8 +26,7 @@ nav
     color: #514C3D
     :text-decoration none
   ul
-    :width 940px
-    :margin 0 auto
+    :margin 0
     :padding 0
     :list-style none
     li + li
@@ -77,14 +76,15 @@ nav
   :padding 15px 0
   :line-height 28px
   :text-align center
-  :background rgba(0,0,0,0.8)
   :color #eee
-  :border-radius 7px
-  :box-shadow 0 0 25px rgba(0,0,0,0.4)
   :width 400px
   :-webkit-transition-duration 320ms
   :pointer-events none
   :z-index 10
+  :background-image -webkit-linear-gradient(rgba(0,0,0,0.75),rgba(0,0,0,0.8))
+  :box-shadow 0 0 25px rgba(0,0,0,0.4), 0 0 20px rgba(0,0,0,0.6) inset
+  :border 3px solid rgba(#fff,0.3)
+  :background-clip padding-box
   &.hidden
     :opacity 0
 
@@ -119,6 +119,7 @@ p
   :background-color #e8e6dc
   :border-radius 5px 5px 0 0
   :padding 10px 20px
+  :background-image -webkit-linear-gradient(lighten(#e8e6dc,3%),#e8e6dc)
 
 span
   &.fn
@@ -148,6 +149,7 @@ span
   :position relative
   :-webkit-transition-duration 200ms
   &:hover
+    :-webkit-transition-delay 0ms !important
     :background-color lighten(#e4e2d6,3%)
     [class*=icon]
       :opacity 1

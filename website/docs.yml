@@ -2,15 +2,30 @@ packages:
   DOM:
     icon: sitemap
     classes: []
-  Logger:
+  Logging:
     icon: 'align-left'
-    classes: []
+    classes:
+      Logger:
+        description: |
+        icon: 'align-left'
+        methods:
+          - a
   MVC:
     icon: cogs
     classes: []
   NW:
     icon: hdd
-    classes: []
+    classes:
+      Dialogs:
+        description: |
+        icon: 'list-alt'
+        methods:
+          - a
+      File:
+        description: |
+        icon: 'file'
+        methods:
+          - a
   Utils:
     icon: wrench
     classes:
@@ -115,7 +130,7 @@ packages:
               # rgba(255,0,0,1)
       String:
         description: |
-        icon: 'align-center'
+        icon: 'strikethrough'
         methods:
           - a
       Array:

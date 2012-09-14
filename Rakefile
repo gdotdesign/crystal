@@ -5,8 +5,6 @@ Bundler.require(:default)
 require 'pathname'
 require 'json'
 require './assets/lib/builder'
-require './assets/lib/spec_server'
-require './assets/lib/example_server'
 
 def silence_stream(stream)
   old_stream = stream.dup
@@ -19,7 +17,7 @@ end
 
 def build(exclude = /^$/)
   b = Builder.new(exclude)
-  compiled = b.build(Dir.glob('./source/**/*.coffee'), "MVC = {}\nLogging = {}\nUtils = {}\n\n",)
+  compiled = b.build(Dir.glob('./source/**/*.coffee'), "MVC = {}\nLogging = {}\nUtils = {}\nStore = {}\n\n",)
   "(function(Crystal){\n #{compiled} \n })(window.Crystal={Utils:{}})"
 end
 
@@ -47,11 +45,13 @@ namespace :build do
 end
 
 task :specserver do
+  require './assets/lib/spec_server'
   builder = Rack::Builder.new { run SpecSever }
   Rack::Handler::Thin.run builder, :Port => 5000
 end
 
 task :examples do
+  require './assets/lib/example_server'
   builder = Rack::Builder.new { run ExampleServer }
   Rack::Handler::Thin.run builder, :Port => 5000
 end

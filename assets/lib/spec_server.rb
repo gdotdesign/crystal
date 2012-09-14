@@ -19,8 +19,22 @@ Layout = '''
     }
 %body
 '''
+
+Store = {}
+
 class SpecSever < Renee::Application
   app do
+
+    def say(data = "")
+      respond! do
+        status 200
+        headers({
+          :"Content-Type" => "text/json",
+        })
+        body data.to_json
+      end
+    end
+
     path "/crystal.js" do
       respond! do
         headers({'Content-Type' => 'text/javascript'})
@@ -50,6 +64,37 @@ class SpecSever < Renee::Application
       xml: "text/xml",
       html: "text/html"
     }
+
+    part "XHR" do
+      query :key do |key|
+        if key.empty?
+          say false
+        end
+        get do
+          if v = Store[key]
+            say v
+          end
+          say false
+        end
+        post do
+          query :value do |value|
+            if value
+              Store[key] = value
+              say true
+            end
+            say false            
+          end
+        end
+        delete do
+          unless Store.has_key?(key)
+            say false
+          end
+          Store.delete(key)
+          say true
+        end
+      end
+      say Store.keys
+    end
 
     path "/xhr" do
       contentType = "text/plain"
