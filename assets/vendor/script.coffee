@@ -39,9 +39,8 @@ page.onConsoleMessage = (msg) ->
 
 address = phantom.args[0]
 
-page.open address, (status) ->
+page.open address+"#phantom", (status) ->
   if status != "success"
     console.log "can't load the address!"
     phantom.exit 1
-
   # Now we wait until onConsoleMessage reads the termination signal from the log.

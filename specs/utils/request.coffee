@@ -1,5 +1,9 @@
 describe "Request", ->
-  ['get','post'].forEach (type) ->
+  if window.location.hash is "#phantom"
+    types = ['get','post']
+  else
+    types = ['get','post','put','delete','patch']
+  types.forEach (type) ->
     describe type, ->
       it 'should return Response', ->
         runs =>
