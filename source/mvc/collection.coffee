@@ -1,6 +1,5 @@
 # @requires ../types/array
 # @requires ../utils/evented
-# @requires ./collectionElement
 
 window.Collection = class MVC.Collection extends Array
   constructor: (args...) ->

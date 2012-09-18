@@ -1,6 +1,6 @@
 (function(Crystal){
  (function() {
-  var Attributes, Color, Keyboard, Logging, MVC, Mediator, NWDialogs, NWFile, SPECIAL_KEYS, Types, Unit, Utils, css, i18n, key, method, methods, methods_element, methods_node, prefixes, properties, types, value, _find, _parseName, _ref, _wrap,
+  var Attributes, Color, Keyboard, Logging, MVC, Mediator, NWDialogs, NWFile, SPECIAL_KEYS, Store, Types, Unit, Utils, css, i18n, key, method, methods, methods_element, methods_node, prefixes, properties, types, value, _find, _parseName, _ref, _wrap,
     __hasProp = {}.hasOwnProperty,
     __slice = [].slice,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
@@ -12,8 +12,10 @@
 
   Utils = {};
 
+  Store = {};
+
   /*
-  --------------- /home/gszikszai/git/crystal/source/types/array.coffee--------------
+  --------------- /home/gdot/github/crystal/source/types/array.coffee--------------
   */
 
 
@@ -101,7 +103,7 @@
   });
 
   /*
-  --------------- /home/gszikszai/git/crystal/source/types/object.coffee--------------
+  --------------- /home/gdot/github/crystal/source/types/object.coffee--------------
   */
 
 
@@ -182,7 +184,7 @@
   };
 
   /*
-  --------------- /home/gszikszai/git/crystal/source/types/number.coffee--------------
+  --------------- /home/gdot/github/crystal/source/types/number.coffee--------------
   */
 
 
@@ -283,7 +285,7 @@
   });
 
   /*
-  --------------- /home/gszikszai/git/crystal/source/types/date.coffee--------------
+  --------------- /home/gdot/github/crystal/source/types/date.coffee--------------
   */
 
 
@@ -375,7 +377,7 @@
   });
 
   /*
-  --------------- /home/gszikszai/git/crystal/source/logger/logger.coffee--------------
+  --------------- /home/gdot/github/crystal/source/logger/logger.coffee--------------
   */
 
 
@@ -451,7 +453,42 @@
   });
 
   /*
-  --------------- /home/gszikszai/git/crystal/source/dom/element.coffee--------------
+  --------------- /home/gdot/github/crystal/source/logger/console-logger.coffee--------------
+  */
+
+
+  window.ConsoleLogger = Logging.ConsoleLogger = (function(_super) {
+
+    __extends(ConsoleLogger, _super);
+
+    function ConsoleLogger() {
+      return ConsoleLogger.__super__.constructor.apply(this, arguments);
+    }
+
+    return ConsoleLogger;
+
+  })(Logging.Logger);
+
+  ({
+    constructor: function() {
+      return constructor.__super__.constructor.apply(this, arguments);
+    }
+  });
+
+  ['debug', 'error', 'fatal', 'info', 'warn'].forEach(function(type) {
+    return ConsoleLogger.prototype["_" + type] = function(text) {
+      if (type === 'debug') {
+        type = 'log';
+      }
+      if (type === 'fatal') {
+        type = 'error';
+      }
+      return console[type](text);
+    };
+  });
+
+  /*
+  --------------- /home/gdot/github/crystal/source/dom/element.coffee--------------
   */
 
 
@@ -563,7 +600,11 @@
       _results = [];
       for (_i = 0, _len = elements.length; _i < _len; _i++) {
         el = elements[_i];
-        _results.push(this.appendChild(el));
+        if (el instanceof Node) {
+          _results.push(this.appendChild(el));
+        } else {
+          _results.push(void 0);
+        }
       }
       return _results;
     },
@@ -577,7 +618,7 @@
       if (selector == null) {
         selector = "*";
       }
-      return this.querySelectorAll(selector).last();
+      return this.querySelectorAll(selector).last;
     },
     all: function(selector) {
       if (selector == null) {
@@ -759,7 +800,7 @@
 
 
   /*
-  --------------- /home/gszikszai/git/crystal/source/logger/flash-logger.coffee--------------
+  --------------- /home/gdot/github/crystal/source/logger/flash-logger.coffee--------------
   */
 
 
@@ -806,42 +847,7 @@
   });
 
   /*
-  --------------- /home/gszikszai/git/crystal/source/logger/console-logger.coffee--------------
-  */
-
-
-  window.ConsoleLogger = Logging.ConsoleLogger = (function(_super) {
-
-    __extends(ConsoleLogger, _super);
-
-    function ConsoleLogger() {
-      return ConsoleLogger.__super__.constructor.apply(this, arguments);
-    }
-
-    return ConsoleLogger;
-
-  })(Logging.Logger);
-
-  ({
-    constructor: function() {
-      return constructor.__super__.constructor.apply(this, arguments);
-    }
-  });
-
-  ['debug', 'error', 'fatal', 'info', 'warn'].forEach(function(type) {
-    return ConsoleLogger.prototype["_" + type] = function(text) {
-      if (type === 'debug') {
-        type = 'log';
-      }
-      if (type === 'fatal') {
-        type = 'error';
-      }
-      return console[type](text);
-    };
-  });
-
-  /*
-  --------------- /home/gszikszai/git/crystal/source/logger/html-logger.coffee--------------
+  --------------- /home/gdot/github/crystal/source/logger/html-logger.coffee--------------
   */
 
 
@@ -899,7 +905,7 @@
   });
 
   /*
-  --------------- /home/gszikszai/git/crystal/source/nw/file.coffee--------------
+  --------------- /home/gdot/github/crystal/source/nw/file.coffee--------------
   */
 
 
@@ -923,7 +929,7 @@
   })();
 
   /*
-  --------------- /home/gszikszai/git/crystal/source/nw/dialogs.coffee--------------
+  --------------- /home/gdot/github/crystal/source/nw/dialogs.coffee--------------
   */
 
 
@@ -967,125 +973,105 @@
   })());
 
   /*
-  --------------- /home/gszikszai/git/crystal/source/crystal.coffee--------------
+  --------------- /home/gdot/github/crystal/source/types/keyboard-event.coffee--------------
   */
 
 
-  Types = {};
+  SPECIAL_KEYS = {
+    backspace: 8,
+    tab: 9,
+    enter: 13,
+    shift: 16,
+    ctrl: 17,
+    alt: 18,
+    pause: 19,
+    capslock: 20,
+    esc: 27,
+    pageup: 33,
+    pagedown: 34,
+    end: 35,
+    home: 36,
+    left: 37,
+    up: 38,
+    right: 39,
+    down: 40,
+    insert: 45,
+    "delete": 46,
+    multiply: 106,
+    plus: 107,
+    minus: 109,
+    divide: 111
+  };
 
-  /*
-  --------------- /home/gszikszai/git/crystal/source/utils/base64.coffee--------------
-  */
+  Object.defineProperty(KeyboardEvent.prototype, 'key', {
+    get: function() {
+      var value;
+      for (key in SPECIAL_KEYS) {
+        value = SPECIAL_KEYS[key];
+        if (value === this.keyCode) {
+          return key;
+        }
+      }
+      return String.fromCharCode(this.keyCode).toLowerCase();
+    }
+    /*
+    --------------- /home/gdot/github/crystal/source/utils/keyboard.coffee--------------
+    */
 
+  });
 
-  Utils.Base64 = (function() {
+  window.Keyboard = Keyboard = (function() {
 
-    function Base64() {}
-
-    Base64.prototype._keyStr = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
-
-    Base64.prototype.encode = function(input) {
-      var chr1, chr2, chr3, enc1, enc2, enc3, enc4, i, output;
-      output = "";
-      i = 0;
-      input = Base64.UTF8Encode(input);
-      while (i < input.length) {
-        chr1 = input.charCodeAt(i++);
-        chr2 = input.charCodeAt(i++);
-        chr3 = input.charCodeAt(i++);
-        enc1 = chr1 >> 2;
-        enc2 = ((chr1 & 3) << 4) | (chr2 >> 4);
-        enc3 = ((chr2 & 15) << 2) | (chr3 >> 6);
-        enc4 = chr3 & 63;
-        if (isNaN(chr2)) {
-          enc3 = enc4 = 64;
-        } else {
-          if (isNaN(chr3)) {
-            enc4 = 64;
+    function Keyboard() {
+      var _this = this;
+      document.addEventListener('keyup', function(e) {
+        var combo, pressed, sc, _i, _len, _ref, _ref1, _results;
+        console.log(e.keyCode);
+        e.preventDefault();
+        combo = [];
+        if (e.ctrlKey) {
+          combo.push("ctrl");
+        }
+        if (e.shiftKey) {
+          combo.push("shift");
+        }
+        if (e.altKey) {
+          combo.push("alt");
+        }
+        combo.push(e.key);
+        _ref = _this.shortcuts;
+        _results = [];
+        for (sc in _ref) {
+          method = _ref[sc];
+          pressed = true;
+          _ref1 = sc.split("+");
+          for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
+            key = _ref1[_i];
+            if (combo.indexOf(key) === -1) {
+              pressed = false;
+              break;
+            }
+          }
+          if (pressed) {
+            _this[method].call(_this);
+            break;
+          } else {
+            _results.push(void 0);
           }
         }
-        output = output + this._keyStr.charAt(enc1) + this._keyStr.charAt(enc2) + this._keyStr.charAt(enc3) + this._keyStr.charAt(enc4);
+        return _results;
+      });
+      if (typeof this.initialize === "function") {
+        this.initialize();
       }
-      return output;
-    };
+    }
 
-    Base64.prototype.decode = function(input) {
-      var chr1, chr2, chr3, enc1, enc2, enc3, enc4, i, output;
-      output = "";
-      i = 0;
-      input = input.replace(/[^A-Za-z0-9\+\/\=]/g, "");
-      while (i < input.length) {
-        enc1 = this._keyStr.indexOf(input.charAt(i++));
-        enc2 = this._keyStr.indexOf(input.charAt(i++));
-        enc3 = this._keyStr.indexOf(input.charAt(i++));
-        enc4 = this._keyStr.indexOf(input.charAt(i++));
-        chr1 = (enc1 << 2) | (enc2 >> 4);
-        chr2 = ((enc2 & 15) << 4) | (enc3 >> 2);
-        chr3 = ((enc3 & 3) << 6) | enc4;
-        output = output + String.fromCharCode(chr1);
-        if (enc3 !== 64) {
-          output = output + String.fromCharCode(chr2);
-        }
-        if (enc4 !== 64) {
-          output = output + String.fromCharCode(chr3);
-        }
-      }
-      output = Base64.UTF8Decode(output);
-      return output;
-    };
-
-    Base64.prototype.UTF8Encode = function(string) {
-      var c, n, utftext;
-      string = string.replace(/\r\n/g, "\n");
-      utftext = "";
-      n = 0;
-      while (n < string.length) {
-        c = string.charCodeAt(n);
-        if (c < 128) {
-          utftext += String.fromCharCode(c);
-        } else if ((c > 127) && (c < 2048)) {
-          utftext += String.fromCharCode((c >> 6) | 192);
-          utftext += String.fromCharCode((c & 63) | 128);
-        } else {
-          utftext += String.fromCharCode((c >> 12) | 224);
-          utftext += String.fromCharCode(((c >> 6) & 63) | 128);
-          utftext += String.fromCharCode((c & 63) | 128);
-        }
-        n++;
-      }
-      return utftext;
-    };
-
-    Base64.prototype.UTF8Decode = function(utftext) {
-      var c, c1, c2, c3, i, string;
-      string = "";
-      i = 0;
-      c = c1 = c2 = 0;
-      while (i < utftext.length) {
-        c = utftext.charCodeAt(i);
-        if (c < 128) {
-          string += String.fromCharCode(c);
-          i++;
-        } else if ((c > 191) && (c < 224)) {
-          c2 = utftext.charCodeAt(i + 1);
-          string += String.fromCharCode(((c & 31) << 6) | (c2 & 63));
-          i += 2;
-        } else {
-          c2 = utftext.charCodeAt(i + 1);
-          c3 = utftext.charCodeAt(i + 2);
-          string += String.fromCharCode(((c & 15) << 12) | ((c2 & 63) << 6) | (c3 & 63));
-          i += 3;
-        }
-      }
-      return string;
-    };
-
-    return Base64;
+    return Keyboard;
 
   })();
 
   /*
-  --------------- /home/gszikszai/git/crystal/source/utils/evented.coffee--------------
+  --------------- /home/gdot/github/crystal/source/utils/evented.coffee--------------
   */
 
 
@@ -1230,7 +1216,7 @@
   window.Evented = Utils.Evented;
 
   /*
-  --------------- /home/gszikszai/git/crystal/source/utils/history.coffee--------------
+  --------------- /home/gdot/github/crystal/source/utils/history.coffee--------------
   */
 
 
@@ -1270,7 +1256,7 @@
   })(Evented);
 
   /*
-  --------------- /home/gszikszai/git/crystal/source/utils/i18n.coffee--------------
+  --------------- /home/gdot/github/crystal/source/utils/i18n.coffee--------------
   */
 
 
@@ -1318,7 +1304,7 @@
   window.i18n = i18n;
 
   /*
-  --------------- /home/gszikszai/git/crystal/source/utils/path.coffee--------------
+  --------------- /home/gdot/github/crystal/source/utils/path.coffee--------------
   */
 
 
@@ -1373,164 +1359,7 @@
   })();
 
   /*
-  --------------- /home/gszikszai/git/crystal/source/types/keyboard-event.coffee--------------
-  */
-
-
-  SPECIAL_KEYS = {
-    backspace: 8,
-    tab: 9,
-    enter: 13,
-    shift: 16,
-    ctrl: 17,
-    alt: 18,
-    pause: 19,
-    capslock: 20,
-    esc: 27,
-    pageup: 33,
-    pagedown: 34,
-    end: 35,
-    home: 36,
-    left: 37,
-    up: 38,
-    right: 39,
-    down: 40,
-    insert: 45,
-    "delete": 46,
-    multiply: 106,
-    plus: 107,
-    minus: 109,
-    divide: 111
-  };
-
-  Object.defineProperty(KeyboardEvent.prototype, 'key', {
-    get: function() {
-      var value;
-      for (key in SPECIAL_KEYS) {
-        value = SPECIAL_KEYS[key];
-        if (value === this.keyCode) {
-          return key;
-        }
-      }
-      return String.fromCharCode(this.keyCode).toLowerCase();
-    }
-    /*
-    --------------- /home/gszikszai/git/crystal/source/utils/keyboard.coffee--------------
-    */
-
-  });
-
-  window.Keyboard = Keyboard = (function() {
-
-    function Keyboard() {
-      var _this = this;
-      document.addEventListener('keyup', function(e) {
-        var combo, pressed, sc, _i, _len, _ref, _ref1, _results;
-        console.log(e.keyCode);
-        e.preventDefault();
-        combo = [];
-        if (e.ctrlKey) {
-          combo.push("ctrl");
-        }
-        if (e.shiftKey) {
-          combo.push("shift");
-        }
-        if (e.altKey) {
-          combo.push("alt");
-        }
-        combo.push(e.key);
-        _ref = _this.shortcuts;
-        _results = [];
-        for (sc in _ref) {
-          method = _ref[sc];
-          pressed = true;
-          _ref1 = sc.split("+");
-          for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
-            key = _ref1[_i];
-            if (combo.indexOf(key) === -1) {
-              pressed = false;
-              break;
-            }
-          }
-          if (pressed) {
-            _this[method].call(_this);
-            break;
-          } else {
-            _results.push(void 0);
-          }
-        }
-        return _results;
-      });
-      if (typeof this.initialize === "function") {
-        this.initialize();
-      }
-    }
-
-    return Keyboard;
-
-  })();
-
-  /*
-  --------------- /home/gszikszai/git/crystal/source/utils/uri.coffee--------------
-  */
-
-
-  window.URI = Utils.URI = (function() {
-
-    function URI(uri) {
-      var m, parser, _ref, _ref1;
-      if (uri == null) {
-        uri = '';
-      }
-      parser = document.createElement('a');
-      parser.href = uri;
-      if (!!(m = uri.match(/\/\/(.*?):(.*?)@/))) {
-        _ref = m, m = _ref[0], this.user = _ref[1], this.password = _ref[2];
-      }
-      this.host = parser.hostname;
-      this.protocol = parser.protocol.replace(/:$/, '');
-      if (parser.port === "0") {
-        this.port = 80;
-      } else {
-        this.port = parser.port || 80;
-      }
-      this.hash = parser.hash.replace(/^#/, '');
-      this.query = ((_ref1 = uri.match(/\?(.*?)(?:#|$)/)) != null ? _ref1[1].parseQueryString() : void 0) || {};
-      this.path = parser.pathname.replace(/^\//, '');
-      this.parser = parser;
-      this;
-
-    }
-
-    URI.prototype.toString = function() {
-      var uri;
-      uri = this.protocol;
-      uri += "://";
-      if (this.user && this.password) {
-        uri += this.user.toString() + ":" + this.password.toString() + "@";
-      }
-      uri += this.host;
-      if (this.port !== 80) {
-        uri += ":" + this.port;
-      }
-      if (this.path !== "") {
-        uri += "/" + this.path;
-      }
-      if (Object.keys(this.query).length > 0) {
-        uri += "?" + this.query.toQueryString();
-      }
-      if (this.hash !== "") {
-        uri += "#" + this.hash;
-      }
-      return uri;
-    };
-
-    return URI;
-
-  })();
-
-  /*
-  --------------- /home/gszikszai/git/crystal/source/types/string.coffee--------------
+  --------------- /home/gdot/github/crystal/source/types/string.coffee--------------
   */
 
 
@@ -1616,7 +1445,7 @@
   };
 
   /*
-  --------------- /home/gszikszai/git/crystal/source/utils/request.coffee--------------
+  --------------- /home/gdot/github/crystal/source/utils/request.coffee--------------
   */
 
 
@@ -1752,7 +1581,177 @@
   });
 
   /*
-  --------------- /home/gszikszai/git/crystal/source/mvc/collectionElement.coffee--------------
+  --------------- /home/gdot/github/crystal/source/utils/uri.coffee--------------
+  */
+
+
+  window.URI = Utils.URI = (function() {
+
+    function URI(uri) {
+      var m, parser, _ref, _ref1;
+      if (uri == null) {
+        uri = '';
+      }
+      parser = document.createElement('a');
+      parser.href = uri;
+      if (!!(m = uri.match(/\/\/(.*?):(.*?)@/))) {
+        _ref = m, m = _ref[0], this.user = _ref[1], this.password = _ref[2];
+      }
+      this.host = parser.hostname;
+      this.protocol = parser.protocol.replace(/:$/, '');
+      if (parser.port === "0") {
+        this.port = 80;
+      } else {
+        this.port = parser.port || 80;
+      }
+      this.hash = parser.hash.replace(/^#/, '');
+      this.query = ((_ref1 = uri.match(/\?(.*?)(?:#|$)/)) != null ? _ref1[1].parseQueryString() : void 0) || {};
+      this.path = parser.pathname.replace(/^\//, '');
+      this.parser = parser;
+      this;
+
+    }
+
+    URI.prototype.toString = function() {
+      var uri;
+      uri = this.protocol;
+      uri += "://";
+      if (this.user && this.password) {
+        uri += this.user.toString() + ":" + this.password.toString() + "@";
+      }
+      uri += this.host;
+      if (this.port !== 80) {
+        uri += ":" + this.port;
+      }
+      if (this.path !== "") {
+        uri += "/" + this.path;
+      }
+      if (Object.keys(this.query).length > 0) {
+        uri += "?" + this.query.toQueryString();
+      }
+      if (this.hash !== "") {
+        uri += "#" + this.hash;
+      }
+      return uri;
+    };
+
+    return URI;
+
+  })();
+
+  /*
+  --------------- /home/gdot/github/crystal/source/utils/base64.coffee--------------
+  */
+
+
+  Utils.Base64 = (function() {
+
+    function Base64() {}
+
+    Base64.prototype._keyStr = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
+
+    Base64.prototype.encode = function(input) {
+      var chr1, chr2, chr3, enc1, enc2, enc3, enc4, i, output;
+      output = "";
+      i = 0;
+      input = Base64.UTF8Encode(input);
+      while (i < input.length) {
+        chr1 = input.charCodeAt(i++);
+        chr2 = input.charCodeAt(i++);
+        chr3 = input.charCodeAt(i++);
+        enc1 = chr1 >> 2;
+        enc2 = ((chr1 & 3) << 4) | (chr2 >> 4);
+        enc3 = ((chr2 & 15) << 2) | (chr3 >> 6);
+        enc4 = chr3 & 63;
+        if (isNaN(chr2)) {
+          enc3 = enc4 = 64;
+        } else {
+          if (isNaN(chr3)) {
+            enc4 = 64;
+          }
+        }
+        output = output + this._keyStr.charAt(enc1) + this._keyStr.charAt(enc2) + this._keyStr.charAt(enc3) + this._keyStr.charAt(enc4);
+      }
+      return output;
+    };
+
+    Base64.prototype.decode = function(input) {
+      var chr1, chr2, chr3, enc1, enc2, enc3, enc4, i, output;
+      output = "";
+      i = 0;
+      input = input.replace(/[^A-Za-z0-9\+\/\=]/g, "");
+      while (i < input.length) {
+        enc1 = this._keyStr.indexOf(input.charAt(i++));
+        enc2 = this._keyStr.indexOf(input.charAt(i++));
+        enc3 = this._keyStr.indexOf(input.charAt(i++));
+        enc4 = this._keyStr.indexOf(input.charAt(i++));
+        chr1 = (enc1 << 2) | (enc2 >> 4);
+        chr2 = ((enc2 & 15) << 4) | (enc3 >> 2);
+        chr3 = ((enc3 & 3) << 6) | enc4;
+        output = output + String.fromCharCode(chr1);
+        if (enc3 !== 64) {
+          output = output + String.fromCharCode(chr2);
+        }
+        if (enc4 !== 64) {
+          output = output + String.fromCharCode(chr3);
+        }
+      }
+      output = Base64.UTF8Decode(output);
+      return output;
+    };
+
+    Base64.prototype.UTF8Encode = function(string) {
+      var c, n, utftext;
+      string = string.replace(/\r\n/g, "\n");
+      utftext = "";
+      n = 0;
+      while (n < string.length) {
+        c = string.charCodeAt(n);
+        if (c < 128) {
+          utftext += String.fromCharCode(c);
+        } else if ((c > 127) && (c < 2048)) {
+          utftext += String.fromCharCode((c >> 6) | 192);
+          utftext += String.fromCharCode((c & 63) | 128);
+        } else {
+          utftext += String.fromCharCode((c >> 12) | 224);
+          utftext += String.fromCharCode(((c >> 6) & 63) | 128);
+          utftext += String.fromCharCode((c & 63) | 128);
+        }
+        n++;
+      }
+      return utftext;
+    };
+
+    Base64.prototype.UTF8Decode = function(utftext) {
+      var c, c1, c2, c3, i, string;
+      string = "";
+      i = 0;
+      c = c1 = c2 = 0;
+      while (i < utftext.length) {
+        c = utftext.charCodeAt(i);
+        if (c < 128) {
+          string += String.fromCharCode(c);
+          i++;
+        } else if ((c > 191) && (c < 224)) {
+          c2 = utftext.charCodeAt(i + 1);
+          string += String.fromCharCode(((c & 31) << 6) | (c2 & 63));
+          i += 2;
+        } else {
+          c2 = utftext.charCodeAt(i + 1);
+          c3 = utftext.charCodeAt(i + 2);
+          string += String.fromCharCode(((c & 15) << 12) | ((c2 & 63) << 6) | (c3 & 63));
+          i += 3;
+        }
+      }
+      return string;
+    };
+
+    return Base64;
+
+  })();
+
+  /*
+  --------------- /home/gdot/github/crystal/source/mvc/collectionElement.coffee--------------
   */
 
 
@@ -1769,7 +1768,7 @@
   });
 
   /*
-  --------------- /home/gszikszai/git/crystal/source/mvc/collection.coffee--------------
+  --------------- /home/gdot/github/crystal/source/mvc/collection.coffee--------------
   */
 
 
@@ -1878,7 +1877,7 @@
 
 
   /*
-  --------------- /home/gszikszai/git/crystal/source/types/color.coffee--------------
+  --------------- /home/gdot/github/crystal/source/types/color.coffee--------------
   */
 
 
@@ -2130,7 +2129,40 @@
   });
 
   /*
-  --------------- /home/gszikszai/git/crystal/source/types/unit.coffee--------------
+  --------------- /home/gdot/github/crystal/source/types/function.coffee--------------
+  */
+
+
+  Object.defineProperties(Function.prototype, {
+    delay: {
+      value: function() {
+        var args, bind, id, ms;
+        ms = arguments[0], bind = arguments[1], args = 3 <= arguments.length ? __slice.call(arguments, 2) : [];
+        if (bind == null) {
+          bind = this;
+        }
+        return id = setTimeout(ms, function() {
+          clearTimeout(id);
+          return this.apply(bind, args);
+        });
+      }
+    },
+    periodical: {
+      value: function() {
+        var args, bind, ms;
+        ms = arguments[0], bind = arguments[1], args = 3 <= arguments.length ? __slice.call(arguments, 2) : [];
+        if (bind == null) {
+          bind = this;
+        }
+        return setInterval(ms, function() {
+          return this.apply(bind, args);
+        });
+      }
+    }
+  });
+
+  /*
+  --------------- /home/gdot/github/crystal/source/types/unit.coffee--------------
   */
 
 
@@ -2189,40 +2221,14 @@
   });
 
   /*
-  --------------- /home/gszikszai/git/crystal/source/types/function.coffee--------------
+  --------------- /home/gdot/github/crystal/source/crystal.coffee--------------
   */
 
 
-  Object.defineProperties(Function.prototype, {
-    delay: {
-      value: function() {
-        var args, bind, id, ms;
-        ms = arguments[0], bind = arguments[1], args = 3 <= arguments.length ? __slice.call(arguments, 2) : [];
-        if (bind == null) {
-          bind = this;
-        }
-        return id = setTimeout(ms, function() {
-          clearTimeout(id);
-          return this.apply(bind, args);
-        });
-      }
-    },
-    periodical: {
-      value: function() {
-        var args, bind, ms;
-        ms = arguments[0], bind = arguments[1], args = 3 <= arguments.length ? __slice.call(arguments, 2) : [];
-        if (bind == null) {
-          bind = this;
-        }
-        return setInterval(ms, function() {
-          return this.apply(bind, args);
-        });
-      }
-    }
-  });
+  Types = {};
 
   /*
-  --------------- /home/gszikszai/git/crystal/source/dom/node-list.coffee--------------
+  --------------- /home/gdot/github/crystal/source/dom/node-list.coffee--------------
   */
 
 
@@ -2290,7 +2296,7 @@
   });
 
   /*
-  --------------- /home/gszikszai/git/crystal/source/dom/document-fragment.coffee--------------
+  --------------- /home/gdot/github/crystal/source/dom/document-fragment.coffee--------------
   */
 
 
@@ -2318,6 +2324,701 @@
   DocumentFragment.create = function() {
     return document.createDocumentFragment();
   };
+
+  /*
+  --------------- /home/gdot/github/crystal/source/store/store.coffee--------------
+  */
+
+
+  window.Store = Store.Store = (function() {
+
+    function Store(options) {
+      var a, ad, adapter, indexedDB, localStore, requestFileSystem, websql, xhr,
+        _this = this;
+      if (options == null) {
+        options = {};
+      }
+      this.prefix = options.prefix || "";
+      ad = parseInt(options.adapter) || 0;
+      if (options.serialize instanceof Function) {
+        this.$serialize = options.serialize;
+      }
+      if (options.deserialize instanceof Function) {
+        this.$deserialize = options.deserialize;
+      }
+      a = window;
+      indexedDB = 'indexedDB' in a || 'webkitIndexedDB' in a || 'mozIndexedDB' in a;
+      requestFileSystem = 'requestFileSystem' in a || 'webkitRequestFileSystem' in a;
+      websql = 'openDatabase' in a;
+      localStore = 'localStorage' in a;
+      xhr = 'XMLHttpRequest' in a;
+      adapter = (function() {
+        switch (ad) {
+          case 0:
+            if (indexedDB) {
+              return Store.IndexedDB;
+            } else if (openDatabase) {
+              return Store.WebSQL;
+            } else if (requestFileSystem) {
+              return Store.FileSystem;
+            } else if (xhr) {
+              return Store.Request;
+            } else if (localStorage) {
+              return Store.LocalStorage;
+            } else {
+              return Store.Memory;
+            }
+            break;
+          case 1:
+            if (!indexedDB) {
+              throw "IndexedDB not supported!";
+            }
+            return Store.IndexedDB;
+          case 2:
+            if (!openDatabase) {
+              throw "WebSQL not supported!";
+            }
+            return Store.WebSQL;
+          case 3:
+            if (!requestFileSystem) {
+              throw "FileSystem not supported!";
+            }
+            return Store.FileSystem;
+          case 4:
+            if (!localStorage) {
+              throw "LocalStorage not supported!";
+            }
+            return Store.LocalStorage;
+          case 5:
+            if (!xhr) {
+              throw "XHR not supported!";
+            }
+            return Store.Request;
+          case 6:
+            return Store.Memory;
+          default:
+            throw "Adapter not found!";
+        }
+      })();
+      ['get', 'set', 'remove', 'list'].forEach(function(item) {
+        return _this[item] = function() {
+          var args;
+          args = Array.prototype.slice.call(arguments);
+          if (this.running) {
+            this.chain(item, args);
+          } else {
+            this.call(item, args);
+          }
+          return this;
+        };
+      });
+      this.$chain = [];
+      this.adapter = new adapter();
+      this.adapter.init.call(this, function(store) {
+        _this.ready = true;
+        if (typeof options.callback === "function") {
+          options.callback(_this);
+        }
+        return _this.callChain();
+      });
+    }
+
+    Store.prototype.error = function() {
+      return console.error(arguments);
+    };
+
+    Store.prototype.serialize = function(obj) {
+      if (this.$serialize) {
+        return this.$serialize(obj);
+      }
+      return JSON.stringify(obj);
+    };
+
+    Store.prototype.deserialize = function(json) {
+      if (this.$deserialize) {
+        return this.$deserialize(obj);
+      }
+      return JSON.parse(json);
+    };
+
+    Store.prototype.chain = function(type, args) {
+      return this.$chain.push([type, args]);
+    };
+
+    Store.prototype.callChain = function() {
+      var first;
+      if (this.$chain.length > 0) {
+        first = this.$chain.shift();
+        return this.call(first[0], first[1]);
+      }
+    };
+
+    Store.prototype.call = function(type, args) {
+      var callback,
+        _this = this;
+      if (!this.ready) {
+        return this.chain(type, args);
+      } else {
+        this.running = true;
+        if ((type === 'set' && args.length === 3) || (type === 'list' && args.length === 1) || ((type === 'get' || type === 'remove') && args.length === 2)) {
+          callback = args.pop();
+        }
+        return this.adapter[type].apply(this, args.concat(function(data) {
+          if (typeof callback === 'function') {
+            callback(data);
+          }
+          _this.running = false;
+          return _this.callChain();
+        }));
+      }
+    };
+
+    Store.ADAPTER_BEST = 0;
+
+    Store.INDEXED_DB = 1;
+
+    Store.WEB_SQL = 2;
+
+    Store.FILE_SYSTEM = 3;
+
+    Store.LOCAL_STORAGE = 4;
+
+    Store.XHR = 5;
+
+    Store.MEMORY = 6;
+
+    return Store;
+
+  })();
+
+  /*
+  --------------- /home/gdot/github/crystal/source/store/adapters/xhr.coffee--------------
+  */
+
+
+  window.Store.Request = Store.XHR = (function() {
+
+    function XHR() {}
+
+    XHR.prototype.init = function(callback) {
+      this.request = new Request(this.prefix);
+      return callback(this);
+    };
+
+    XHR.prototype.get = function(key, callback) {
+      var _this = this;
+      return this.request.get({
+        key: key
+      }, function(response) {
+        console.log(response.body);
+        return typeof callback === "function" ? callback(_this.deserialize(response.body)) : void 0;
+      });
+    };
+
+    XHR.prototype.set = function(key, value, callback) {
+      var _this = this;
+      return this.request.post({
+        key: key,
+        value: this.serialize(value)
+      }, function(response) {
+        return typeof callback === "function" ? callback(response.body) : void 0;
+      });
+    };
+
+    XHR.prototype.list = function(callback) {
+      var _this = this;
+      return this.request.get(function(response) {
+        return typeof callback === "function" ? callback(response.body) : void 0;
+      });
+    };
+
+    XHR.prototype.remove = function(key, callback) {
+      var _this = this;
+      return this.request["delete"]({
+        key: key
+      }, function(response) {
+        return typeof callback === "function" ? callback(response.body) : void 0;
+      });
+    };
+
+    return XHR;
+
+  })();
+
+  /*
+  --------------- /home/gdot/github/crystal/source/store/adapters/file-system.coffee--------------
+  */
+
+
+  window.Store.FileSystem = Store.FileSystem = (function() {
+
+    function FileSystem() {}
+
+    FileSystem.prototype.init = function(callback) {
+      var rfs,
+        _this = this;
+      rfs = window.RequestFileSystem || window.webkitRequestFileSystem;
+      return rfs(window.PRESISTENT, 50 * 1024 * 1024, function(store) {
+        _this.storage = store;
+        return callback(_this);
+      }, this.error);
+    };
+
+    FileSystem.prototype.list = function(callback) {
+      var dirReader, entries, readEntries,
+        _this = this;
+      dirReader = this.storage.root.createReader();
+      entries = [];
+      readEntries = function() {
+        return dirReader.readEntries(function(results) {
+          if (!results.length) {
+            entries.sort();
+            return callback(entries.map(function(item) {
+              return item.name;
+            }));
+          } else {
+            entries = entries.concat(Array.prototype.slice.call(results));
+            return readEntries();
+          }
+        }, _this.error);
+      };
+      return readEntries();
+    };
+
+    FileSystem.prototype.remove = function(file, callback) {
+      var _this = this;
+      return this.storage.root.getFile(file, null, function(fe) {
+        return fe.remove(function() {
+          return callback(true);
+        }, function() {
+          return callback(false);
+        });
+      }, function() {
+        return callback(false);
+      });
+    };
+
+    FileSystem.prototype.get = function(file, callback) {
+      var _this = this;
+      return this.storage.root.getFile(file, null, function(fe) {
+        return fe.file(function(f) {
+          var reader;
+          reader = new FileReader();
+          reader.onloadend = function(e) {
+            return callback(_this.deserialize(e.target.result));
+          };
+          return reader.readAsText(f);
+        }, function() {
+          return callback(false);
+        });
+      }, function() {
+        return callback(false);
+      });
+    };
+
+    FileSystem.prototype.set = function(file, data, callback) {
+      var _this = this;
+      if (callback == null) {
+        callback = function() {};
+      }
+      return this.storage.root.getFile(file, {
+        create: true
+      }, function(fe) {
+        return fe.createWriter(function(fileWriter) {
+          var bb;
+          fileWriter.onwriteend = function(e) {
+            return callback(true);
+          };
+          fileWriter.onerror = function(e) {
+            return callback(false);
+          };
+          bb = new (window.WebKitBlobBuilder || BlobBuilder());
+          bb.append(_this.serialize(data));
+          return fileWriter.write(bb.getBlob('text/plain'));
+        }, function() {
+          return callback(false);
+        });
+      }, function() {
+        return callback(false);
+      });
+    };
+
+    return FileSystem;
+
+  })();
+
+  /*
+  --------------- /home/gdot/github/crystal/source/store/adapters/websql.coffee--------------
+  */
+
+
+  window.Store.WebSQL = Store.WebSQL = (function() {
+
+    function WebSQL() {}
+
+    WebSQL.prototype.init = function(callback) {
+      var _this = this;
+      this.exec = function(statement, callback, args) {
+        var _this = this;
+        if (callback == null) {
+          callback = (function() {});
+        }
+        return this.db.transaction(function(tr) {
+          return tr.executeSql(statement, args, callback, function(tr, err) {
+            return callback(false);
+          }, function() {
+            return callback(false);
+          });
+        });
+      };
+      this.db = openDatabase(this.prefix, '1.0', 'Store', 5 * 1024 * 1024);
+      return this.exec("CREATE TABLE IF NOT EXISTS store ( 'key' VARCHAR PRIMARY KEY NOT NULL, 'value' TEXT)", function() {
+        return callback(_this);
+      });
+    };
+
+    WebSQL.prototype.get = function(key, callback) {
+      var _this = this;
+      return this.exec("SELECT * FROM store WHERE key = '" + key + "'", function(tr, result) {
+        var ret;
+        if (result.rows.length > 0) {
+          ret = _this.deserialize(result.rows.item(0).value);
+        } else {
+          ret = false;
+        }
+        return callback.call(_this, ret);
+      });
+    };
+
+    WebSQL.prototype.set = function(key, value, callback) {
+      var _this = this;
+      return this.exec("SELECT * FROM store WHERE key = '" + key + "'", function(tr, result) {
+        if (!(result.rows.length > 0)) {
+          return _this.exec("INSERT INTO store (key, value) VALUES ('" + key + "','" + (_this.serialize(value)) + "')", function(tr, result) {
+            if (result.rowsAffected === 1) {
+              return callback(true);
+            } else {
+              return callback(false);
+            }
+          });
+        } else {
+          return _this.exec("UPDATE store SET value = '" + (_this.serialize(value)) + "' WHERE key = '" + key + "'", function(tr, result) {
+            if (result.rowsAffected === 1) {
+              return callback(true);
+            } else {
+              return callback(false);
+            }
+          });
+        }
+      });
+    };
+
+    WebSQL.prototype.list = function(callback) {
+      var _this = this;
+      return this.exec("SELECT key FROM store", function(tr, results) {
+        var keys, _i, _ref1, _results;
+        keys = [];
+        if (results.rows.length > 0) {
+          (function() {
+            _results = [];
+            for (var _i = 0, _ref1 = results.rows.length - 1; 0 <= _ref1 ? _i <= _ref1 : _i >= _ref1; 0 <= _ref1 ? _i++ : _i--){ _results.push(_i); }
+            return _results;
+          }).apply(this).forEach(function(i) {
+            return keys.push(results.rows.item(i).key);
+          });
+        }
+        return callback(keys);
+      });
+    };
+
+    WebSQL.prototype.remove = function(key, callback) {
+      var _this = this;
+      return this.exec("DELETE FROM store WHERE key = '" + key + "'", function(tr, result) {
+        if (result.rowsAffected === 1) {
+          return callback(true);
+        } else {
+          return callback(false);
+        }
+      });
+    };
+
+    return WebSQL;
+
+  })();
+
+  /*
+  --------------- /home/gdot/github/crystal/source/store/adapters/memory.coffee--------------
+  */
+
+
+  window.Store.Memory = Store.Memory = (function() {
+
+    function Memory() {}
+
+    Memory.prototype.init = function(callback) {
+      this.store = {};
+      return typeof callback === "function" ? callback(this) : void 0;
+    };
+
+    Memory.prototype.get = function(key, callback) {
+      var a, ret;
+      if ((a = this.store[key.toString()])) {
+        ret = this.deserialize(a);
+      } else {
+        ret = false;
+      }
+      return typeof callback === "function" ? callback(ret) : void 0;
+    };
+
+    Memory.prototype.set = function(key, value, callback) {
+      var ret;
+      try {
+        this.store[key.toString()] = this.serialize(value);
+        ret = true;
+      } catch (error) {
+        this.error(error);
+      }
+      return typeof callback === "function" ? callback(ret || false) : void 0;
+    };
+
+    Memory.prototype.list = function(callback) {
+      var ret;
+      ret = [];
+      try {
+        ret = (function() {
+          var _ref1, _results;
+          _ref1 = this.store;
+          _results = [];
+          for (key in _ref1) {
+            if (!__hasProp.call(_ref1, key)) continue;
+            _results.push(key);
+          }
+          return _results;
+        }).call(this);
+      } catch (error) {
+        this.error(error);
+      }
+      return typeof callback === "function" ? callback(ret) : void 0;
+    };
+
+    Memory.prototype.remove = function(key, callback) {
+      var ret;
+      if (this.store[key.toString()] === void 0) {
+        callback(false);
+        return;
+      }
+      try {
+        delete this.store[key.toString()];
+        ret = true;
+      } catch (error) {
+        this.error(error);
+      }
+      return typeof callback === "function" ? callback(ret || false) : void 0;
+    };
+
+    return Memory;
+
+  })();
+
+  /*
+  --------------- /home/gdot/github/crystal/source/store/adapters/indexed-db.coffee--------------
+  */
+
+
+  window.Store.IndexedDB = Store.IndexedDB = (function() {
+
+    function IndexedDB() {}
+
+    IndexedDB.prototype.init = function(callback) {
+      var a, request,
+        _this = this;
+      this.version = "1.0";
+      this.database = 'store';
+      a = window;
+      a.indexedDB = a.indexedDB || a.webkitIndexedDB || a.mozIndexedDB;
+      request = window.indexedDB.open(this.prefix);
+      request.onsuccess = function(e) {
+        var setVrequest;
+        _this.db = e.target.result;
+        if (_this.version !== _this.db.version) {
+          setVrequest = _this.db.setVersion(_this.version);
+          setVrequest.onfailure = _this.error;
+          return setVrequest.onsuccess = function(e) {
+            var store, trans;
+            store = _this.db.createObjectStore(_this.database, {
+              keyPath: "key"
+            });
+            trans = setVrequest.result;
+            return trans.oncomplete = function() {
+              return callback(this);
+            };
+          };
+        } else {
+          return callback(_this);
+        }
+      };
+      return request.onfailure = this.error;
+    };
+
+    IndexedDB.prototype.get = function(key, callback) {
+      var request, store, trans,
+        _this = this;
+      trans = this.db.transaction([this.database], 'readwrite');
+      store = trans.objectStore(this.database);
+      request = store.get(key.toString());
+      request.onerror = function() {
+        return callback(false);
+      };
+      return request.onsuccess = function(e) {
+        var result;
+        result = e.target.result;
+        if (result) {
+          return callback(_this.deserialize(result.value));
+        } else {
+          return callback(false);
+        }
+      };
+    };
+
+    IndexedDB.prototype.set = function(key, value, callback) {
+      var request, store, trans;
+      trans = this.db.transaction([this.database], 'readwrite');
+      store = trans.objectStore(this.database);
+      request = store.put({
+        key: key.toString(),
+        value: this.serialize(value)
+      });
+      request.onsuccess = function() {
+        return callback(true);
+      };
+      return request.onerror = this.error;
+    };
+
+    IndexedDB.prototype.list = function(callback) {
+      var cursorRequest, ret, store, trans,
+        _this = this;
+      trans = this.db.transaction([this.database], 'readwrite');
+      store = trans.objectStore(this.database);
+      cursorRequest = store.openCursor();
+      cursorRequest.onerror = this.error;
+      ret = [];
+      return cursorRequest.onsuccess = function(e) {
+        var result;
+        result = e.target.result;
+        if (result) {
+          ret.push(result.value.key);
+          return result["continue"]();
+        } else {
+          return callback(ret);
+        }
+      };
+    };
+
+    IndexedDB.prototype.remove = function(key, callback) {
+      var r, store, trans,
+        _this = this;
+      trans = this.db.transaction([this.database], 'readwrite');
+      store = trans.objectStore(this.database);
+      r = store.get(key.toString());
+      r.onerror = function() {
+        return callback(false);
+      };
+      return r.onsuccess = function(e) {
+        var result;
+        result = e.target.result;
+        if (result) {
+          r = store["delete"](key.toString());
+          r.onsuccess = function() {
+            return callback(true);
+          };
+          return r.onerror = function() {
+            return callback(false);
+          };
+        } else {
+          return callback(false);
+        }
+      };
+    };
+
+    return IndexedDB;
+
+  })();
+
+  /*
+  --------------- /home/gdot/github/crystal/source/store/adapters/localstorage.coffee--------------
+  */
+
+
+  window.Store.LocalStorage = Store.LocalStorage = (function() {
+
+    function LocalStorage() {}
+
+    LocalStorage.prototype.init = function(callback) {
+      if (this.prefix !== "") {
+        this.prefix += "::";
+      }
+      return callback(this);
+    };
+
+    LocalStorage.prototype.get = function(key, callback) {
+      var ret;
+      try {
+        ret = this.deserialize(localStorage.getItem(this.prefix + key.toString()));
+      } catch (error) {
+        this.error(error);
+      }
+      return callback(ret || false);
+    };
+
+    LocalStorage.prototype.set = function(key, value, callback) {
+      var ret;
+      try {
+        localStorage.setItem(this.prefix + key.toString(), this.serialize(value));
+        ret = true;
+      } catch (error) {
+        this.error(error);
+      }
+      return callback(ret || false);
+    };
+
+    LocalStorage.prototype.list = function(callback) {
+      var i, ret, _i, _ref1;
+      ret = [];
+      for (i = _i = 0, _ref1 = localStorage.length - 1; 0 <= _ref1 ? _i <= _ref1 : _i >= _ref1; i = 0 <= _ref1 ? ++_i : --_i) {
+        try {
+          key = localStorage.key(i);
+          if (this.prefix !== "") {
+            if (new RegExp("^" + this.prefix).test(key)) {
+              ret.push(key.replace(new RegExp("^" + this.prefix), ""));
+            }
+          } else {
+            ret.push(key);
+          }
+        } catch (error) {
+          this.error(error);
+        }
+      }
+      return callback(ret);
+    };
+
+    LocalStorage.prototype.remove = function(key, callback) {
+      var ret;
+      if (localStorage.getItem(this.prefix + key) === null) {
+        callback(false);
+        return;
+      }
+      try {
+        localStorage.removeItem(this.prefix + key.toString());
+        ret = true;
+      } catch (error) {
+        this.error(error);
+      }
+      return callback(ret || false);
+    };
+
+    return LocalStorage;
+
+  })();
 
 }).call(this);
  
