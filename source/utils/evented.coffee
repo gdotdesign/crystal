@@ -1,4 +1,4 @@
-Mediator = {
+window.Mediator = {
     events: {}
     listeners: {}
     fireEvent: (type,event)->
