@@ -86,6 +86,17 @@ describe "Element", ->
       e = Element.create()
       expect(e instanceof HTMLElement).toBe true
       expect(e.tag).toBe 'div'
+    it "should create attributes for css attribute expression", ->
+      e = Element.create("[type=text]")
+      expect(e instanceof HTMLElement).toBe true
+      expect(e.getAttribute('type')).toBe 'text'
+    it "should create attributes for css attribute expression (no value)", ->
+      e = Element.create("[type]")
+      expect(e instanceof HTMLElement).toBe true
+      expect(e.getAttribute('type')).toBe 'true'
+    it "should remove not valid characters form end tagname", ->
+      e = Element.create("!%/~'")
+      expect(e instanceof HTMLElement).toBe true
 
 describe 'Node', ->
   describe "first", ->

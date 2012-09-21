@@ -26,6 +26,7 @@ prefixes = Object.pluck(Attributes,'prefix').concat("$").join("|")
 Object.each Attributes, (key,value) ->
   value.regexp = new RegExp value.prefix+"(.*?)(?=#{prefixes})", "g"
 
+
 # Utility Functions
 _wrap = (fn) ->
   (args...) ->
@@ -41,9 +42,16 @@ _find = (property, selector, el) ->
 
 # Parse attributes from string (#id.class!title)
 _parseName = (name,atts = {}) ->
+  cssattributes = {}
+  name = name.replace /\[(.*)?=(.*)?\]/g, (m, name, value)->
+    cssattributes[name] = value
+    ""
+  name = name.replace /\[(.*)?\]/g, (m, name)->
+    cssattributes[name] = true
+    ""
   ret =
     tag: name.match(new RegExp("^.*?(?=#{prefixes})"))[0] or 'div'
-    attributes: {}
+    attributes: cssattributes
   Object.each Attributes, (key,value) ->
     if (m = name.match(value.regexp)) isnt null
       name = name.replace(value.regexp, "")
@@ -157,7 +165,7 @@ Element.create = (node, atts = {}) ->
   switch typeof node
     when 'string'
       {tag,attributes} = _parseName node, atts
-      node = document.createElement tag
+      node = document.createElement tag.replace /[^A-Za-z_-]/, ''
       for key, value of attributes
         if (desc = properties[key])
           node[key] = value

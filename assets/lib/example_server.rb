@@ -4,7 +4,7 @@ Layout = '''
   %script{:src => "/crystal", :type => "text/javascript"}
   %script{:src => "/js#{name}", :type => "text/javascript"}
 %body
-  #{file}
+  {{file}}
 '''
 class ExampleServer < Renee::Application
   app do
@@ -24,13 +24,15 @@ class ExampleServer < Renee::Application
       end
       respond! do
         headers({'Content-Type' => 'text/javascript'})
-        body `rake build:crystal`
+        body File.read('./build/crystal.is')
       end
     end
     remainder do |example|
+      code = File.read("./examples/#{example}/view.haml")
+      html = Layout.gsub '{{file}}', code
       respond! do
         headers({'Content-Type' => 'text/html'})
-        body Haml::Engine.new(Layout).render Object.new, {name: example, file: File.read("./examples/#{example}/view.haml")}
+        body Haml::Engine.new(html).render Object.new, {name: example}
       end
     end
   end
