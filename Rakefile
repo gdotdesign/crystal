@@ -34,6 +34,9 @@ task :nw do
 end
 
 namespace :build do
+  task :nw do
+    puts build
+  end
   task :crystal do
     puts build(/nw\//)
   end

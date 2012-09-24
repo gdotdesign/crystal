@@ -1,5 +1,3 @@
-# @require ./nw
-
 window.NWFile = class NWFile
   constructor: (@path) ->
     @fs = window.fs or require 'fs'
