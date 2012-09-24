@@ -2,6 +2,15 @@
 # @requires ./array
 
 Object.defineProperties String::,
+  escape:
+    value: ->
+      @replace /[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&"
+  ellipsis:
+    value: (length = 10) ->
+      if @length > length
+        @[0..10]+"..."
+      else
+        @
   compact:
     value: ->
       s = @valueOf().trim()
@@ -32,7 +41,7 @@ Object.defineProperties String::,
   entities:
     value: ->
       @replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
-    
+
   parseQueryString:
     value: ->
       ret = {}

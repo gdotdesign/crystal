@@ -1,10 +1,11 @@
 Layout = '''
 !!!
 %head
-  %script{:src => "/crystal", :type => "text/javascript"}
-  %script{:src => "/js#{name}", :type => "text/javascript"}
+  %script{:src => "/crystal", :type => "text/javascript", app: true}
+  %script{:src => "/js#{name}", :type => "text/javascript", app: true}
+  %link{rel: "stylesheet", href: "/style#{name}", app: true}
 %body
-  {{file}}
+  = yield
 '''
 class ExampleServer < Renee::Application
   app do
@@ -14,9 +15,16 @@ class ExampleServer < Renee::Application
         body `rake build:crystal`
       end
     end
+    part "style" do
+      remainder do |example|
+        respond! do
+          headers({'Content-Type' => 'text/css'})
+          body Sass::Engine.new(File.read("./examples/#{example}/style.sass")).render()
+        end
+      end
+    end
     part "js" do
       remainder do |example|
-        puts example
         respond! do
           headers({'Content-Type' => 'text/html'})
           body CoffeeScript.compile File.read("./examples/#{example}/script.coffee")
@@ -29,10 +37,9 @@ class ExampleServer < Renee::Application
     end
     remainder do |example|
       code = File.read("./examples/#{example}/view.haml")
-      html = Layout.gsub '{{file}}', code
       respond! do
         headers({'Content-Type' => 'text/html'})
-        body Haml::Engine.new(html).render Object.new, {name: example}
+        body Haml::Engine.new(Layout).render(Object.new, {name: example}) { Haml::Engine.new(code).render(Object.new) }
       end
     end
   end

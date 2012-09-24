@@ -43,7 +43,7 @@ _find = (property, selector, el) ->
 # Parse attributes from string (#id.class!title)
 _parseName = (name,atts = {}) ->
   cssattributes = {}
-  name = name.replace /\[(.*)?=(.*)?\]/g, (m, name, value)->
+  name = name.replace /\[(.*?)=(.*?)\]/g, (m, name, value)->
     cssattributes[name] = value
     ""
   name = name.replace /\[(.*)?\]/g, (m, name)->
@@ -165,7 +165,7 @@ Element.create = (node, atts = {}) ->
   switch typeof node
     when 'string'
       {tag,attributes} = _parseName node, atts
-      node = document.createElement tag.replace /[^A-Za-z_-]/, ''
+      node = document.createElement tag.replace /[^A-Za-z_\-0-9]/, ''
       for key, value of attributes
         if (desc = properties[key])
           node[key] = value
