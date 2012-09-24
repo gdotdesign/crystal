@@ -4,8 +4,8 @@ window.Platforms =
   WEB:3
   
 window.PLATFORM = if window.location.href.match(/^chrome-extension\:\/\//)
-    WEBSTORE
+    Platforms.WEBSTORE
   else if 'require' of window
-    NODE_WEBKIT
+    Platforms.NODE_WEBKIT
   else
-    WEB
+    Platforms.WEB
