@@ -18,7 +18,7 @@ window.Store = class Store.Store
       when 0
         if indexedDB
           Store.IndexedDB
-        else if openDatabase
+        else if websql
           Store.WebSQL
         else if requestFileSystem
           Store.FileSystem
@@ -32,7 +32,7 @@ window.Store = class Store.Store
         throw "IndexedDB not supported!" unless indexedDB
         Store.IndexedDB
       when 2
-        throw "WebSQL not supported!" unless openDatabase
+        throw "WebSQL not supported!" unless websql
         Store.WebSQL
       when 3
         throw "FileSystem not supported!" unless requestFileSystem

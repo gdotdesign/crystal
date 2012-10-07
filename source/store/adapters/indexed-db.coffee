@@ -2,21 +2,28 @@
 
 window.Store.IndexedDB = class Store.IndexedDB
     init: (callback) ->
-      @version = "1.0"
+      @version = "2"
       @database = 'store'
       a = window
       a.indexedDB = a.indexedDB || a.webkitIndexedDB || a.mozIndexedDB
-      request = window.indexedDB.open(@prefix)
+      request = window.indexedDB.open(@prefix, @version)
+      request.onupgradeneeded = (e) =>
+        @db = e.target.result
+        unless @db.objectStoreNames.contains("note")
+          store = @db.createObjectStore(@database, keyPath: "key")
       request.onsuccess = (e) =>
         @db = e.target.result
-        unless @version is @db.version
-          setVrequest = @db.setVersion(@version)
-          setVrequest.onfailure = @error
-          setVrequest.onsuccess = (e) =>
-            store = @db.createObjectStore(@database, keyPath: "key")
-            trans = setVrequest.result
-            trans.oncomplete = ->
-              callback @
+        if 'setVersion' in @db
+          unless @version is @db.version
+            setVrequest = @db.setVersion(@version)
+            setVrequest.onfailure = @error
+            setVrequest.onsuccess = (e) =>
+              store = @db.createObjectStore(@database, keyPath: "key")
+              trans = setVrequest.result
+              trans.oncomplete = ->
+                callback @
+          else
+            callback @
         else
           callback @
       request.onfailure = @error

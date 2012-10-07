@@ -16,10 +16,14 @@ describe "Function", ->
       a = =>
         @x++
       runs =>
-        a.periodical 10, @
+        @asd = a.periodical 10, @
       waitsFor ->
-        @x is 10
-      , 'Not ran', 100
+        if @x is 10
+          clearTimeout @asd
+          true
+        else
+          false
+      , 'Not ran', 200
       runs =>
         expect(@x).toBe 10
 
