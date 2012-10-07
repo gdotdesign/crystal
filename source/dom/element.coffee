@@ -86,6 +86,12 @@ methods_node =
     @querySelectorAll(selector)
   empty: ->
     @querySelectorAll("*").dispose()
+  moveUp: ->
+    if @parent and (prev = @prev())
+      @parent.insertBefore @, prev
+  moveDown: ->
+    if @parent and (next = @next())
+      @parent.insertBefore next, @
 
 # Methods only for HTMLElement, NodeList
 methods_element =
@@ -123,6 +129,10 @@ Object.defineProperty HTMLSelectElement::, 'selectedOption',
     @children[@selectedIndex] if @children
   set: (el) ->
     @selectedIndex = @children.indexOf el if @chidren.include(el)
+
+Object.defineProperty HTMLInputElement::, 'caretToEnd', value: ->
+  length = @value.length
+  @setSelectionRange(length, length)
 
 properties =
   tag:

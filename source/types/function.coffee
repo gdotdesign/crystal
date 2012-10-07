@@ -1,10 +1,12 @@
 Object.defineProperties Function::,
   delay:
     value: (ms,bind = @,args...) ->
-      id = setTimeout ms, ->
+      id = setTimeout =>
         clearTimeout id
         @apply bind, args
+      , ms
   periodical:
     value: (ms,bind = @, args...) ->
-      setInterval ms, ->
+      setInterval =>
         @apply bind, args
+      , ms

@@ -132,55 +132,137 @@ packages:
         description: |
         icon: 'strikethrough'
         methods:
-          - a
+          - name: test(regexp)
+            type: fn
+            description: 'Works like match but returns true or false'
+            example: |
+              s = 'deathstar'
+              console.log s.test /star/
+              # true
+          - name: escape()
+            type: fn
+            description: 'Escapes the string for regexp'
+            example: |
+              s = "\\'$"
+              console.log s.escape()
+              # \\\'\$
+          - name: ellipsis(length = 10)
+            type: fn
+            description: 'Cuts off and inserts ellipsis(…) at given length'
+            example: |
+              s = "This is a long text and will be cut off."
+              console.log s.ellipsis(13)
+              # This is a long...
+          - name: compact()
+            type: fn
+            description: 'Removes extra whitespace'
+            example: |
+              s = "There are    multiple   whitespace in    this!"
+              console.log s.compact()
+              # There are multiple whitespace in this!
+          - name: camelCase()
+            type: fn
+            description: 'Converts -, space, _ to camelcase'
+            example: |
+              s = "This-will be_converted"
+              console.log s.camelCase()
+              # ThisWillBeConverted
+          - name: hyphenate()
+            type: fn
+            description: 'Converts a camelcased string to a hyphenated string'
+            example: |
+              s = "ThisWillBeConverted"
+              console.log s.hyphenate()
+              # this-will-be-converted
+          - name: capitalize()
+            type: fn
+            description: 'Converts the first letter of each word in a string to uppercase'
+            example: |
+              s = "this will be converted"
+              console.log s.capitalize()
+              # This Will Be Converted
+          - name: indent(n = 2)
+            type: fn
+            description: 'Indents all lines of the string by n spaces'
+            example: |
+              s = "This will be indented."
+              console.log '"'+s.indent()+'"'
+              # "  This will be indented"
+          - name: outdent(n = 2)
+            type: fn
+            description: 'Outdents all lines of the string by n spaces'
+            example: |
+              s = "  This will be outdented."
+              console.log '"'+s.outdent()+'"'
+              # "This will be outdented"
+          - name: entities()
+            type: fn
+            description: 'Converts <,>, &, " into their html entities.'
+            example: |
+              s = "<>&\""
+              console.log s.entities()
+              # &amp;lt;&amp;gt;&amp;amp;&amp;quot;
+          - name: parseQueryString()
+            type: fn
+            description: 'Parses the string as query string'
+            example: |
+              s = "q=search%20string"
+              console.log s.parseQueryString().q
+              # search string
+          - name: random(length = 10)
+            type: self
+            description: 'Generates a random string'
+            example: |
+              console.log String.random(10)
+              # 10 character lenght random string
       Array:
         description: ''
         icon: 'th'
         methods:
-          - type: fn
-            name: "compact()"
+          - name: "compact()"
+            type: fn
             description: 'Returns a new Array with falsy values removed.'
             example: |
               a = [null, undefined, false, '',0,'Luke','Leia']
               console.log a.compact()
               # Luke, Leia
-          - type: fn
-            name: "uniq()"
+          - name: "uniq()"
+            type: fn
             description: 'Returns a new Array with duplicate values removed.'
             example: |
               a = ['Yoda','Wader','Luke','Leia','Yoda','Luke']
               console.log a.uniq()
               # Yoda, Wader, Luke, Leia
-          - type: fn
-            name: "remove(item)"
+          - name: "remove(item)"
+            type: fn
             description: 'Removes the first instance of given item from the array.'
             example: |
               a = ['Yoda','Wader','Luke','Leia','Yoda','Luke']
               console.log a.remove('Yoda')
               # Wader, Luke, Leia, Yoda, Luke
-          - type: fn
-            name: "removeAll(item)"
+          - name: "removeAll(item)"
+            type: fn
             description: 'Removes all instances of given item from the array.'
             example: |
               a = ['Yoda','Wader','Luke','Leia','Yoda','Luke']
               console.log a.removeAll('Yoda')
               # Wader, Luke, Leia, Luke
-          - type: fn
-            name: "shuffle()"
+          - name: "shuffle()"
+            type: fn
             description: 'Arranges items in the array randomly.'
             example: |
               a = ['Yoda','Wader','Luke','Leia','Yoda','Luke']
               console.log a.shuffle('Yoda')
               # a random combination of the items 
-          - type: fn
-            name: "include()"
+          - name: "include()"
+            type: fn
             description: 'Return true if the item is included in the array false if not.'
             example: |
               a = ['Yoda','Wader','Luke','Leia','Yoda','Luke']
               console.log a.include('Yoda')
               # true
-          - type: fn
-            name: "pluck()"
+          - name: "pluck()"
+            type: fn
             description: 'Returns a new Array of the given property of the items.'
             example: |
               a = [
@@ -189,31 +271,29 @@ packages:
               ]
               console.log a.pluck('name')
               # Wader, Luke
-          - type: fn
-            name: "dup()"
+          - name: "dup()"
+            type: fn
             description: 'Creates a duplicate of the array.'
             example: |
               a = ['Yoda','Wader','Luke','Leia','Yoda','Luke']
               console.log a.dup()
               # Yoda, Wader, Luke, Leia, Yoda, Luke
-
-
-          - type: prop
-            name: "sample"
+          - name: "sample"
+            type: prop
             description: 'Returns a random item from the array.'
             example: |
               a = ['Yoda','Wader','Luke','Leia','Yoda','Luke']
               console.log a.sample
               # Any Star Wars character above
-          - type: prop
-            name: "first"
+          - name: "first"
+            type: prop
             description: 'Returns first item from the array'
             example: |
               a = ['Yoda','Wader','Luke','Leia','Yoda','Luke']
               console.log a.first
               # Yoda
-          - type: prop
-            name: "last"
+          - name: "last"
+            type: prop
             description: 'Returns the last item from the array'
             example: |
               a = ['Yoda','Wader','Luke','Leia','Yoda','Luke']
