@@ -28,6 +28,24 @@ describe "Date", ->
     it 'should format mintues (with leading zero)', ->
       expect(@d.format("%T")).toBe '09'
 
+  describe 'ago', ->
+    xit "", ->
+
   describe 'month', ->
     it "should return month", ->
       expect(@d.month).toBe 4
+  describe 'year', ->
+    it "should return year", ->
+      expect(@d.year).toBe 2012
+  describe 'hours', ->
+    it "should return hours", ->
+      expect(@d.hours).toBe 5
+  describe 'minutes', ->
+    it "should return minutes", ->
+      expect(@d.minutes).toBe 9
+  describe 'seconds', ->
+    it "should return seconds", ->
+      expect(@d.seconds).toBe 0
+  describe 'day', ->
+    it "should return day", ->
+      expect(@d.day).toBe 6
