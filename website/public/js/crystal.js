@@ -4,7 +4,8 @@
     __hasProp = {}.hasOwnProperty,
     __slice = [].slice,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
-    __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
+    __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
+    __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
   MVC = {};
 
@@ -276,7 +277,7 @@
         if (val > max) {
           return val % max;
         } else if (val < min) {
-          return max - val % max;
+          return max - Math.abs(val % max);
         } else {
           return val;
         }
@@ -295,7 +296,7 @@
       minutes: " minutes ago",
       hours: " hours ago",
       days: " days ago",
-      now: "just no"
+      now: "just now"
     },
     format: "%Y-%M-%D"
   };
@@ -305,12 +306,13 @@
       get: function() {
         var diff;
         diff = +new Date() - this;
+        console.log(diff / 1..minutes);
         if (diff < 1..seconds) {
-          return "just now";
+          return Date.Locale.ago.now;
         } else if (diff < 1..minutes) {
           return Math.round(diff / 1000) + Date.Locale.ago.seconds;
-        } else if (diff < 1..seconds) {
-          return Math.round(diff / 1..minutes) + Date.Locale.ago.minues;
+        } else if (diff < 1..hours) {
+          return Math.round(diff / 1..minutes) + Date.Locale.ago.minutes;
         } else if (diff < 1..days) {
           return Math.round(diff / 1..hours) + Date.Locale.ago.hours;
         } else if (diff < 30..days) {
@@ -475,7 +477,7 @@
     }
   });
 
-  ['debug', 'error', 'fatal', 'info', 'warn'].forEach(function(type) {
+  ['debug', 'error', 'fatal', 'info', 'warn', 'log'].forEach(function(type) {
     return ConsoleLogger.prototype["_" + type] = function(text) {
       if (type === 'debug') {
         type = 'log';
@@ -939,39 +941,107 @@
 
 
   SPECIAL_KEYS = {
-    backspace: 8,
-    tab: 9,
-    enter: 13,
-    shift: 16,
-    ctrl: 17,
-    alt: 18,
-    pause: 19,
-    capslock: 20,
-    esc: 27,
-    pageup: 33,
-    pagedown: 34,
-    end: 35,
-    home: 36,
-    left: 37,
-    up: 38,
-    right: 39,
-    down: 40,
-    insert: 45,
-    "delete": 46,
-    multiply: 106,
-    plus: 107,
-    minus: 109,
-    divide: 111
+    0: "\\",
+    8: "backspace",
+    9: "tab",
+    12: "num",
+    13: "enter",
+    16: "shift",
+    17: "ctrl",
+    18: "alt",
+    19: "pause",
+    20: "capslock",
+    27: "esc",
+    32: "space",
+    33: "pageup",
+    34: "pagedown",
+    35: "end",
+    36: "home",
+    37: "left",
+    38: "up",
+    39: "right",
+    40: "down",
+    44: "print",
+    45: "insert",
+    46: "delete",
+    48: "0",
+    49: "1",
+    50: "2",
+    51: "3",
+    52: "4",
+    53: "5",
+    54: "6",
+    55: "7",
+    56: "8",
+    57: "9",
+    65: "a",
+    66: "b",
+    67: "c",
+    68: "d",
+    69: "e",
+    70: "f",
+    71: "g",
+    72: "h",
+    73: "i",
+    74: "j",
+    75: "k",
+    76: "l",
+    77: "m",
+    78: "n",
+    79: "o",
+    80: "p",
+    81: "q",
+    82: "r",
+    83: "s",
+    84: "t",
+    85: "u",
+    86: "v",
+    87: "w",
+    88: "x",
+    89: "y",
+    90: "z",
+    91: "cmd",
+    92: "cmd",
+    93: "cmd",
+    96: "num_0",
+    97: "num_1",
+    98: "num_2",
+    99: "num_3",
+    100: "num_4",
+    101: "num_5",
+    102: "num_6",
+    103: "num_7",
+    104: "num_8",
+    105: "num_9",
+    106: "multiply",
+    107: "add",
+    108: "enter",
+    109: "subtract",
+    110: "decimal",
+    111: "divide",
+    124: "print",
+    144: "num",
+    145: "scroll",
+    186: ";",
+    187: "=",
+    188: ",",
+    189: "-",
+    190: ".",
+    191: "/",
+    192: "`",
+    219: "[",
+    220: "\\",
+    221: "]",
+    222: "\'",
+    224: "cmd",
+    57392: "ctrl",
+    63289: "num"
   };
 
   Object.defineProperty(KeyboardEvent.prototype, 'key', {
     get: function() {
-      var value;
-      for (key in SPECIAL_KEYS) {
-        value = SPECIAL_KEYS[key];
-        if (value === this.keyCode) {
-          return key;
-        }
+      if (key = SPECIAL_KEYS[this.keyCode]) {
+        return key;
       }
       return String.fromCharCode(this.keyCode).toLowerCase();
     }
@@ -1103,52 +1173,8 @@
       return "[" + this.__proto__.constructor.name + "]";
     };
 
-    Evented.prototype.addProperty = function(name, value, enumerable) {
-      var _ref;
-      if (enumerable == null) {
-        enumerable = false;
-      }
-      if ((_ref = this.__properties__) == null) {
-        this.__properties__ = [];
-      }
-      if (!(value instanceof Function)) {
-        this.__properties__[name] = value;
-      }
-      return Object.defineProperty(this, name, {
-        get: function() {
-          return this.__properties__[name];
-        },
-        set: function(val) {
-          var _this = this;
-          this.__properties__[name] = val;
-          if (value instanceof Function) {
-            value(val);
-          }
-          this.trigger('change');
-          this.trigger('change:' + name);
-          if (this._publish) {
-            if (this._id) {
-              clearTimeout(this._id);
-            }
-            return this._id = setTimeout(function() {
-              return _this.publish('action');
-            }, 300);
-          }
-        },
-        enumerable: !!enumerable
-      });
-    };
-
-    Evented.prototype.publish = function() {
-      var args, event, type;
-      type = arguments[0], args = 2 <= arguments.length ? __slice.call(arguments, 1) : [];
-      event = new Event(type, this);
-      args.unshift(event);
-      return Mediator.fireEvent(type, args);
-    };
-
     Evented.prototype.trigger = function() {
-      var args, callback, event, type, _i, _len, _ref, _ref1;
+      var args, callback, event, type, _i, _len, _ref, _ref1, _results;
       type = arguments[0], args = 2 <= arguments.length ? __slice.call(arguments, 1) : [];
       if ((_ref = this._events) == null) {
         this._events = {};
@@ -1157,12 +1183,13 @@
       args.push(event);
       if (this._events[type]) {
         _ref1 = this._events[type];
+        _results = [];
         for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
           callback = _ref1[_i];
-          callback.apply(this, args);
+          _results.push(callback.apply(this, args));
         }
+        return _results;
       }
-      return event.destroy();
     };
 
     Evented.prototype.on = function(type, callback) {
@@ -1191,6 +1218,14 @@
       }
     };
 
+    Evented.prototype.publish = function() {
+      var args, event, type;
+      type = arguments[0], args = 2 <= arguments.length ? __slice.call(arguments, 1) : [];
+      event = new Event(type, this);
+      args.unshift(event);
+      return Mediator.fireEvent(type, args);
+    };
+
     Evented.prototype.subscribe = function(type, callback) {
       if (!Mediator.events[type]) {
         Mediator.addListener(type, function(event) {
@@ -1213,7 +1248,6 @@
 
     Evented.prototype.unsubscribe = function(type, callback) {
       if (Mediator.events[type] === void 0) {
-        console.error("No channel '" + type + "' exists");
         return false;
       }
       if (Mediator.events[type].include(callback)) {
@@ -1268,54 +1302,6 @@
     return History;
 
   })(Evented);
-
-  /*
-  --------------- /home/gdot/github/crystal/source/utils/i18n.coffee--------------
-  */
-
-
-  i18n = (function() {
-
-    function i18n() {}
-
-    i18n.locales = {};
-
-    i18n.t = function(path) {
-      var arg, locale, params, str, _path;
-      if (arguments.length === 2) {
-        if ((arg = arguments[1]) instanceof Object) {
-          params = arg;
-        } else {
-          locale = arg;
-        }
-      }
-      if (arguments.length === 3) {
-        locale = arguments[2];
-        params = arguments[1];
-      }
-      if (locale == null) {
-        locale = document.querySelector('html').getAttribute('lang') || 'en';
-      }
-      _path = new Path(this.locales[locale]);
-      str = _path.lookup(path);
-      if (!str) {
-        console.warn("No translation found for '" + path + "' for locale '" + locale + "'");
-        return path;
-      }
-      return str.replace(/\{\{(.*?)\}\}/g, function(m, prop) {
-        if (params[prop] !== void 0) {
-          return params[prop].toString();
-        } else {
-          return '';
-        }
-      });
-    };
-
-    return i18n;
-
-  })();
-
-  window.i18n = i18n;
 
   /*
   --------------- /home/gdot/github/crystal/source/utils/path.coffee--------------
@@ -1373,17 +1359,73 @@
   })();
 
   /*
+  --------------- /home/gdot/github/crystal/source/utils/i18n.coffee--------------
+  */
+
+
+  i18n = (function() {
+
+    function i18n() {}
+
+    i18n.locales = {};
+
+    i18n.t = function(path) {
+      var arg, locale, params, str, _path;
+      if (arguments.length === 2) {
+        if ((arg = arguments[1]) instanceof Object) {
+          params = arg;
+        } else {
+          locale = arg;
+        }
+      }
+      if (arguments.length === 3) {
+        locale = arguments[2];
+        params = arguments[1];
+      }
+      if (locale == null) {
+        locale = document.querySelector('html').getAttribute('lang') || 'en';
+      }
+      _path = new Path(this.locales[locale]);
+      str = _path.lookup(path);
+      if (!str) {
+        console.warn("No translation found for '" + path + "' for locale '" + locale + "'");
+        return path;
+      }
+      return str.replace(/\{\{(.*?)\}\}/g, function(m, prop) {
+        if (params[prop] !== void 0) {
+          return params[prop].toString();
+        } else {
+          return '';
+        }
+      });
+    };
+
+    return i18n;
+
+  })();
+
+  window.i18n = i18n;
+
+  /*
   --------------- /home/gdot/github/crystal/source/types/string.coffee--------------
   */
 
 
   Object.defineProperties(String.prototype, {
     wordWrap: {
-      value: function(count) {
-        if (count == null) {
-          count = 15;
+      value: function(width, separator, cut) {
+        var regex;
+        if (width == null) {
+          width = 15;
         }
-        return this.replace(new RegExp("\w{" + count + "}", 'g'), "$& ").replace(new RegExp("(.{1," + count + "}(?:\s|$))", "g"), "$1\n");
+        if (separator == null) {
+          separator = "\n";
+        }
+        if (cut == null) {
+          cut = false;
+        }
+        regex = ".{1," + width + "}(\\s|$)" + (cut ? "|.{" + width + "}|.+$" : "|\\S+?(\\s|$)");
+        return this.match(RegExp(regex, "g")).join(separator);
       }
     },
     test: {
@@ -1393,7 +1435,7 @@
     },
     escape: {
       value: function() {
-        return this.replace(/[-[\]{}()*+?.,\/'\\^$|#\s]/g, "\\$&");
+        return this.replace(/[-[\]{}()*+?.\/'\\^$|#]/g, "\\$&");
       }
     },
     ellipsis: {
@@ -1402,9 +1444,9 @@
           length = 10;
         }
         if (this.length > length) {
-          return this.slice(0, length + 1 || 9e9) + "...";
+          return this.slice(0, (length - 1) + 1 || 9e9) + "...";
         } else {
-          return this;
+          return this.valueOf();
         }
       }
     },
@@ -1478,7 +1520,7 @@
   });
 
   String.random = function(length) {
-    var chars, i, str, _i;
+    var chars, i, str, _i, _ref;
     if (length == null) {
       length = 10;
     }
@@ -1487,7 +1529,7 @@
       length = Math.floor(Math.random() * chars.length);
     }
     str = '';
-    for (i = _i = 0; 0 <= length ? _i <= length : _i >= length; i = 0 <= length ? ++_i : --_i) {
+    for (i = _i = 0, _ref = length - 1; 0 <= _ref ? _i <= _ref : _i >= _ref; i = 0 <= _ref ? ++_i : --_i) {
       str += chars.sample;
     }
     return str;
@@ -2168,27 +2210,29 @@
   Object.defineProperties(Function.prototype, {
     delay: {
       value: function() {
-        var args, bind, id, ms;
+        var args, bind, id, ms,
+          _this = this;
         ms = arguments[0], bind = arguments[1], args = 3 <= arguments.length ? __slice.call(arguments, 2) : [];
         if (bind == null) {
           bind = this;
         }
-        return id = setTimeout(ms, function() {
-          clearTimeout(id);
-          return this.apply(bind, args);
-        });
+        return id = setTimeout(function() {
+          _this.apply(bind, args);
+          return clearTimeout(id);
+        }, ms);
       }
     },
     periodical: {
       value: function() {
-        var args, bind, ms;
+        var args, bind, ms,
+          _this = this;
         ms = arguments[0], bind = arguments[1], args = 3 <= arguments.length ? __slice.call(arguments, 2) : [];
         if (bind == null) {
           bind = this;
         }
-        return setInterval(ms, function() {
-          return this.apply(bind, args);
-        });
+        return setInterval(function() {
+          return _this.apply(bind, args);
+        }, ms);
       }
     }
   });
@@ -2198,20 +2242,21 @@
   */
 
 
-  Unit = (function() {
+  window.Unit = Unit = (function() {
 
     Unit.UNITS = {
-      px: 0,
-      em: 1,
-      pt: 2
+      px: true,
+      em: true
     };
 
-    Unit.TABLE = [1, 16, 16 / 12];
-
-    function Unit(value) {
+    function Unit(value, basePX) {
       if (value == null) {
         value = "0px";
       }
+      if (basePX == null) {
+        basePX = 16;
+      }
+      this.base = basePX;
       this.set(value);
     }
 
@@ -2222,29 +2267,33 @@
       if (!(type in Unit.UNITS)) {
         return this._value + "px";
       }
-      return Math.round(this._value / Unit.TABLE[Unit.UNITS[type]] * 100) / 100 + type;
+      if (type === 'em') {
+        return (this._value / this.base) + "em";
+      } else {
+        return this._value + "px";
+      }
     };
 
     Unit.prototype.set = function(value) {
-      var factor, m, v;
-      if ((m = value.match(/(\d+)(\w{2,5})$/))) {
-        v = parseInt(m[1]) || 0;
-        factor = Unit.TABLE[Unit.UNITS[m[2]]];
-        if (isNaN(v) || factor === void 0) {
-          throw 'Wrong Unit format!';
+      var m, match, type, v;
+      if ((match = value.match(/(\d+)(px|em)$/))) {
+        m = match[0], value = match[1], type = match[2];
+        v = parseFloat(value) || 0;
+        if (type === 'em') {
+          return this._value = parseInt(this.base * v);
+        } else {
+          return this._value = parseInt(v);
         }
       } else {
-        v = 0;
-        factor = 0;
+        throw 'Wrong Unit format!';
       }
-      return this._value = v * factor;
     };
 
     return Unit;
 
   })();
 
-  ['px', 'em', 'pt'].forEach(function(type) {
+  ['px', 'em'].forEach(function(type) {
     return Object.defineProperty(Unit.prototype, type, {
       get: function() {
         return this.toString(type);
@@ -2353,7 +2402,7 @@
     }
   });
 
-  DocumentFragment.create = function() {
+  DocumentFragment.Create = function() {
     return document.createDocumentFragment();
   };
 
@@ -2402,7 +2451,7 @@
           case 0:
             if (indexedDB) {
               return Store.IndexedDB;
-            } else if (openDatabase) {
+            } else if (websql) {
               return Store.WebSQL;
             } else if (requestFileSystem) {
               return Store.FileSystem;
@@ -2420,7 +2469,7 @@
             }
             return Store.IndexedDB;
           case 2:
-            if (!openDatabase) {
+            if (!websql) {
               throw "WebSQL not supported!";
             }
             return Store.WebSQL;
@@ -2877,27 +2926,40 @@
     IndexedDB.prototype.init = function(callback) {
       var a, request,
         _this = this;
-      this.version = "1.0";
+      this.version = "2";
       this.database = 'store';
       a = window;
       a.indexedDB = a.indexedDB || a.webkitIndexedDB || a.mozIndexedDB;
-      request = window.indexedDB.open(this.prefix);
+      request = window.indexedDB.open(this.prefix, this.version);
+      request.onupgradeneeded = function(e) {
+        var store;
+        _this.db = e.target.result;
+        if (!_this.db.objectStoreNames.contains("note")) {
+          return store = _this.db.createObjectStore(_this.database, {
+            keyPath: "key"
+          });
+        }
+      };
       request.onsuccess = function(e) {
         var setVrequest;
         _this.db = e.target.result;
-        if (_this.version !== _this.db.version) {
-          setVrequest = _this.db.setVersion(_this.version);
-          setVrequest.onfailure = _this.error;
-          return setVrequest.onsuccess = function(e) {
-            var store, trans;
-            store = _this.db.createObjectStore(_this.database, {
-              keyPath: "key"
-            });
-            trans = setVrequest.result;
-            return trans.oncomplete = function() {
-              return callback(this);
+        if (__indexOf.call(_this.db, 'setVersion') >= 0) {
+          if (_this.version !== _this.db.version) {
+            setVrequest = _this.db.setVersion(_this.version);
+            setVrequest.onfailure = _this.error;
+            return setVrequest.onsuccess = function(e) {
+              var store, trans;
+              store = _this.db.createObjectStore(_this.database, {
+                keyPath: "key"
+              });
+              trans = setVrequest.result;
+              return trans.oncomplete = function() {
+                return callback(this);
+              };
             };
-          };
+          } else {
+            return callback(_this);
+          }
         } else {
           return callback(_this);
         }

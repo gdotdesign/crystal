@@ -7,12 +7,14 @@ describe "Number", ->
     it 'should retrun number if the number is between min and max', ->
       expect((10).clamp(20,30)).toBe 20
   describe 'clampRange', ->
-    it 'clampRange should retrun modulus if the number is grater then max', ->
+    it 'should retrun modulus if the number is grater then max', ->
       expect((40).clampRange(20,30)).toBe 10
-    it 'clampRange should retrun modulus if the number is lower then min', ->
+    it 'should retrun modulus if the number is lower then min', ->
       expect((10).clampRange(20,30)).toBe 20
-    it 'clampRange should retrun number if the number is between min and max', ->
+    it 'should retrun number if the number is between min and max', ->
       expect((25).clampRange(20,30)).toBe 25
+    it 'should retrun modulus if the number is lower then min and negative', ->
+      expect((-20).clampRange(0,360)).toBe 340
   describe "upto", ->
     it 'should iterate up to number', ->
       i = 0

@@ -29,8 +29,25 @@ describe "Date", ->
       expect(@d.format("%T")).toBe '09'
 
   describe 'ago', ->
-    xit "", ->
-
+    it "should return just now", ->
+      d = new Date(Date.now() - (0.5).seconds)
+      expect(d.ago).toBe Date.Locale.ago.now
+    it "should return seconds", ->
+      d = new Date(Date.now() - (20).seconds)
+      expect(d.ago).toBe "20"+Date.Locale.ago.seconds
+    it "should return minutes", ->
+      d = new Date(Date.now() - (20).minutes)
+      expect(d.ago).toBe "20"+Date.Locale.ago.minutes
+    it "should return hours", ->
+      d = new Date(Date.now() - (20).hours)
+      expect(d.ago).toBe "20"+Date.Locale.ago.hours
+    it "should return days", ->
+      d = new Date(Date.now() - (20).days)
+      expect(d.ago).toBe "20"+Date.Locale.ago.days
+    it "should return date", ->
+      d = new Date(Date.now() - (40).days)
+      expect(d.ago).toBe d.format()
+      
   describe 'month', ->
     it "should return month", ->
       expect(@d.month).toBe 4

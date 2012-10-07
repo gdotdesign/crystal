@@ -1,4 +1,4 @@
-describe 'i18n', ->
+describe 'Keyboard', ->
 
   key = Object.getOwnPropertyDescriptor(KeyboardEvent::,'key').get
   

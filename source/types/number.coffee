@@ -49,6 +49,6 @@ Object.defineProperties Number::,
       if val > max 
         val % max
       else if val < min 
-        max - val % max
+        max - Math.abs(val % max)
       else
         val

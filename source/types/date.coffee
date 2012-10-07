@@ -5,19 +5,20 @@ Date.Locale =
     minutes: " minutes ago"
     hours: " hours ago"
     days: " days ago"
-    now: "just no"
+    now: "just now"
   format: "%Y-%M-%D"
 
 Object.defineProperties Date::,
   ago:
     get: ->
       diff = +new Date()-@
+      console.log diff/(1).minutes
       if diff < (1).seconds
-        "just now"
+        Date.Locale.ago.now
       else if diff < (1).minutes
         Math.round(diff/1000)+Date.Locale.ago.seconds
-      else if diff < (1).seconds
-        Math.round(diff/(1).minutes)+Date.Locale.ago.minues
+      else if diff < (1).hours
+        Math.round(diff/(1).minutes)+Date.Locale.ago.minutes
       else if diff < (1).days
         Math.round(diff/(1).hours)+Date.Locale.ago.hours
       else if diff < (30).days

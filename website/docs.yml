@@ -86,6 +86,181 @@ packages:
   Types:
     icon: book
     classes:
+      Unit:
+        description: "PX / EM conversion"
+        icon: "text-height"
+        methods:
+          - name: 'constructor(value = "0px", basePx = 16)'
+            type: new
+            description: "Creates a new Unit instance."
+            example: |
+              u = new Unit()
+              console.log u.px
+              # 0px
+          - name: 'set(value = "0px")'
+            type: fn
+            description: "Sets self value"
+            example: |
+              u = new Unit()
+              u.set '10px'
+              console.log u.px
+              # 10px
+          - name: "base"
+            type: prop
+            description: "Base pixel size for calculating em"
+            example: |
+              u = new Unit()
+              u.base = 24
+              u.set '12px'
+              console.log u.em
+              # 0.5em
+          - name: "px"
+            type: prop
+            description: "Returns self value in pixels"
+            example: |
+              u = new Unit()
+              u.set '10px'
+              console.log u.px
+              # 10px
+          - name: "em"
+            type: prop
+            description: "Returns self value in ems"
+            example: |
+              u = new Unit()
+              u.set '8px'
+              console.log u.em
+              # 0.5em
+      Number:
+        description: |
+        icon: 'plus'
+        methods:
+          - name: "upto(n, fn = (i) ->, bound = @)"
+            type: fn
+            description: "Iterates from self up to n"
+            example: |
+              (0).upto 5, (i)->
+                console.log i
+              # 0 1 2 3 4 5
+          - name: "downto(n, fn = (i) ->, bound = @)"
+            type: fn
+            description: "Iterates from self down to n"
+            example: |
+              (5).downto 0, (i)->
+                console.log i
+              # 5 4 3 2 1 0
+          - name: "times(fn = (i) ->, bound = @)"
+            type: fn
+            description: "Runs fn self times"
+            example: |
+              (4).times (i)->
+                console.log i
+              # 1 2 3 4
+          - name: "clamp(lowerLimit, upperLimit)"
+            type: fn
+            description: "Returns the lowerLimit if self is smaller then lowerLimit, upperLimit if self is bigger than upperLimit else returns self."
+            example: |
+              console.log (10).clamp 5, 8
+              console.log (10).clamp 5, 12
+              console.log (10).clamp 12, 14
+              # 8, 10, 12
+          - name: "clampRange(lowerLimit, upperLimit)"
+            type: fn
+            description: "Same as calmp but returns remainder subtracted or added"
+            example: |
+              console.log (370).clampRange 0, 360
+              console.log (-20).clampRange 0, 360
+              # 10, 340
+          - name: "seconds"
+            type: prop
+            description: "Returns slef seconds in milliseconds"
+            example: |
+              console.log (1).seconds
+              # 1000
+          - name: "minutes"
+            type: prop
+            description: "Returns slef minutes in milliseconds"
+            example: |
+              console.log  (1).minutes
+              # 60 000
+          - name: "hours"
+            type: prop
+            description: "Returns slef hours in milliseconds"
+            example: |
+              console.log  (1).hours
+              # 3 600 00
+          - name: "days"
+            type: prop
+            description: "Returns slef days in milliseconds"
+            example: |
+              console.log  (1).days
+              # 86 400 000
+      Function:
+        description: |
+        icon: 'bolt'
+        methods:
+          - name: "delay(n = 0)"
+            type: fn
+            description: "Delays the function for n milliseconds."
+            example: |
+              f = ->
+                console.log 'Yey'
+              f.delay 2000
+              # returns interval id
+          - name: "periodical(n = 0)"
+            type: fn
+            description: "Runs the function every n milliseconds."
+            example: |
+              f = ->
+                console.log 'Yey'
+              id = f.periodical 500
+              # returns interval id
+              (-> clearInterval(id)).delay 2000
+      Object:
+        description: |
+        icon: 'asterisk'
+        methods:
+          - name: "toFormData()"
+            type: fn
+            description: "Creates FormData from the object for XMLHTTPRequest."
+            example: |
+              o = {a: '1', b: '2'}
+              console.log o.toFormData()
+              # [object FormData]
+          - name: "toQueryString()"
+            type: fn
+            description: "Creates query string from the objects properties"
+            example: |
+              o = {a: '1', b: '2'}
+              console.log o.toQueryString()
+              # a=1&b=2
+          - name: "each(object, fn = (key,value) ->)"
+            type: self
+            description: "Iterates through the object properties / values."
+            example: |
+              o = {a: '1', b: '2'}
+              Object.each o, (key,value) -> console.log key+":"+value
+              # a:1 b:2
+          - name: "pluck(object, property)"
+            type: self
+            description: "Returns properties form values."
+            example: |
+              o = {luke: {side: 'light'}, vader: {side: 'dark'}}
+              console.log Object.pluck o, 'side'
+              # [light,dark]
+          - name: "values(object)"
+            type: self
+            description: "Returns the objects values."
+            example: |
+              o = {a: '1', b: '2'}
+              console.log Object.values o
+              # 1,2
+          - name: "canRespondTo(object, 'fn1', 'fn2', ...)"
+            type: self
+            description: "Returns true if the object has all functions passed as arguments."
+            example: |
+              o = x: ->
+              console.log Object.canRespondTo o, 'x'
+              # true
       Color:
         description: |
         icon: 'beaker'
@@ -151,7 +326,7 @@ packages:
             description: 'Cuts off and inserts ellipsis(…) at given length'
             example: |
               s = "This is a long text and will be cut off."
-              console.log s.ellipsis(13)
+              console.log s.ellipsis(14)
               # This is a long...
           - name: compact()
             type: fn
@@ -209,6 +384,13 @@ packages:
               s = "q=search%20string"
               console.log s.parseQueryString().q
               # search string
+          - name: wordWrap(width = 15, separator = "\n", cut = false)
+            type: fn
+            description: 'Inserts separator at every width character. If cut is true then words will be cut when necessary.'
+            example: |
+              s = "Luke is awesome"
+              console.log s.wordWrap 7, ':'
+              # Luke is :awesome
           - name: random(length = 10)
             type: self
             description: 'Generates a random string'
@@ -338,6 +520,27 @@ packages:
               d = new Date('2012-05-28 09:12')
               console.log d.minutes
               # 12
+          - type: prop
+            name: seconds
+            description: 'Returns the seconds portion.'
+            example: |
+              d = new Date('2012-05-28 09:12:10')
+              console.log d.seconds
+              # 10
+          - type: prop
+            name: year
+            description: 'Returns the year portion.'
+            example: |
+              d = new Date('2012-05-28 09:12')
+              console.log d.year
+              # 2012
+          - type: prop
+            name: month
+            description: 'Returns the month portion.'
+            example: |
+              d = new Date('2012-05-28 09:12')
+              console.log d.month
+              # 5
           - type: self
             name: Locale
             description: 'Object that represents the current language data for Date.'
