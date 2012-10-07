@@ -9,7 +9,7 @@ describe 'ConsoleLogger', ->
   afterEach ->
     window.console = oldconsole
 
-  ['debug','error', 'fatal', 'info', 'warn',].forEach (type)->
+  ['debug','error', 'fatal', 'info', 'warn','log'].forEach (type)->
     describe type, ->
       it "should add #{type} class", ->
         logger = new ConsoleLogger()

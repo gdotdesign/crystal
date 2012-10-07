@@ -1,5 +1,5 @@
-# requires ./path
-# requires ../types/object
+# @requires ./path
+# @requires ../types/object
 
 class i18n
 

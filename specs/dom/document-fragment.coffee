@@ -1,8 +1,8 @@
-beforeEach ->
-  @d = DocumentFragment.create()
 
 describe "DocumentFragment", ->
-  describe "create", ->
+  beforeEach ->
+    @d = DocumentFragment.Create()
+  describe "Create", ->
     it "should create a DocumentFragment", ->
       expect(@d instanceof DocumentFragment).toBe true
   describe 'children', ->

@@ -8,7 +8,7 @@ describe 'HTMLLogger', ->
       el = logger.debug 'Hello'
       expect(el.parent).toBe document.body
       el.dispose()
-  ['debug', 'error', 'fatal', 'info', 'warn'].forEach (type)->
+  ['debug', 'error', 'fatal', 'info', 'warn','log'].forEach (type)->
     describe type, ->
       it "should add #{type} class", ->
         logger = new HTMLLogger(document.body)

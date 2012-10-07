@@ -9,5 +9,5 @@ Object.defineProperties DocumentFragment::
           @removeChild el
       @
 
-DocumentFragment.create = ->
+DocumentFragment.Create = ->
   document.createDocumentFragment()
