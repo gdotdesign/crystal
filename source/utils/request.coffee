@@ -9,21 +9,6 @@ window.Response = class Utils.Response
     @headers = headers
     @raw = body
     @status = status
-    @body = switch @headers['Content-Type']
-      when "text/html"
-        div = document.createElement('div')
-        div.innerHTML = body
-        df = document.createDocumentFragment()
-        for node in div.childNodes
-          df.appendChild node
-        df
-      when "text/json", "application/json"
-        try
-          JSON.parse(body)
-        catch e
-          body
-      else
-        body
 
 types =
   script: ['text/javascript']
@@ -34,6 +19,23 @@ types =
 Object.each types, (key,value) ->
   Object.defineProperty Response::, 'is'+key.capitalize(), value: ->
     value.map( (type) => @headers['Content-Type'] is type).compact().length > 0
+
+Object.defineProperty Response::, 'body', get: ->
+  switch @headers['Content-Type']
+    when "text/html"
+      div = document.createElement('div')
+      div.innerHTML = @raw
+      df = document.createDocumentFragment()
+      for node in Array::slice.call div.childNodes
+        df.appendChild node
+      df
+    when "text/json", "application/json"
+      try
+        JSON.parse(@raw)
+      catch e
+        @raw
+    else
+      @raw
 
 window.Request = class Utils.Request
   constructor: (url, headers = {}) ->

@@ -178,7 +178,7 @@ Object.defineProperties Color::,
     get: ->
       @_hue
     set: (value) ->
-      @_hue = parseInt(value).clamp 0, 360
+      @_hue = parseInt(value).clampRange 0, 360
       @_update 'hsl'
   alpha:
     get: ->
