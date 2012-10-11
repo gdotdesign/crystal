@@ -6,7 +6,6 @@ window.Store.Request = class Store.XHR
     callback @
   get: (key, callback) ->
     @request.get {key:key}, (response) =>
-      console.log response.body
       callback? @deserialize response.body
   set: (key, value, callback) ->
     @request.post {key:key, value: @serialize value}, (response) =>
