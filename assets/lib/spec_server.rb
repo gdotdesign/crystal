@@ -11,9 +11,11 @@ Layout = '''
     var console_reporter = new jasmine.ConsoleReporter()
     var jasmineEnv = jasmine.getEnv();
     var htmlReporter = new jasmine.HtmlReporter();
-
     jasmineEnv.addReporter(console_reporter);
     jasmineEnv.addReporter(htmlReporter);
+    jasmineEnv.specFilter = function(spec) {
+      return htmlReporter.specFilter(spec);
+    };
     window.onload = function(){
       jasmineEnv.execute();
     }
