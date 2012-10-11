@@ -1,6 +1,7 @@
 # @requires ./number
 window.Color = class Color
   constructor: (color = "FFFFFF") ->
+    color = color.replace /\s/g, ''
     if (match = color.match /^#?([0-9a-f]{3}|[0-9a-f]{6})$/i)
       if color.match /^#/
         hex = color[1..]
@@ -12,9 +13,9 @@ window.Color = class Color
       @_hex = hex
       @_alpha = 100
       @_update 'hex'
-    else if (match = color.match /^hsla?\((\d{0,3}),\s*(\d{1,3})%,\s*(\d{1,3})%(,\s*([01]?\.?\d*))?\)$/)?
+    else if (match = color.match /^hsla?\((-?\d+),\s*(-?\d{1,3})%,\s*(-?\d{1,3})%(,\s*([01]?\.?\d*))?\)$/)?
       @type = 'hsl'
-      @_hue = parseInt(match[1]).clamp 0, 360
+      @_hue = parseInt(match[1]).clampRange 0, 360
       @_saturation = parseInt(match[2]).clamp 0, 100
       @_lightness = parseInt(match[3]).clamp 0, 100
       @_alpha = parseInt(parseFloat(match[5])*100) || 100
@@ -40,22 +41,21 @@ window.Color = class Color
     @_update 'rgb'
     @
 
-  ###
-  TODO refactor
   mix: (color2, alpha) ->
-    for item in [0,1,2]
-      @rgb[item] = Utils.clamp(((@rgb[item] / 100 * (100 - alpha))+(color2.rgb[item] / 100 * alpha)), 0, 255)
-    @_update 'rgb'
-    @
-  ###
+    c = new Color()
+    for item in ['red','green','blue']
+      c[item] = Math.round((color2[item] / 100 * (100 - alpha))+(@[item] / 100 * alpha)).clamp 0, 255
+    c
 
   _hsl2rgb: ->
     h = @_hue / 360
     s = @_saturation / 100
     l = @_lightness / 100
     if s is 0
-      val = l * 255
-      return [ val, val, val ]
+      val = Math.round(l * 255)
+      @_red = val
+      @_green = val
+      @_blue =val
     if l < 0.5
       t2 = l * (1 + s)
     else
@@ -78,9 +78,9 @@ window.Color = class Color
         val = t1
       rgb[i] = val * 255
       i++
-    @_red = rgb[0]
-    @_green = rgb[1]
-    @_blue = rgb[2]
+    @_red = Math.round(rgb[0])
+    @_green = Math.round(rgb[1])
+    @_blue = Math.round(rgb[2])
 
   _hex2rgb: ->
     value = parseInt(@_hex, 16)

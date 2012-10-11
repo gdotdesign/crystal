@@ -12,7 +12,6 @@ Object.defineProperties Date::,
   ago:
     get: ->
       diff = +new Date()-@
-      console.log diff/(1).minutes
       if diff < (1).seconds
         Date.Locale.ago.now
       else if diff < (1).minutes
