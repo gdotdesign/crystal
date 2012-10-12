@@ -112,6 +112,19 @@ describe 'Node', ->
       node.append child
       node.append input
       expect(node.first('input')).toBe input
+  describe "all", ->
+    it "should return all childnodes", ->
+      node = Element.create 'div'
+      child = Element.create 'div'
+      input = Element.create 'input'
+      node.append child, input
+      expect(node.all().length).toBe 2
+    it "should return all childnodes given a specified selector", ->
+      node = Element.create 'div'
+      child = Element.create 'div'
+      input = Element.create 'input'
+      node.append child, input
+      expect(node.all("input").length).toBe 1
   describe "last", ->
     it 'should return last element if no selector is specifed', ->
       node = Element.create 'div'
@@ -163,6 +176,71 @@ describe 'Node', ->
 
 
 describe 'HTMLElement', ->
+  describe "css", ->
+    it "should return computedStyle", ->
+      node = Element.create 'div'
+      expect(node.css('width')).toBe ''
+    it "should return computedStyle for inline", ->
+      node = Element.create 'div[style=width:10px;]'
+      document.body.append node
+      expect(node.css('width')).toBe '10px'
+      node.dispose()
+    it "should set style", ->
+      node = Element.create 'div'
+      node.css 'width', '100px'
+      expect(node.getAttribute('style').trim()).toBe 'width: 100px;'
+      document.body.append node
+      expect(node.css('width')).toBe '100px'
+      node.dispose()
+  describe "dispose", ->
+    it 'should remove the element', ->
+      node = Element.create 'div'
+      child = Element.create 'div'
+      node.append child
+      expect(node.contains child).toBe true
+      child.dispose()
+      expect(node.contains child).toBe false
+  describe "ancestor", ->
+    it 'should get the ancestor of the element', ->
+      node = Element.create 'div'
+      child = Element.create 'div'
+      node.append child
+      expect(child.ancestor()).toBe node
+    it 'should get the ancestor of the element deep', ->
+      ancestor = Element.create 'div.ancestor'
+      node = Element.create 'div'
+      ancestor.append node
+      child = Element.create 'div'
+      node.append child
+      expect(child.ancestor(".ancestor")).toBe ancestor
+  describe "next", ->
+    it 'should get the next sibling of the element', ->
+      node = Element.create 'div'
+      child = Element.create 'div'
+      child2 = Element.create 'div'
+      node.append child, child2
+      expect(child.next()).toBe child2
+    it 'should get the next sibling of the element deep', ->
+      node = Element.create 'div'
+      child = Element.create 'div'
+      child2 = Element.create 'div'
+      child3 = Element.create 'a'
+      node.append child, child2, child3
+      expect(child.next("a")).toBe child3
+  describe "prev", ->
+    it 'should get the prev sibling of the element', ->
+      node = Element.create 'div'
+      child = Element.create 'div'
+      child2 = Element.create 'div'
+      node.append child2, child
+      expect(child.prev()).toBe child2
+    it 'should get the prev sibling of the element deep', ->
+      node = Element.create 'div'
+      child = Element.create 'div'
+      child2 = Element.create 'div'
+      child3 = Element.create 'a'
+      node.append child3, child2, child
+      expect(child.prev("a")).toBe child3
   describe "text", ->
     it 'should return the textContent of the element', ->
       node = Element.create 'div'

@@ -1,6 +1,7 @@
 # @requires ./number
 window.Color = class Color
   constructor: (color = "FFFFFF") ->
+    color = color.toString()
     color = color.replace /\s/g, ''
     if (match = color.match /^#?([0-9a-f]{3}|[0-9a-f]{6})$/i)
       if color.match /^#/
@@ -41,7 +42,8 @@ window.Color = class Color
     @_update 'rgb'
     @
 
-  mix: (color2, alpha) ->
+  mix: (color2, alpha = 50) ->
+    color2 = new Color(color2) unless color2 instanceof Color
     c = new Color()
     for item in ['red','green','blue']
       c[item] = Math.round((color2[item] / 100 * (100 - alpha))+(@[item] / 100 * alpha)).clamp 0, 255

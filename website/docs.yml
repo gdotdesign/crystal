@@ -265,44 +265,123 @@ packages:
         description: |
         icon: 'beaker'
         methods:
-          - type: new
-            name: "constructor(colorString)"
+          - name: "constructor(colorString)"
+            type: new
             description: "Creates a new Color instance from the given string."
             example: |
               c = new Color('#ff0000')
               console.log c.rgba
               # rgba(255,0,0,1)
-          - type: prop
-            name: "red"
+          
+          - name: invert()
+            type: fn
+            description: 'Returns a new Color which is inverse of the color.'
+            example: |
+              c = new Color("#fff")
+              console.log c.invert().hex
+              # 000000
+          - name: mix(otherColor, precentage = 50)
+            type: fn
+            description: 'Mixes together two colors. Specifically, takes the average of each of the RGB components, optionally weighted by the given percentage.'
+            example: |
+              c = new Color("#fff")
+              console.log c.mix("#000").hex
+              # 7F7F7F
+
+          - name: "alpha"
+            type: prop
+            description: "Sets / Gets the alpha (opacity) property of the color."
+            example: |
+              c = new Color('#ff0000')
+              c.alpha = 10
+              console.log c.rgba
+              # rgba(255,0,0,0.1)
+          
+          - name: "hue"
+            type: prop
+            description: "Sets / Gets the hue of the color."
+            example: |
+              c = new Color('#ff0000')
+              c.hue = 120
+              console.log c.hex
+              # 00FF00
+          - name: "saturation"
+            type: prop
+            description: "Sets / Gets the saturation of the color."
+            example: |
+              c = new Color('#ff0000')
+              c.saturation = 50
+              console.log c.hex
+              # BF4040
+          - name: "lightness"
+            type: prop
+            description: "Sets / Gets the lightness of the color."
+            example: |
+              c = new Color('#fff')
+              c.lightness = 50
+              console.log c.hex
+              # 808080
+
+          - name: "red"
+            type: prop
             description: "Sets / Gets the red property of the color."
             example: |
               c = new Color('#ff0000')
               c.red = 204
               console.log c.hex
               # #cc0000
-          - type: prop
-            name: "green"
+          - name: "green"
+            type: prop
             description: "Sets / Gets the green property of the color."
             example: |
               c = new Color('#000000')
               c.green = 204
               console.log c.hex
               # #00cc00
-          - type: prop
-            name: "blue"
+          - name: "blue"
+            type: prop
             description: "Sets / Gets the red property of the color."
             example: |
               c = new Color('#000000')
               c.blue = 204
               console.log c.hex
               # #0000cc
-          - type: prop
-            name: "rgba"
-            description: "Returns the rgba string representation of the"
+          
+          - name: "rgba"
+            type: prop
+            description: "Returns the rgba string representation of the color"
             example: |
               c = new Color('#ff0000')
               console.log c.rgba
               # rgba(255,0,0,1)
+          - name: "rgb"
+            type: prop
+            description: "Returns the rgb string representation of the color"
+            example: |
+              c = new Color('#ff0000')
+              console.log c.rgb
+              # rgba(255,0,0)
+          - name: "hsl"
+            type: prop
+            description: "Returns the hsl string representation of the color"
+            example: |
+              c = new Color('#ff0000')
+              console.log c.hsl
+              # hsl(0,100%,50%)
+          - name: "hsla"
+            type: prop
+            description: "Returns the hsla string representation of the color"
+            example: |
+              c = new Color('#ff0000')
+              console.log c.hsla
+              # hsla(0,100%,50%,1)
+          - name: "hex"
+            type: prop
+            description: "Sets/Gets the hex representation of the color"
+            example: |
+              c = new Color('#ff0000')
+              console.log c.hex
+              # FF0000
       String:
         description: |
         icon: 'strikethrough'

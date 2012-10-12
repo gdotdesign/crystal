@@ -37,7 +37,7 @@ describe "Request", ->
         js: ['text/javascript', String]
         html: ['text/html', DocumentFragment]
         JSON: ['text/json', Object]
-        XML: ['text/xml', String]
+        XML: ['text/xml', Node]
 
       for key,value of types
         do (key, value) ->

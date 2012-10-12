@@ -34,12 +34,11 @@ _wrap = (fn) ->
       fn.apply el, args
 
 _find = (property, selector, el) ->
-  elements = document.querySelectorAll selector
   while el = el[property]
     if el instanceof Element
-      if elements.include el
+      if el.webkitMatchesSelector selector
         return el
-
+        
 # Parse attributes from string (#id.class!title)
 _parseName = (name,atts = {}) ->
   cssattributes = {}

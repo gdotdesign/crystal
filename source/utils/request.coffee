@@ -3,7 +3,6 @@
 # @requires ../types/object
 
 # TODO Errors, FileUpload, Progress Events etc...
-
 window.Response = class Utils.Response
   constructor: (headers,body,status) ->
     @headers = headers
@@ -34,6 +33,9 @@ Object.defineProperty Response::, 'body', get: ->
         JSON.parse(@raw)
       catch e
         @raw
+    when "text/xml"
+      p = new DOMParser()
+      p.parseFromString(@raw,"text/xml")
     else
       @raw
 

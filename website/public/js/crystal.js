@@ -306,7 +306,6 @@
       get: function() {
         var diff;
         diff = +new Date() - this;
-        console.log(diff / 1..minutes);
         if (diff < 1..seconds) {
           return Date.Locale.ago.now;
         } else if (diff < 1..minutes) {
@@ -1543,35 +1542,9 @@
   window.Response = Utils.Response = (function() {
 
     function Response(headers, body, status) {
-      var df, div, node;
       this.headers = headers;
       this.raw = body;
       this.status = status;
-      this.body = (function() {
-        var _i, _len, _ref;
-        switch (this.headers['Content-Type']) {
-          case "text/html":
-            div = document.createElement('div');
-            div.innerHTML = body;
-            df = document.createDocumentFragment();
-            _ref = div.childNodes;
-            for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-              node = _ref[_i];
-              df.appendChild(node);
-            }
-            return df;
-          case "text/json":
-          case "application/json":
-            try {
-              return JSON.parse(body);
-            } catch (e) {
-              return body;
-            }
-            break;
-          default:
-            return body;
-        }
-      }).call(this);
     }
 
     return Response;
@@ -1594,6 +1567,34 @@
         }).compact().length > 0;
       }
     });
+  });
+
+  Object.defineProperty(Response.prototype, 'body', {
+    get: function() {
+      var df, div, node, _i, _len, _ref;
+      switch (this.headers['Content-Type']) {
+        case "text/html":
+          div = document.createElement('div');
+          div.innerHTML = this.raw;
+          df = document.createDocumentFragment();
+          _ref = Array.prototype.slice.call(div.childNodes);
+          for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+            node = _ref[_i];
+            df.appendChild(node);
+          }
+          return df;
+        case "text/json":
+        case "application/json":
+          try {
+            return JSON.parse(this.raw);
+          } catch (e) {
+            return this.raw;
+          }
+          break;
+        default:
+          return this.raw;
+      }
+    }
   });
 
   window.Request = Utils.Request = (function() {
@@ -1962,6 +1963,8 @@
       if (color == null) {
         color = "FFFFFF";
       }
+      color = color.toString();
+      color = color.replace(/\s/g, '');
       if ((match = color.match(/^#?([0-9a-f]{3}|[0-9a-f]{6})$/i))) {
         if (color.match(/^#/)) {
           hex = color.slice(1);
@@ -1975,9 +1978,9 @@
         this._hex = hex;
         this._alpha = 100;
         this._update('hex');
-      } else if ((match = color.match(/^hsla?\((\d{0,3}),\s*(\d{1,3})%,\s*(\d{1,3})%(,\s*([01]?\.?\d*))?\)$/)) != null) {
+      } else if ((match = color.match(/^hsla?\((-?\d+),\s*(-?\d{1,3})%,\s*(-?\d{1,3})%(,\s*([01]?\.?\d*))?\)$/)) != null) {
         this.type = 'hsl';
-        this._hue = parseInt(match[1]).clamp(0, 360);
+        this._hue = parseInt(match[1]).clampRange(0, 360);
         this._saturation = parseInt(match[2]).clamp(0, 100);
         this._lightness = parseInt(match[3]).clamp(0, 100);
         this._alpha = parseInt(parseFloat(match[5]) * 100) || 100;
@@ -2006,15 +2009,22 @@
       return this;
     };
 
-    /*
-      TODO refactor
-      mix: (color2, alpha) ->
-        for item in [0,1,2]
-          @rgb[item] = Utils.clamp(((@rgb[item] / 100 * (100 - alpha))+(color2.rgb[item] / 100 * alpha)), 0, 255)
-        @_update 'rgb'
-        @
-    */
-
+    Color.prototype.mix = function(color2, alpha) {
+      var c, item, _i, _len, _ref1;
+      if (alpha == null) {
+        alpha = 50;
+      }
+      if (!(color2 instanceof Color)) {
+        color2 = new Color(color2);
+      }
+      c = new Color();
+      _ref1 = ['red', 'green', 'blue'];
+      for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
+        item = _ref1[_i];
+        c[item] = Math.round((color2[item] / 100 * (100 - alpha)) + (this[item] / 100 * alpha)).clamp(0, 255);
+      }
+      return c;
+    };
 
     Color.prototype._hsl2rgb = function() {
       var h, i, l, rgb, s, t1, t2, t3, val;
@@ -2022,8 +2032,10 @@
       s = this._saturation / 100;
       l = this._lightness / 100;
       if (s === 0) {
-        val = l * 255;
-        return [val, val, val];
+        val = Math.round(l * 255);
+        this._red = val;
+        this._green = val;
+        this._blue = val;
       }
       if (l < 0.5) {
         t2 = l * (1 + s);
@@ -2049,9 +2061,9 @@
         rgb[i] = val * 255;
         i++;
       }
-      this._red = rgb[0];
-      this._green = rgb[1];
-      return this._blue = rgb[2];
+      this._red = Math.round(rgb[0]);
+      this._green = Math.round(rgb[1]);
+      return this._blue = Math.round(rgb[2]);
     };
 
     Color.prototype._hex2rgb = function() {
@@ -2188,7 +2200,7 @@
         return this._hue;
       },
       set: function(value) {
-        this._hue = parseInt(value).clamp(0, 360);
+        this._hue = parseInt(value).clampRange(0, 360);
         return this._update('hsl');
       }
     },
@@ -2604,7 +2616,6 @@
       return this.request.get({
         key: key
       }, function(response) {
-        console.log(response.body);
         return typeof callback === "function" ? callback(_this.deserialize(response.body)) : void 0;
       });
     };

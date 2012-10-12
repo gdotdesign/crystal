@@ -268,19 +268,27 @@ describe "Color", ->
       expect(c.saturation).toBe 80
 
   describe 'mix', ->
-    colors = [
-      ['#f00','#00f',50,"7F007F"]
-      ['#f00','#0ff',50,"7F7F7F"]
-      ['#f70','#0aa',50,"7F9155"]
-      ['#f00','#00f',100,"FF0000"]
-      ['#f00','#00f',0,"0000FF"]
+    it 'should mix colors', ->
+      colors = [
+        ['#f00','#00f',50,"7F007F"]
+        ['#f00','#0ff',50,"7F7F7F"]
+        ['#f70','#0aa',50,"7F9155"]
+        ['#f00','#00f',100,"FF0000"]
+        ['#f00','#00f',0,"0000FF"]
 
-    ]
-    for item in colors
-      c = new Color(item[0])
-      c1 = new Color(item[1])
-      c2 = new Color(item[3])
-      expect(c.mix(c1,item[2]).hex).toBe c2.hex
+      ]
+      for item in colors
+        c = new Color(item[0])
+        c1 = new Color(item[1])
+        c2 = new Color(item[3])
+        expect(c.mix(c1,item[2]).hex).toBe c2.hex
+    it "default percentage should be 50%", ->
+      c = new Color()
+      expect(c.mix(new Color("#000")).hex).toBe '7F7F7F'
+    it "should mix string color", ->
+      c = new Color()
+      expect(c.mix("#000").hex).toBe '7F7F7F'
+
 
   describe 'invert', ->
     it 'should invert colors', ->
