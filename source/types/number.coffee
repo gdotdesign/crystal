@@ -2,16 +2,16 @@ Object.defineProperties Number::,
   # Date
   seconds:
     get: ->
-      @valueOf() * 1000
+      @valueOf() * 1e+3
   minutes:
     get: ->
-      @seconds * 60
+      @valueOf() * 6e+4
   hours:
     get: ->
-      @minutes * 60
+      @valueOf() * 3.6e+6
   days:
     get: ->
-      @hours * 24
+      @valueOf() * 8.64e+7
   # Iterators
   upto:
     value: (limit,func,bound = @) ->
@@ -35,9 +35,9 @@ Object.defineProperties Number::,
       min = parseFloat(min)
       max = parseFloat(max)
       val = @valueOf()
-      if val > max 
+      if val > max
         max
-      else if val < min 
+      else if val < min
         min
       else
         val
@@ -46,9 +46,9 @@ Object.defineProperties Number::,
       min = parseFloat(min)
       max = parseFloat(max)
       val = @valueOf()
-      if val > max 
+      if val > max
         val % max
-      else if val < min 
+      else if val < min
         max - Math.abs(val % max)
       else
         val
