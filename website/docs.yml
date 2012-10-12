@@ -8,9 +8,6 @@ packages:
       Logger:
         description: |
         icon: 'align-left'
-        methods:
-          - a
-  MVC:
     icon: cogs
     classes: []
   NW:
@@ -19,21 +16,15 @@ packages:
       Dialogs:
         description: |
         icon: 'list-alt'
-        methods:
-          - a
       File:
         description: |
         icon: 'file'
-        methods:
-          - a
   Utils:
     icon: wrench
     classes:
       History:
         description: |
         icon: 'bookmark'
-        methods:
-          - a
       i18n:
         description: |
           Locale Management
@@ -272,7 +263,7 @@ packages:
               c = new Color('#ff0000')
               console.log c.rgba
               # rgba(255,0,0,1)
-          
+
           - name: invert()
             type: fn
             description: 'Returns a new Color which is inverse of the color.'
@@ -296,7 +287,7 @@ packages:
               c.alpha = 10
               console.log c.rgba
               # rgba(255,0,0,0.1)
-          
+
           - name: "hue"
             type: prop
             description: "Sets / Gets the hue of the color."
@@ -346,7 +337,7 @@ packages:
               c.blue = 204
               console.log c.hex
               # #0000cc
-          
+
           - name: "rgba"
             type: prop
             description: "Returns the rgba string representation of the color"
@@ -514,7 +505,7 @@ packages:
             example: |
               a = ['Yoda','Wader','Luke','Leia','Yoda','Luke']
               console.log a.shuffle('Yoda')
-              # a random combination of the items 
+              # a random combination of the items
           - name: "include()"
             type: fn
             description: 'Return true if the item is included in the array false if not.'
@@ -627,4 +618,3 @@ packages:
               # Get the locale format
               console.log Date.Locale.format
               # %Y-%M-%D
-            

@@ -1,16 +1,137 @@
-@import url(http://fonts.googleapis.com/css?family=Ubuntu+Mono|Ubuntu:400,700,400italic)
+@import url(http://fonts.googleapis.com/css?family=Source+Sans+Pro:400,700)
 @import font-awesome
 @import mixins
 @import noise
 @import theme
 
 body
-  font-family: Ubuntu
-  background-color: #DCD8C9
-  color: #514C3D
+  :overflow-x hidden
+.bg
+  :background #eee
+  :height 600px
+  :-webkit-transform rotate(-45deg)
+  :z-index -1
+  :position absolute
+  :top 0
+  :left -1300px
+  :width 4000px
+
+.btn-circle
+  [class*=icon]
+    :float left
+    :display inline
+    :margin-right 10px
+  :margin-bottom 10px
+.logo
+  :margin-top 23px
+  :margin-bottom 20px
+  :font-size 56px
+  :width 2em
+  :height 2em
+  .q1,.q2,.q3,.q4
+    :float left
+    position: relative
+.q1
+  width: 0
+  height: 0
+  border-bottom: 0.5em solid #81C8F1
+  border-left: 0.4em solid transparent
+  border-right: 0.6em solid #81C8F1
+  &:after
+    content: ""
+    position: absolute
+    top: -0.05em
+    left: -0.48em
+    width: 0
+    height: 0
+    z-index: -1
+    border-bottom: 0.55em solid #fff
+    border-left: 0.45em solid transparent
+    border-right: 0.63em solid #fff
+
+.q2
+  width: 0
+  height: 0
+  border-bottom: 0.5em solid #1FA1C5
+  border-right: 0.4em solid transparent
+  border-left: 0.6em solid #1FA1C5
+  &:after
+    content: ""
+    position: absolute
+    top: -0.05em
+    left: -0.6em
+    width: 0
+    height: 0
+    z-index: -1
+    border-bottom: 0.55em solid #fff
+    border-right: 0.45em solid transparent
+    border-left: 0.63em solid #fff
+
+.q3
+  width: 0
+  height: 0
+  border-top: 1.5em solid #55BAED
+  border-left: 1em solid transparent
+  &:after
+    content: ""
+    position: absolute
+    top: -1.5em
+    left: -1.08em
+    width: 0
+    height: 0
+    z-index: -1
+    border-top: 1.6em solid #fff
+    border-left: 1.08em solid transparent
+
+.q4
+  width: 0
+  height: 0
+  border-top: 1.5em solid #32799B
+  border-right: 1em solid transparent
+  &:after
+    content: ""
+    position: absolute
+    top: -1.5em
+    left: 0em
+    width: 0
+    height: 0
+    z-index: -1
+    border-top: 1.6em solid #fff
+    border-right: 1.08em solid transparent
+
+.i
+  $size: 0.3em
+  top: 0.5em
+  left: 0.4em
+  position: relative
+  width: $size*3.7
+  height: $size*2
+  -webkit-transform: rotate(90deg)
+  &:before, &:after
+    background: rgba(0,0,0,0.5)
+    content: ""
+    position: absolute
+    top: 0
+    left: 0
+    width: $size
+    height: $size
+    border: $size/2.5 solid #fff
+    border-radius: $size $size 0 $size
+    -webkit-transform: rotate(-45deg)
+  &:after
+    left: auto
+    right: 0
+    border-radius: $size $size $size 0
+    -webkit-transform: rotate(45deg)
+
+
+
+body
+  font-family: 'Source Sans Pro'
+  background-color: #f2f2f2
+  color: #333
   -webkit-user-select: none
 nav
-  :position absolute
   :z-index 2
   :top 30px
   :left 0
@@ -117,10 +238,9 @@ p
 
 .panel
   :position relative
-  :background-color #e8e6dc
+  :background-color rgba(#fff,0.8)
   :border-radius 5px 5px 0 0
   :padding 10px 20px
-  :background-image -webkit-linear-gradient(lighten(#e8e6dc,3%),#e8e6dc)
 
 span
   &.fn
@@ -133,8 +253,8 @@ span
     :color #A82DA1
 .method
   :font-size 14px
-  :background-color #e4e2d6
-  :border-top 1px solid #d8d5c4
+  :background-color rgba(#fff,0.4)
+  :margin-top 3px
   code.js
     :display none
   pre
@@ -151,7 +271,7 @@ span
   :-webkit-transition-duration 200ms
   &:hover
     :-webkit-transition-delay 0ms !important
-    :background-color lighten(#e4e2d6,3%)
+    :background-color rgba(#fff,0.5)
     [class*=icon]
       :opacity 1
   [class*=icon]
@@ -165,12 +285,12 @@ span
     :-webkit-transition-duration 200ms
     :opacity 0
     :position absolute
-    :border-left 1px solid #d8d5c4
+    :border-left 1px solid #ddd
     :text-align center
     :line-height 34px
     :width 36px
     :height 36px
-    :background-color lighten(#e4e2d6,3%)
+    :background-color rgba(#fff,0.4)
   &:last-child
     :border-radius 0 0 5px 5px
   .icon-link
@@ -198,40 +318,5 @@ h2 [class*=icon]
   :width 80px
   :height 80px
   :line-height 80px
-  background-color: #DCD8C9
+  background-color: #f2f2f2
   :box-shadow none
-
-.btn-circle
-  :cursor pointer
-  :line-height 114px
-  @extend .circle
-  :float left
-  :margin-right 40px
-  :margin-bottom 40px
-  [class*=icon]
-    :width 114px
-    :height 114px
-    :position absolute
-    :top -7px
-    :left -7px
-  &:hover
-    :box-shadow 0 0 10px #eceae3 inset, 0 0 10px #b0a786
-    :border-width 4px
-    .tooltip
-      :opacity 1
-      :bottom -50px
-  :position relative
-  .tooltip
-    :-webkit-transition-duration 320ms
-    :bottom 0px
-    :opacity 0
-    :font-size 16px
-    :line-height 20px
-    :width 170px
-    :height 43px
-    :line-height 40px
-    :border-radius 5px
-    :position absolute
-    :left -32px
-    :z-index 2
-    :text-align center

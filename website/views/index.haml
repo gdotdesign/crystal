@@ -1,8 +1,24 @@
+- docs = YAML.load_file('./docs.yml')
+- types = {'new' => '::', 'fn' => '$','prop' => '#',   'self' => '@'}
 .content
   %nav
+    .logo
+      .q1
+      .q2
+      .q3
+      .q4
+      .i
     %h1
       %a{href:"#main"} Crystal
-    - @docs['packages'].each do |name, package|
+    .btn-circle
+      .icon-github
+      .tooltip
+        Github
+    .btn-circle
+      .icon-download
+      .tooltip
+        Download
+    - docs['packages'].each do |name, package|
       %ul
         %li.first
           %div{class: "icon-#{package['icon']}"}
@@ -14,16 +30,12 @@
               = key
   .class#main
     .panel
-      .btn-circle
-        .icon-github
-        .tooltip
-          Source at Github
-      .btn-circle
-        .icon-download
-        .tooltip
-          Download
+      %h1
+        Crystal
+      %p
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris at sagittis quam. Curabitur ullamcorper, odio non molestie fringilla, nisi dui aliquet libero, et placerat mi erat id dui. Fusce congue consectetur nisi et dignissim. Nam id nisi orci, sed faucibus eros. In hac habitasse platea dictumst. Suspendisse porttitor elit nec eros gravida quis vulputate enim euismod. Ut in congue urna. Morbi ante diam, imperdiet vitae eleifend vel, venenatis blandit turpis. Aliquam ultricies dictum diam, interdum facilisis urna egestas non. Nam condimentum, velit vitae venenatis fermentum, erat libero cursus nunc, vel convallis arcu neque vitae diam. Proin aliquet suscipit ligula, id adipiscing augue porttitor quis. Vivamus quam nisl, mollis a viverra ut, convallis vel ipsum. Donec quis odio risus.
   .clear
-  - @docs['packages'].each do |name, package|
+  - docs['packages'].each do |name, package|
     - package['classes'].each do |key, cls|
       .class{id: key}
         .panel
@@ -32,21 +44,22 @@
             = key
           %p
             = cls['description']
-        - cls['methods'].each do |method|
-          .method
-            %pre
-              %code.coffee.prettyprint
-                = method["example"]
-            %code.js
-              - begin
-                = CoffeeScript.compile method["example"], bare: true
-              - rescue
-                = ""
-            %h3
-              %span{class: method['type']}= @types[method['type']]
-              = method['name']
-            %p
-              = method['description']
-            .clear
-            .icon-link
-            .icon-play
+        - if cls['methods']
+          - cls['methods'].each do |method|
+            .method
+              %pre
+                %code.coffee.prettyprint
+                  = method["example"]
+              %code.js
+                - begin
+                  = CoffeeScript.compile method["example"], bare: true
+                - rescue
+                  = ""
+              %h3
+                %span{class: method['type']}= types[method['type']]
+                = method['name']
+              %p
+                = method['description']
+              .clear
+              .icon-link
+              .icon-play

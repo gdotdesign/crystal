@@ -1,0 +1,23 @@
+require "rubygems"
+require "bundler/setup"
+Bundler.require(:default)
+
+class Scope
+  def haml(view,locals = {locals: {}})
+    Haml::Engine.new(File.read("views/#{view}.haml")).render(Scope.new, locals[:locals])
+  end
+end
+
+task :build do
+	sh "mkdir build" unless File.exists?('./build')
+
+  engine = Haml::Engine.new(File.read('views/layout.haml'))
+	File.open("build/index.html", 'w+') do |f|
+  	f.write(engine.render(Scope.new, {}, &Proc.new{Haml::Engine.new(File.read("views/index.haml")).render(Scope.new)}))
+  end
+
+  cssengine = Sass::Engine.new(File.read("stylesheets/index.sass"),:load_paths => ['stylesheets'])
+  File.open("build/style.css", 'w+') do |f|
+    f.write(cssengine.render())
+  end
+end
