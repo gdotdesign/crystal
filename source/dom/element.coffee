@@ -28,7 +28,7 @@ Object.each Attributes, (key,value) ->
 
 
 # Utility Functions
-_wrap = (fn) ->
+_wrap = NodeList._wrap = (fn) ->
   (args...) ->
     for el in @
       fn.apply el, args
@@ -38,7 +38,7 @@ _find = (property, selector, el) ->
     if el instanceof Element
       if el.webkitMatchesSelector selector
         return el
-        
+
 # Parse attributes from string (#id.class!title)
 _parseName = (name,atts = {}) ->
   cssattributes = {}
@@ -127,7 +127,7 @@ Object.defineProperty HTMLSelectElement::, 'selectedOption',
   get: ->
     @children[@selectedIndex] if @children
   set: (el) ->
-    @selectedIndex = @children.indexOf el if @chidren.include(el)
+    @selectedIndex = Array::slice.call(@children).indexOf(el) if @childNodes.include(el)
 
 Object.defineProperty HTMLInputElement::, 'caretToEnd', value: ->
   length = @value.length
@@ -162,8 +162,9 @@ Object.defineProperties HTMLElement::, properties
 
 Object.defineProperty Node::, 'delegateEventListener', value: (event,listener,useCapture) ->
   [baseEvent,selector] = event.split(':')
+  selector ?= "*"
   @addEventListener baseEvent, (e) ->
-    listener e if e.target.webkitMatchesSelector selector
+    listener e if e.relatedTarget.webkitMatchesSelector selector
 
 ['addEventListener','removeEventListener','delegateEventListener'].forEach (prop) ->
   Object.defineProperty Node::, prop.replace("Listener",''), value: Node::[prop]

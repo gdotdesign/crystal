@@ -1,15 +1,3 @@
-window.Mediator = {
-    events: {}
-    listeners: {}
-    fireEvent: (type,event)->
-      if @listeners[type]
-        @listeners[type].apply @, event
-    addListener: (type,callback) ->
-      @listeners[type] = callback
-    removeListener: (type) ->
-      delete @listeners[type]
-  }
-
 class Event
   constructor: (type,target) ->
     @cancelled = false
@@ -21,30 +9,50 @@ class Event
   stop: ->
     @cancelled = true
 
+window.Mediator = {
+    events: {}
+    listeners: {}
+    fireEvent: (type,event)->
+      if @listeners[type]
+        for callback in @listeners[type]
+          callback? event
+    addListener: (type,callback) ->
+      throw "Only functions can be added as callback" unless callback instanceof Function
+      unless @listeners[type]
+        @listeners[type] = []
+      @listeners[type].push callback
+    removeListener: (type, callback) ->
+      @listeners[type].remove$ callback
+      if @listeners[type].length is 0
+        delete @listeners[type]
+  }
+
+
 window.Evented = class Evented
   toString: ->
-    "[#{@__proto__.constructor.name}]"
+    "[Object #{@__proto__.constructor.name}]"
 
-  trigger: (type,args...) ->
-    @_events ?= {}
-    event = new Event type, @
-    args.push event
-    if @_events[type]
-      for callback in @_events[type]
-        callback.apply @, args
-
-  on: (type, callback) ->
+  _ensureEvents: (type) ->
     @_events ?= {}
     @_events[type] ?= []
+
+  trigger: (type,args...) ->
+    event = new Event type, @
+    args.push event
+    @_ensureEvents(type)
+    for callback in @_events[type]
+      callback.apply @, args
+
+  on: (type, callback) ->
+    @_ensureEvents(type)
     @_events[type].push callback
 
   off: (type,callback) ->
-    @_events ?= {}
-    if @_events[type]
-      if @_events[type].include callback
-        @_events[type].remove callback
+    @_ensureEvents(type)
+    if @_events[type].include callback
+      @_events[type].remove callback
     if @_events[type].length is 0
-      delete Mediator.events[type]
+      delete @_events[type]
 
   publish: (type,args...) ->
     event = new Event type, @
@@ -52,19 +60,7 @@ window.Evented = class Evented
     Mediator.fireEvent type, args
 
   subscribe: (type,callback) ->
-    unless Mediator.events[type]
-      Mediator.addListener type, (event) ->
-        for cb in Mediator.events[event.type]
-          break if event.cancelled
-          cb.apply @, Array::slice.call(arguments)
-      Mediator.events[type] = []
-    Mediator.events[type].push callback
+    Mediator.addListener callback
 
   unsubscribe: (type,callback) ->
-    if Mediator.events[type] is undefined
-      return false
-    if Mediator.events[type].include callback
-      Mediator.events[type].remove callback
-    if Mediator.events[type].length is 0
-      delete Mediator.events[type]
-      Mediator.removeListener type
+    Mediator.removeListener type

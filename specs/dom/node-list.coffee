@@ -8,7 +8,7 @@ describe "NodeList", ->
 
   afterEach ->
     @els.forEach (el) -> el.dispose()
-    
+
   describe "forEach", ->
     it 'should iterate through the elements', ->
       expect(@nl instanceof NodeList).toBe true
@@ -35,4 +35,11 @@ describe "NodeList", ->
   describe "last", ->
     it 'should return the last element from the collection', ->
       expect(@nl.last).toBe @els[1]
-       
+  describe "_wrap", ->
+    it 'should call fn on all childnodes', ->
+      @i = 0
+      a =
+        x: => @i++
+      Object.defineProperty NodeList::, "testFN", value: NodeList._wrap a.x
+      @nl.testFN()
+      expect(@i).toBe 2

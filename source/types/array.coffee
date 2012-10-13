@@ -1,4 +1,7 @@
 methods =
+  remove$: (item) ->
+    if (index = @indexOf(item)) != -1
+      @splice index, 1
   remove: (item) ->
     b = @dup()
     if (index = b.indexOf(item)) != -1
