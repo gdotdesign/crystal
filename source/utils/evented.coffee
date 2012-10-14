@@ -1,66 +1,57 @@
-class Event
-  constructor: (type,target) ->
+Crystal.Utils.Event = class Utils.Event
+  constructor: (target) ->
+    throw "No target" unless !!target
+    throw "Invalid target!" unless target instanceof Object
     @cancelled = false
     @target = target
-    @type = type
-  destroy: ->
-    for key, value of @
-      @[key] = null
   stop: ->
     @cancelled = true
 
-window.Mediator = {
-    events: {}
-    listeners: {}
-    fireEvent: (type,event)->
-      if @listeners[type]
-        for callback in @listeners[type]
-          callback? event
-    addListener: (type,callback) ->
-      throw "Only functions can be added as callback" unless callback instanceof Function
-      unless @listeners[type]
-        @listeners[type] = []
-      @listeners[type].push callback
-    removeListener: (type, callback) ->
-      @listeners[type].remove$ callback
-      if @listeners[type].length is 0
-        delete @listeners[type]
-  }
+class Utils.Mediator
+  constructor: ->
+    @listeners = {}
+  fireEvent: (type,args)->
+    event = args.first
+    throw "Not Utils.Event!" unless event instanceof Utils.Event
+    if @listeners[type]
+      for callback in @listeners[type]
+        unless event.cancelled
+          callback.apply event.target, args
+  addListener: (type,callback) ->
+    throw "Only functions can be added as callback" unless callback instanceof Function
+    @listeners[type] = [] unless @listeners[type]
+    @listeners[type].push callback
+  removeListener: (type, callback) ->
+    @listeners[type].remove$ callback
+    delete @listeners[type] if @listeners[type].length is 0
 
+window.Mediator = new Utils.Mediator
 
-window.Evented = class Evented
+Crystal.Utils.Evented = class Utils.Evented
+  constructor: ->
+    @_mediator = new Utils.Mediator
+
   toString: ->
     "[Object #{@__proto__.constructor.name}]"
 
-  _ensureEvents: (type) ->
-    @_events ?= {}
-    @_events[type] ?= []
-
   trigger: (type,args...) ->
-    event = new Event type, @
-    args.push event
-    @_ensureEvents(type)
-    for callback in @_events[type]
-      callback.apply @, args
+    event = new Utils.Event @
+    args.unshift event
+    @_mediator.fireEvent type, args
 
   on: (type, callback) ->
-    @_ensureEvents(type)
-    @_events[type].push callback
+    @_mediator.addListener type, callback
 
   off: (type,callback) ->
-    @_ensureEvents(type)
-    if @_events[type].include callback
-      @_events[type].remove callback
-    if @_events[type].length is 0
-      delete @_events[type]
+    @_mediator.removeListener type, callback
 
   publish: (type,args...) ->
-    event = new Event type, @
+    event = new Utils.Event @
     args.unshift event
     Mediator.fireEvent type, args
 
   subscribe: (type,callback) ->
-    Mediator.addListener callback
+    Mediator.addListener type, callback
 
   unsubscribe: (type,callback) ->
-    Mediator.removeListener type
+    Mediator.removeListener type, callback

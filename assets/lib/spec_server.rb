@@ -1,6 +1,7 @@
 Layout = '''
 !!!
 %head
+  %meta{:charset => "utf-8"}
   %link{:href => "/vendor/jasmine.css", :rel => "stylesheet", :type => "text/css"}
   %script{:src => "/vendor/jasmine.js", :type => "text/javascript"}
   %script{:src => "/vendor/jasmine-html.js", :type => "text/javascript"}
@@ -84,7 +85,7 @@ class SpecSever < Renee::Application
               Store[key] = value
               say true
             end
-            say false            
+            say false
           end
         end
         delete do
@@ -106,17 +107,17 @@ class SpecSever < Renee::Application
         end
       end
       unless request.params.empty?
-        body = request.params.to_json 
+        body = request.params.to_json
         respond! do
           headers({'Content-Type' => contentType})
           body body
-        end 
+        end
       end
       body = request.request_method
       respond! do
         headers({'Content-Type' => contentType})
         body body
-      end 
+      end
     end
     respond! do
       headers({'Content-Type' => 'text/html'})

@@ -53,6 +53,6 @@ window.Collection = class MVC.Collection extends Array
       @trigger 'change'
     l
 
-for key, value of Evented::
+for key, value of Utils.Evented::
   Collection::[key] = value
 Collection

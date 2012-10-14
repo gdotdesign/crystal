@@ -1,6 +1,6 @@
 # @requires ./evented
 
-window.History = class Utils.History extends Evented
+window.History = class Utils.History extends Utils.Evented
   constructor: ->
     @_type = if 'pushState' of history then 'popstate' else 'hashchange'
     window.addEventListener @_type, (event) =>

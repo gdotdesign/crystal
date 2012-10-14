@@ -1,9 +1,9 @@
-class Utils.Base64
+window.Base64 = new class Utils.Base64
   _keyStr: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/="
   encode: (input) ->
     output = ""
     i = 0
-    input = Base64.UTF8Encode(input)
+    input = @UTF8Encode(input)
     while i < input.length
       chr1 = input.charCodeAt(i++)
       chr2 = input.charCodeAt(i++)
@@ -33,7 +33,7 @@ class Utils.Base64
       output = output + String.fromCharCode(chr1)
       output = output + String.fromCharCode(chr2)  unless enc3 is 64
       output = output + String.fromCharCode(chr3)  unless enc4 is 64
-    output = Base64.UTF8Decode(output)
+    output = @UTF8Decode(output)
     output
 
   UTF8Encode: (string) ->
