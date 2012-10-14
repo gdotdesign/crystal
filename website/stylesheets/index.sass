@@ -98,17 +98,15 @@ body
     z-index: -1
     border-top: 1.6em solid #fff
     border-right: 1.08em solid transparent
-
 .i
   $size: 0.3em
-  top: 0.5em
-  left: 0.4em
+  top: 0.25em
+  left: 0.45em
   position: relative
   width: $size*3.7
   height: $size*2
-  -webkit-transform: rotate(90deg)
   &:before, &:after
-    background: rgba(0,0,0,0.5)
+    background: rgba(#F00,0.5)
     content: ""
     position: absolute
     top: 0
@@ -127,7 +125,7 @@ body
 
 
 body
-  font-family: 'Source Sans Pro'
+  font-family: 'Source Sans Pro', Ubuntu
   background-color: #f2f2f2
   color: #333
   -webkit-user-select: none
@@ -135,7 +133,7 @@ nav
   :z-index 2
   :top 30px
   :left 0
-  :width 12%
+  :width 18%
   :padding 10px
   h1
     a
@@ -167,7 +165,7 @@ nav
     :-webkit-transform-origin top center
   :position absolute
   :top 30px
-  :left 15%
+  :left 18%
   :right 0
   &:target
     :z-index 1
@@ -259,7 +257,7 @@ span
     :display none
   pre
     code
-      :font-family 'Ubuntu Mono'
+      :font-family 'Ubuntu Mono', sans-serif
     :float right
     :width 350px
     :padding 0 10px

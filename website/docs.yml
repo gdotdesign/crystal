@@ -1,7 +1,138 @@
 packages:
   DOM:
     icon: sitemap
-    classes: []
+    classes:
+      Node:
+        description: ""
+        icon: check-empty
+        methods:
+          - name: "append(node,node,...)"
+            type: fn
+            description: "Appends (inserts) the given nodes to self."
+            example: |
+              parent = Element.create('.parent')
+              node = Element.create('.node')
+              parent.append node
+          - name: "first(selector = '*')"
+            type: fn
+            description: "Returns the first descendant matching selector"
+            example: |
+              parent = Element.create('.parent')
+              node = Element.create('.node')
+              p = Element.create p
+              parent.append node, p
+              console.log parent.first("p").tag
+              # p
+          - name: "last(selector = '*')"
+            type: fn
+            description: "Returns the last descendant matching selector"
+            example: |
+              parent = Element.create('.parent')
+              node = Element.create('.node')
+              p = Element.create p
+              parent.append p, node
+              console.log parent.last(".node").tag
+              # div
+          - name: "all(selector = '*')"
+            type: fn
+            description: "Return all descendants matching the selector"
+          - name: "empty()"
+            type: fn
+            description: "Removes all child nodes"
+          - name: "moveUp()"
+            type: fn
+            description: "Moves self before the previous element"
+          - name: "moveDown()"
+            type: fn
+            description: "Moves self after the next element"
+      HTMLElement:
+        description: ""
+        icon: "asterisk"
+        methods:
+          - name: "create(zen)"
+            type: self
+            description: |
+              Shortcut for creating element via zen string.
+              [type=text][hidden] - attributes
+              .class1.class2 - classes
+              #id - id
+            example: |
+              input = Element.create("input.class#id[type=text]")
+              console.log input.class, input.id, input.getAttribute 'type'
+              # class, id, text
+          - name: "dispose()"
+            type: fn
+            description: "Removes element from the dom."
+            example: |
+              document.body.append Element.create()
+              document.body.last().dispose()
+          - name: "ansector(selector = '*')"
+            type: fn
+            description: "Returns the first ansector matching the selector"
+            example: |
+              html = document.body.ansector 'html'
+              console.log html.tag
+              # html
+          - name: "next(selector = '*')"
+            type: fn
+            description: "Returns the first element from next siblings matching the given selector"
+            example: |
+              el = document.head.next()
+              console.log el.tag
+              # body
+          - name: "prev(selector = '*')"
+            type: fn
+            description: "Returns the first element from previous siblings matching the given selector"
+            example: |
+              el = document.head.prev()
+              console.log el.tag
+              # head
+          - name: "css(property[, value])"
+            type: fn
+            description: "Sets / gets css properties"
+            example: |
+              console.log document.body.css 'background-color'
+              # document.body.css 'background-color', '#fff'
+              # #fff
+          - name: "tag"
+            type: prop
+            description: "Alias for tagName but lowercase"
+            example: |
+              div = Element.create "div"
+              console.log div.tagName.toLowerCase() is div.tag
+              # true
+          - name: "html"
+            type: prop
+            description: "Alias for innerHTML"
+            example: |
+              el = Element.create 'div'
+              el.html = 'text'
+              console.log el.innerHTML
+              # text
+          - name: "text"
+            type: prop
+            description: "Alias for textContent"
+            example: |
+              el = Element.create 'div'
+              el.text = 'text'
+              console.log el.textContent
+              # text
+          - name: "class"
+            type: prop
+            description: "Alias for className"
+            example: |
+              el = Element.create 'div'
+              el.class = 'text'
+              console.log el.className
+              # text
+          - name: "parent"
+            type: prop
+            description: "Gets / sets the parent of the element"
+            example: |
+              el = Element.create 'div'
+              el.parent = document.body
+              console.log document.contains(el)
+              # true
   Logging:
     icon: 'align-left'
     classes:

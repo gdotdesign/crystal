@@ -3,24 +3,12 @@
 
 # TODO Simpler
 Attributes =
-  title:
-    prefix: "!"
-    unique: true
-  name:
-    prefix: "&"
-    unique: true
-  type:
-    prefix: "%"
-    unique: true
-  id:
-    prefix: "#"
-    unique: true
-  class:
-    prefix: "\\."
-    unique: false
-  role:
-    prefix: "~"
-    unique: true
+  title:{ prefix: "!", unique: true }
+  name:{ prefix: "&", unique: true }
+  type:{ prefix: "%", unique: true }
+  id:{ prefix: "#", unique: true }
+  class:{ prefix: "\\.", unique: false }
+  role:{ prefix: "~", unique: true }
 
 prefixes = Object.pluck(Attributes,'prefix').concat("$").join("|")
 Object.each Attributes, (key,value) ->
@@ -74,9 +62,7 @@ _parseName = (name,atts = {}) ->
 # Methods for Node
 methods_node =
   append: (elements...) ->
-    for el in elements
-      if el instanceof Node
-        @appendChild el
+    @appendChild el for el in elements when el instanceof Node
   first: (selector = "*") ->
     @querySelector selector
   last: (selector = "*") ->
@@ -86,23 +72,21 @@ methods_node =
   empty: ->
     @querySelectorAll("*").dispose()
   moveUp: ->
-    if @parent and (prev = @prev())
-      @parent.insertBefore @, prev
+    @parent.insertBefore @, prev if @parent and (prev = @prev())
   moveDown: ->
-    if @parent and (next = @next())
-      @parent.insertBefore next, @
+    @parent.insertBefore next, @ if @parent and (next = @next())
 
 # Methods only for HTMLElement, NodeList
 methods_element =
   dispose: ->
     @parent?.removeChild @
+  # TODO implement these with TreeWalker
   ancestor: (selector = "*") ->
     _find 'parentElement', selector, @
   next: (selector = "*") ->
     _find 'nextSibling', selector, @
   prev: (selector = "*") ->
     _find 'previousSibling', selector, @
-
   # http://www.quirksmode.org/dom/getstyles.html
   css: (args...) ->
     property = args[0]
@@ -133,32 +117,26 @@ Object.defineProperty HTMLInputElement::, 'caretToEnd', value: ->
   length = @value.length
   @setSelectionRange(length, length)
 
-properties =
+Object.defineProperties HTMLElement::
+  id:
+    get: -> @getAttribute 'id'
+    set: (value) -> @setAttribute 'id', value
   tag:
-    get: ->
-      @tagName.toLowerCase()
+    get: -> @tagName.toLowerCase()
   parent:
-    get: ->
-      @parentElement
+    get: -> @parentElement
     set: (el) ->
       return unless el instanceof HTMLElement
       el.append @
   text:
-    get: ->
-      @textContent
-    set: (value) ->
-      @textContent = value
+    get: -> @textContent
+    set: (value) -> @textContent = value
   html:
-    get: ->
-      @innerHTML
-    set: (value) ->
-      @innerHTML = value
+    get: -> @innerHTML
+    set: (value) -> @innerHTML = value
   class:
-    get: ->
-      @getAttribute 'class'
-    set: (value) ->
-      @setAttribute 'class', value
-Object.defineProperties HTMLElement::, properties
+    get: -> @getAttribute 'class'
+    set: (value) -> @setAttribute 'class', value
 
 Object.defineProperty Node::, 'delegateEventListener', value: (event,listener,useCapture) ->
   [baseEvent,selector] = event.split(':')
