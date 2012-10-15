@@ -43,6 +43,42 @@
         <div class='icon-sitemap'></div>
         DOM
       </li>
+      <li>
+        <a href='#Node'>
+          <div class='icon-check-empty'></div>
+          Node
+        </a>
+      </li>
+      <li>
+        <a href='#NodeList'>
+          <div class='icon-th-list'></div>
+          NodeList
+        </a>
+      </li>
+      <li>
+        <a href='#HTMLElement'>
+          <div class='icon-sign-blank'></div>
+          HTMLElement
+        </a>
+      </li>
+      <li>
+        <a href='#HTMLInputElement'>
+          <div class='icon-'></div>
+          HTMLInputElement
+        </a>
+      </li>
+      <li>
+        <a href='#HTMLSelectElement'>
+          <div class='icon-'></div>
+          HTMLSelectElement
+        </a>
+      </li>
+      <li>
+        <a href='#DocumentFragment'>
+          <div class='icon-'></div>
+          DocumentFragment
+        </a>
+      </li>
     </ul>
     <ul>
       <li class='first'>
@@ -158,15 +194,519 @@
     </div>
   </div>
   <div class='clear'></div>
+  <div class='class' id='Node'>
+    <div class='panel'>
+      <h2>
+        <div class='icon-check-empty'></div>
+        Node
+      </h2>
+      
+    </div>
+    <div class='method'>
+      <pre><code class='coffee prettyprint'>parent = Element.create('.parent')
+      node = Element.create('.node')
+      parent.append node</code></pre>
+      <code class='js'><!-- /= CoffeeScript.compile method["example"], bare: true --></code>
+      <h3>
+        <span class='fn'>$</span>
+        append(node,node,...)
+      </h3>
+      <p>Appends (inserts) the given nodes to self.</p>
+      <div class='clear'></div>
+      <div class='icon-link'></div>
+      <div class='icon-play'></div>
+    </div>
+    <div class='method'>
+      <pre><code class='coffee prettyprint'>parent = Element.create('.parent')
+      node = Element.create('.node')
+      p = Element.create p
+      parent.append node, p
+      console.log parent.first("p").tag
+      # p</code></pre>
+      <code class='js'><!-- /= CoffeeScript.compile method["example"], bare: true --></code>
+      <h3>
+        <span class='fn'>$</span>
+        first(selector = '*')
+      </h3>
+      <p>Returns the first descendant matching selector</p>
+      <div class='clear'></div>
+      <div class='icon-link'></div>
+      <div class='icon-play'></div>
+    </div>
+    <div class='method'>
+      <pre><code class='coffee prettyprint'>parent = Element.create('.parent')
+      node = Element.create('.node')
+      p = Element.create p
+      parent.append p, node
+      console.log parent.last(".node").tag
+      # div</code></pre>
+      <code class='js'><!-- /= CoffeeScript.compile method["example"], bare: true --></code>
+      <h3>
+        <span class='fn'>$</span>
+        last(selector = '*')
+      </h3>
+      <p>Returns the last descendant matching selector</p>
+      <div class='clear'></div>
+      <div class='icon-link'></div>
+      <div class='icon-play'></div>
+    </div>
+    <div class='method'>
+      <pre><code class='coffee prettyprint'></code></pre>
+      <code class='js'><!-- /= CoffeeScript.compile method["example"], bare: true --></code>
+      <h3>
+        <span class='fn'>$</span>
+        all(selector = '*')
+      </h3>
+      <p>Return all descendants matching the selector</p>
+      <div class='clear'></div>
+      <div class='icon-link'></div>
+      <div class='icon-play'></div>
+    </div>
+    <div class='method'>
+      <pre><code class='coffee prettyprint'></code></pre>
+      <code class='js'><!-- /= CoffeeScript.compile method["example"], bare: true --></code>
+      <h3>
+        <span class='fn'>$</span>
+        empty()
+      </h3>
+      <p>Removes all child nodes</p>
+      <div class='clear'></div>
+      <div class='icon-link'></div>
+      <div class='icon-play'></div>
+    </div>
+    <div class='method'>
+      <pre><code class='coffee prettyprint'></code></pre>
+      <code class='js'><!-- /= CoffeeScript.compile method["example"], bare: true --></code>
+      <h3>
+        <span class='fn'>$</span>
+        moveUp()
+      </h3>
+      <p>Moves self before the previous element</p>
+      <div class='clear'></div>
+      <div class='icon-link'></div>
+      <div class='icon-play'></div>
+    </div>
+    <div class='method'>
+      <pre><code class='coffee prettyprint'></code></pre>
+      <code class='js'><!-- /= CoffeeScript.compile method["example"], bare: true --></code>
+      <h3>
+        <span class='fn'>$</span>
+        moveDown()
+      </h3>
+      <p>Moves self after the next element</p>
+      <div class='clear'></div>
+      <div class='icon-link'></div>
+      <div class='icon-play'></div>
+    </div>
+    <div class='method'>
+      <pre><code class='coffee prettyprint'>document.body.delegateEventListener 'click:*', (e) ->
+        console.log e.tag
+      # tag of the clicked element</code></pre>
+      <code class='js'><!-- /= CoffeeScript.compile method["example"], bare: true --></code>
+      <h3>
+        <span class='fn'>$</span>
+        delegateEventListener(expression, handler)
+      </h3>
+      <p>Delegates events acconding to the expression:<br>
+<strong>event</strong>:<em>selector</em><br>
+<strong>click</strong>:<em>a[href]</em></p>
+      <div class='clear'></div>
+      <div class='icon-link'></div>
+      <div class='icon-play'></div>
+    </div>
+    <div class='method'>
+      <pre><code class='coffee prettyprint'></code></pre>
+      <code class='js'><!-- /= CoffeeScript.compile method["example"], bare: true --></code>
+      <h3>
+        <span class='fn'>$</span>
+        addEvent
+      </h3>
+      <p>Alias for addEventListener</p>
+      <div class='clear'></div>
+      <div class='icon-link'></div>
+      <div class='icon-play'></div>
+    </div>
+    <div class='method'>
+      <pre><code class='coffee prettyprint'></code></pre>
+      <code class='js'><!-- /= CoffeeScript.compile method["example"], bare: true --></code>
+      <h3>
+        <span class='fn'>$</span>
+        removeEvent
+      </h3>
+      <p>Alias for aremoveEventListener</p>
+      <div class='clear'></div>
+      <div class='icon-link'></div>
+      <div class='icon-play'></div>
+    </div>
+    <div class='method'>
+      <pre><code class='coffee prettyprint'></code></pre>
+      <code class='js'><!-- /= CoffeeScript.compile method["example"], bare: true --></code>
+      <h3>
+        <span class='fn'>$</span>
+        delegateEvent
+      </h3>
+      <p>Alias for delegateEventListener</p>
+      <div class='clear'></div>
+      <div class='icon-link'></div>
+      <div class='icon-play'></div>
+    </div>
+  </div>
+  <div class='class' id='NodeList'>
+    <div class='panel'>
+      <h2>
+        <div class='icon-th-list'></div>
+        NodeList
+      </h2>
+      <p>Extensions for NodeList.</p>
+    </div>
+    <div class='method'>
+      <pre><code class='coffee prettyprint'>document.all("h1").forEach (el) ->
+        console.log el</code></pre>
+      <code class='js'><!-- /= CoffeeScript.compile method["example"], bare: true --></code>
+      <h3>
+        <span class='fn'>$</span>
+        forEach(fn)
+      </h3>
+      <p>Iterates through the element in the node list.</p>
+      <div class='clear'></div>
+      <div class='icon-link'></div>
+      <div class='icon-play'></div>
+    </div>
+    <div class='method'>
+      <pre><code class='coffee prettyprint'>console.log document.all("h1").map (el) ->
+        el.text</code></pre>
+      <code class='js'><!-- /= CoffeeScript.compile method["example"], bare: true --></code>
+      <h3>
+        <span class='fn'>$</span>
+        map(fn)
+      </h3>
+      <p>Creates an array with the results of calling a provided function on every element in the node list.</p>
+      <div class='clear'></div>
+      <div class='icon-link'></div>
+      <div class='icon-play'></div>
+    </div>
+    <div class='method'>
+      <pre><code class='coffee prettyprint'>console.log document.all("h1").pluck 'text'
+      # [...]</code></pre>
+      <code class='js'><!-- /= CoffeeScript.compile method["example"], bare: true --></code>
+      <h3>
+        <span class='fn'>$</span>
+        pluck
+      </h3>
+      
+      <div class='clear'></div>
+      <div class='icon-link'></div>
+      <div class='icon-play'></div>
+    </div>
+    <div class='method'>
+      <pre><code class='coffee prettyprint'>h1 = document.first("h1")
+      document.body.inlcude(h1)
+      # false</code></pre>
+      <code class='js'><!-- /= CoffeeScript.compile method["example"], bare: true --></code>
+      <h3>
+        <span class='fn'>$</span>
+        include
+      </h3>
+      
+      <div class='clear'></div>
+      <div class='icon-link'></div>
+      <div class='icon-play'></div>
+    </div>
+    <div class='method'>
+      <pre><code class='coffee prettyprint'>h1 = document.all("h1").first
+      console.log h1
+      # Element</code></pre>
+      <code class='js'><!-- /= CoffeeScript.compile method["example"], bare: true --></code>
+      <h3>
+        <span class='prop'>#</span>
+        first
+      </h3>
+      
+      <div class='clear'></div>
+      <div class='icon-link'></div>
+      <div class='icon-play'></div>
+    </div>
+    <div class='method'>
+      <pre><code class='coffee prettyprint'>h1 = document.all("h1").last
+      console.log h1
+      # Element</code></pre>
+      <code class='js'><!-- /= CoffeeScript.compile method["example"], bare: true --></code>
+      <h3>
+        <span class='prop'>#</span>
+        last
+      </h3>
+      
+      <div class='clear'></div>
+      <div class='icon-link'></div>
+      <div class='icon-play'></div>
+    </div>
+  </div>
+  <div class='class' id='HTMLElement'>
+    <div class='panel'>
+      <h2>
+        <div class='icon-sign-blank'></div>
+        HTMLElement
+      </h2>
+      
+    </div>
+    <div class='method'>
+      <pre><code class='coffee prettyprint'>input = Element.create("input.class#id[type=text]")
+      console.log input.class input.getAttribute 'type'
+      # class, id, text</code></pre>
+      <code class='js'><!-- /= CoffeeScript.compile method["example"], bare: true --></code>
+      <h3>
+        <span class='self'>@</span>
+        create(zen)
+      </h3>
+      <p>Shortcut for creating element via zen string.           </p>
+      
+      <ul>
+      <li> <strong>[type=text][hidden]</strong> - attributes</li>
+      <li> <strong>.class1.class2</strong> - classes</li>
+      <li> <strong>#id</strong> - id</li>
+      </ul>
+      <div class='clear'></div>
+      <div class='icon-link'></div>
+      <div class='icon-play'></div>
+    </div>
+    <div class='method'>
+      <pre><code class='coffee prettyprint'>document.body.append Element.create()
+      document.body.last().dispose()</code></pre>
+      <code class='js'><!-- /= CoffeeScript.compile method["example"], bare: true --></code>
+      <h3>
+        <span class='fn'>$</span>
+        dispose()
+      </h3>
+      <p>Removes element from the dom.</p>
+      <div class='clear'></div>
+      <div class='icon-link'></div>
+      <div class='icon-play'></div>
+    </div>
+    <div class='method'>
+      <pre><code class='coffee prettyprint'>html = document.body.ansector 'html'
+      console.log html.tag
+      # html</code></pre>
+      <code class='js'><!-- /= CoffeeScript.compile method["example"], bare: true --></code>
+      <h3>
+        <span class='fn'>$</span>
+        ansector(selector = '*')
+      </h3>
+      <p>Returns the first ansector matching the selector</p>
+      <div class='clear'></div>
+      <div class='icon-link'></div>
+      <div class='icon-play'></div>
+    </div>
+    <div class='method'>
+      <pre><code class='coffee prettyprint'>el = document.head.next()
+      console.log el.tag
+      # body</code></pre>
+      <code class='js'><!-- /= CoffeeScript.compile method["example"], bare: true --></code>
+      <h3>
+        <span class='fn'>$</span>
+        next(selector = '*')
+      </h3>
+      <p>Returns the first element from next siblings matching the given selector</p>
+      <div class='clear'></div>
+      <div class='icon-link'></div>
+      <div class='icon-play'></div>
+    </div>
+    <div class='method'>
+      <pre><code class='coffee prettyprint'>el = document.head.prev()
+console.log el.tag
+# head</code></pre>
+      <code class='js'><!-- /= CoffeeScript.compile method["example"], bare: true --></code>
+      <h3>
+        <span class='fn'>$</span>
+        prev(selector = '*')
+      </h3>
+      <p>Returns the first element from previous siblings matching the given selector</p>
+      <div class='clear'></div>
+      <div class='icon-link'></div>
+      <div class='icon-play'></div>
+    </div>
+    <div class='method'>
+      <pre><code class='coffee prettyprint'>console.log document.body.css 'background-color'
+      # document.body.css 'background-color', '#fff'
+      # #fff</code></pre>
+      <code class='js'><!-- /= CoffeeScript.compile method["example"], bare: true --></code>
+      <h3>
+        <span class='fn'>$</span>
+        css(property[, value])
+      </h3>
+      <p>Sets / gets css properties</p>
+      <div class='clear'></div>
+      <div class='icon-link'></div>
+      <div class='icon-play'></div>
+    </div>
+    <div class='method'>
+      <pre><code class='coffee prettyprint'>div = Element.create "div"
+      console.log div.tagName.toLowerCase() is div.tag
+      # true</code></pre>
+      <code class='js'><!-- /= CoffeeScript.compile method["example"], bare: true --></code>
+      <h3>
+        <span class='prop'>#</span>
+        tag
+      </h3>
+      <p>Alias for tagName but lowercase</p>
+      <div class='clear'></div>
+      <div class='icon-link'></div>
+      <div class='icon-play'></div>
+    </div>
+    <div class='method'>
+      <pre><code class='coffee prettyprint'>el = Element.create 'div'
+      el.html = 'text'
+      console.log el.innerHTML
+      # text</code></pre>
+      <code class='js'><!-- /= CoffeeScript.compile method["example"], bare: true --></code>
+      <h3>
+        <span class='prop'>#</span>
+        html
+      </h3>
+      <p>Alias for innerHTML</p>
+      <div class='clear'></div>
+      <div class='icon-link'></div>
+      <div class='icon-play'></div>
+    </div>
+    <div class='method'>
+      <pre><code class='coffee prettyprint'>el = Element.create 'div'
+      el.text = 'text'
+      console.log el.textContent
+      # text</code></pre>
+      <code class='js'><!-- /= CoffeeScript.compile method["example"], bare: true --></code>
+      <h3>
+        <span class='prop'>#</span>
+        text
+      </h3>
+      <p>Alias for textContent</p>
+      <div class='clear'></div>
+      <div class='icon-link'></div>
+      <div class='icon-play'></div>
+    </div>
+    <div class='method'>
+      <pre><code class='coffee prettyprint'>el = Element.create 'div'
+      el.class = 'text'
+      console.log el.className
+      # text</code></pre>
+      <code class='js'><!-- /= CoffeeScript.compile method["example"], bare: true --></code>
+      <h3>
+        <span class='prop'>#</span>
+        class
+      </h3>
+      <p>Alias for className</p>
+      <div class='clear'></div>
+      <div class='icon-link'></div>
+      <div class='icon-play'></div>
+    </div>
+    <div class='method'>
+      <pre><code class='coffee prettyprint'>el = Element.create 'div'
+      el.parent = document.body
+      console.log document.contains(el)
+      # true</code></pre>
+      <code class='js'><!-- /= CoffeeScript.compile method["example"], bare: true --></code>
+      <h3>
+        <span class='prop'>#</span>
+        parent
+      </h3>
+      <p>Gets / sets the parent of the element</p>
+      <div class='clear'></div>
+      <div class='icon-link'></div>
+      <div class='icon-play'></div>
+    </div>
+  </div>
+  <div class='class' id='HTMLInputElement'>
+    <div class='panel'>
+      <h2>
+        <div class='icon-'></div>
+        HTMLInputElement
+      </h2>
+      
+    </div>
+    <div class='method'>
+      <pre><code class='coffee prettyprint'></code></pre>
+      <code class='js'><!-- /= CoffeeScript.compile method["example"], bare: true --></code>
+      <h3>
+        <span class='fn'>$</span>
+        caretToEnd
+      </h3>
+      <p>Moves the caret of the element to the end when focused.</p>
+      <div class='clear'></div>
+      <div class='icon-link'></div>
+      <div class='icon-play'></div>
+    </div>
+  </div>
+  <div class='class' id='HTMLSelectElement'>
+    <div class='panel'>
+      <h2>
+        <div class='icon-'></div>
+        HTMLSelectElement
+      </h2>
+      
+    </div>
+    <div class='method'>
+      <pre><code class='coffee prettyprint'></code></pre>
+      <code class='js'><!-- /= CoffeeScript.compile method["example"], bare: true --></code>
+      <h3>
+        <span class='prop'>#</span>
+        selectedOption
+      </h3>
+      <p>Sets / Gets the selected option element of the select.</p>
+      <div class='clear'></div>
+      <div class='icon-link'></div>
+      <div class='icon-play'></div>
+    </div>
+  </div>
+  <div class='class' id='DocumentFragment'>
+    <div class='panel'>
+      <h2>
+        <div class='icon-'></div>
+        DocumentFragment
+      </h2>
+      
+    </div>
+    <div class='method'>
+      <pre><code class='coffee prettyprint'></code></pre>
+      <code class='js'><!-- /= CoffeeScript.compile method["example"], bare: true --></code>
+      <h3>
+        <span class='fn'>$</span>
+        create()
+      </h3>
+      <p>Alias for document.createDocumentFragment()</p>
+      <div class='clear'></div>
+      <div class='icon-link'></div>
+      <div class='icon-play'></div>
+    </div>
+    <div class='method'>
+      <pre><code class='coffee prettyprint'></code></pre>
+      <code class='js'><!-- /= CoffeeScript.compile method["example"], bare: true --></code>
+      <h3>
+        <span class='fn'>$</span>
+        remove(el)
+      </h3>
+      <p>Removes <strong>el</strong> from the document fragment</p>
+      <div class='clear'></div>
+      <div class='icon-link'></div>
+      <div class='icon-play'></div>
+    </div>
+    <div class='method'>
+      <pre><code class='coffee prettyprint'></code></pre>
+      <code class='js'><!-- /= CoffeeScript.compile method["example"], bare: true --></code>
+      <h3>
+        <span class='prop'>#</span>
+        children
+      </h3>
+      <p>Alias for <strong>childnodes</strong></p>
+      <div class='clear'></div>
+      <div class='icon-link'></div>
+      <div class='icon-play'></div>
+    </div>
+  </div>
   <div class='class' id='Dialogs'>
     <div class='panel'>
       <h2>
         <div class='icon-list-alt'></div>
         Dialogs
       </h2>
-      <p>
-        
-      </p>
+      
     </div>
   </div>
   <div class='class' id='File'>
@@ -175,9 +715,7 @@
         <div class='icon-file'></div>
         File
       </h2>
-      <p>
-        
-      </p>
+      
     </div>
   </div>
   <div class='class' id='History'>
@@ -186,9 +724,7 @@
         <div class='icon-bookmark'></div>
         History
       </h2>
-      <p>
-        
-      </p>
+      
     </div>
   </div>
   <div class='class' id='i18n'>
@@ -197,45 +733,32 @@
         <div class='icon-globe'></div>
         i18n
       </h2>
-      <p>
-        Locale Management
-        </br>
-        Default locale is read from the html lang attribute.
-      </p>
+      <p>Locale Management
+      </br>
+      Default locale is read from the html lang attribute.</p>
     </div>
     <div class='method'>
       <pre><code class='coffee prettyprint'>i18n.locales.en = social: {join: 'Joins us today!'}
       console.log i18n.t 'social.join'
       # "Join us today!"</code></pre>
-      <code class='js'>
-      i18n.locales.en = {
-        social: {
-          join: 'Joins us today!'
-        }
-      };
-      
-      console.log(i18n.t('social.join'));</code>
+      <code class='js'><!-- /= CoffeeScript.compile method["example"], bare: true --></code>
       <h3>
         <span class='self'>@</span>
         t(path, *data = {}, *locale = 'en' )
       </h3>
-      <p>
-        Get translation for given path.
-      </p>
+      <p>Get translation for given path.</p>
       <div class='clear'></div>
       <div class='icon-link'></div>
       <div class='icon-play'></div>
     </div>
     <div class='method'>
       <pre><code class='coffee prettyprint'></code></pre>
-      <code class='js'></code>
+      <code class='js'><!-- /= CoffeeScript.compile method["example"], bare: true --></code>
       <h3>
         <span class='self'>@</span>
         locales = {}
       </h3>
-      <p>
-        This property contanes the  translations
-      </p>
+      <p>This property contanes the  translations</p>
       <div class='clear'></div>
       <div class='icon-link'></div>
       <div class='icon-play'></div>
@@ -247,9 +770,7 @@
         <div class='icon-link'></div>
         Request
       </h2>
-      <p>
-        A very simple XMLHTTPRequest wrapper.
-      </p>
+      <p>A very simple XMLHTTPRequest wrapper.</p>
     </div>
     <div class='method'>
       <pre><code class='coffee prettyprint'>r = new Request('/example.json')
@@ -257,21 +778,12 @@
         console.log response.body.message
         console.log response.raw
       # Object</code></pre>
-      <code class='js'>var r;
-      
-      r = new Request('/example.json');
-      
-      r.get(function(response) {
-        console.log(response.body.message);
-        return console.log(response.raw);
-      });</code>
+      <code class='js'><!-- /= CoffeeScript.compile method["example"], bare: true --></code>
       <h3>
         <span class='new'>::</span>
         constructor(url, headers = {})
       </h3>
-      <p>
-        Creates a new Request instance.
-      </p>
+      <p>Creates a new Request instance.</p>
       <div class='clear'></div>
       <div class='icon-link'></div>
       <div class='icon-play'></div>
@@ -282,21 +794,12 @@
         console.log response.body.message
         console.log response.raw
       # Object</code></pre>
-      <code class='js'>var r;
-      
-      r = new Request('/example.json');
-      
-      r.get(function(response) {
-        console.log(response.body.message);
-        return console.log(response.raw);
-      });</code>
+      <code class='js'><!-- /= CoffeeScript.compile method["example"], bare: true --></code>
       <h3>
         <span class='fn'>$</span>
         get(*data = {}, callback)
       </h3>
-      <p>
-        Start a request with GET method.
-      </p>
+      <p>Start a request with GET method.</p>
       <div class='clear'></div>
       <div class='icon-link'></div>
       <div class='icon-play'></div>
@@ -307,21 +810,12 @@
         console.log response.body.message
         console.log response.raw
       # Object</code></pre>
-      <code class='js'>var r;
-      
-      r = new Request('/example.json');
-      
-      r.post(function(response) {
-        console.log(response.body.message);
-        return console.log(response.raw);
-      });</code>
+      <code class='js'><!-- /= CoffeeScript.compile method["example"], bare: true --></code>
       <h3>
         <span class='fn'>$</span>
         post(*data = {}, callback)
       </h3>
-      <p>
-        Start a request with POST method.
-      </p>
+      <p>Start a request with POST method.</p>
       <div class='clear'></div>
       <div class='icon-link'></div>
       <div class='icon-play'></div>
@@ -333,26 +827,18 @@
         <div class='icon-text-height'></div>
         Unit
       </h2>
-      <p>
-        PX / EM conversion
-      </p>
+      <p>PX / EM conversion</p>
     </div>
     <div class='method'>
       <pre><code class='coffee prettyprint'>u = new Unit()
       console.log u.px
       # 0px</code></pre>
-      <code class='js'>var u;
-      
-      u = new Unit();
-      
-      console.log(u.px);</code>
+      <code class='js'><!-- /= CoffeeScript.compile method["example"], bare: true --></code>
       <h3>
         <span class='new'>::</span>
         constructor(value = "0px", basePx = 16)
       </h3>
-      <p>
-        Creates a new Unit instance.
-      </p>
+      <p>Creates a new Unit instance.</p>
       <div class='clear'></div>
       <div class='icon-link'></div>
       <div class='icon-play'></div>
@@ -362,20 +848,12 @@
       u.set '10px'
       console.log u.px
       # 10px</code></pre>
-      <code class='js'>var u;
-      
-      u = new Unit();
-      
-      u.set('10px');
-      
-      console.log(u.px);</code>
+      <code class='js'><!-- /= CoffeeScript.compile method["example"], bare: true --></code>
       <h3>
         <span class='fn'>$</span>
         set(value = "0px")
       </h3>
-      <p>
-        Sets self value
-      </p>
+      <p>Sets self value</p>
       <div class='clear'></div>
       <div class='icon-link'></div>
       <div class='icon-play'></div>
@@ -386,22 +864,12 @@
       u.set '12px'
       console.log u.em
       # 0.5em</code></pre>
-      <code class='js'>var u;
-      
-      u = new Unit();
-      
-      u.base = 24;
-      
-      u.set('12px');
-      
-      console.log(u.em);</code>
+      <code class='js'><!-- /= CoffeeScript.compile method["example"], bare: true --></code>
       <h3>
         <span class='prop'>#</span>
         base
       </h3>
-      <p>
-        Base pixel size for calculating em
-      </p>
+      <p>Base pixel size for calculating em</p>
       <div class='clear'></div>
       <div class='icon-link'></div>
       <div class='icon-play'></div>
@@ -411,20 +879,12 @@
       u.set '10px'
       console.log u.px
       # 10px</code></pre>
-      <code class='js'>var u;
-      
-      u = new Unit();
-      
-      u.set('10px');
-      
-      console.log(u.px);</code>
+      <code class='js'><!-- /= CoffeeScript.compile method["example"], bare: true --></code>
       <h3>
         <span class='prop'>#</span>
         px
       </h3>
-      <p>
-        Returns self value in pixels
-      </p>
+      <p>Returns self value in pixels</p>
       <div class='clear'></div>
       <div class='icon-link'></div>
       <div class='icon-play'></div>
@@ -434,20 +894,12 @@
       u.set '8px'
       console.log u.em
       # 0.5em</code></pre>
-      <code class='js'>var u;
-      
-      u = new Unit();
-      
-      u.set('8px');
-      
-      console.log(u.em);</code>
+      <code class='js'><!-- /= CoffeeScript.compile method["example"], bare: true --></code>
       <h3>
         <span class='prop'>#</span>
         em
       </h3>
-      <p>
-        Returns self value in ems
-      </p>
+      <p>Returns self value in ems</p>
       <div class='clear'></div>
       <div class='icon-link'></div>
       <div class='icon-play'></div>
@@ -459,25 +911,18 @@
         <div class='icon-plus'></div>
         Number
       </h2>
-      <p>
-        
-      </p>
+      
     </div>
     <div class='method'>
       <pre><code class='coffee prettyprint'>(0).upto 5, (i)->
         console.log i
       # 0 1 2 3 4 5</code></pre>
-      <code class='js'>
-      0..upto(5, function(i) {
-        return console.log(i);
-      });</code>
+      <code class='js'><!-- /= CoffeeScript.compile method["example"], bare: true --></code>
       <h3>
         <span class='fn'>$</span>
         upto(n, fn = (i) ->, bound = @)
       </h3>
-      <p>
-        Iterates from self up to n
-      </p>
+      <p>Iterates from self up to n</p>
       <div class='clear'></div>
       <div class='icon-link'></div>
       <div class='icon-play'></div>
@@ -486,17 +931,12 @@
       <pre><code class='coffee prettyprint'>(5).downto 0, (i)->
         console.log i
       # 5 4 3 2 1 0</code></pre>
-      <code class='js'>
-      5..downto(0, function(i) {
-        return console.log(i);
-      });</code>
+      <code class='js'><!-- /= CoffeeScript.compile method["example"], bare: true --></code>
       <h3>
         <span class='fn'>$</span>
         downto(n, fn = (i) ->, bound = @)
       </h3>
-      <p>
-        Iterates from self down to n
-      </p>
+      <p>Iterates from self down to n</p>
       <div class='clear'></div>
       <div class='icon-link'></div>
       <div class='icon-play'></div>
@@ -505,17 +945,12 @@
       <pre><code class='coffee prettyprint'>(4).times (i)->
         console.log i
       # 1 2 3 4</code></pre>
-      <code class='js'>
-      4..times(function(i) {
-        return console.log(i);
-      });</code>
+      <code class='js'><!-- /= CoffeeScript.compile method["example"], bare: true --></code>
       <h3>
         <span class='fn'>$</span>
         times(fn = (i) ->, bound = @)
       </h3>
-      <p>
-        Runs fn self times
-      </p>
+      <p>Runs fn self times</p>
       <div class='clear'></div>
       <div class='icon-link'></div>
       <div class='icon-play'></div>
@@ -525,19 +960,12 @@
       console.log (10).clamp 5, 12
       console.log (10).clamp 12, 14
       # 8, 10, 12</code></pre>
-      <code class='js'>
-      console.log(10..clamp(5, 8));
-      
-      console.log(10..clamp(5, 12));
-      
-      console.log(10..clamp(12, 14));</code>
+      <code class='js'><!-- /= CoffeeScript.compile method["example"], bare: true --></code>
       <h3>
         <span class='fn'>$</span>
         clamp(lowerLimit, upperLimit)
       </h3>
-      <p>
-        Returns the lowerLimit if self is smaller then lowerLimit, upperLimit if self is bigger than upperLimit else returns self.
-      </p>
+      <p>Returns the lowerLimit if self is smaller then lowerLimit, upperLimit if self is bigger than upperLimit else returns self.</p>
       <div class='clear'></div>
       <div class='icon-link'></div>
       <div class='icon-play'></div>
@@ -546,17 +974,12 @@
       <pre><code class='coffee prettyprint'>console.log (370).clampRange 0, 360
       console.log (-20).clampRange 0, 360
       # 10, 340</code></pre>
-      <code class='js'>
-      console.log(370..clampRange(0, 360));
-      
-      console.log((-20).clampRange(0, 360));</code>
+      <code class='js'><!-- /= CoffeeScript.compile method["example"], bare: true --></code>
       <h3>
         <span class='fn'>$</span>
         clampRange(lowerLimit, upperLimit)
       </h3>
-      <p>
-        Same as calmp but returns remainder subtracted or added
-      </p>
+      <p>Same as calmp but returns remainder subtracted or added</p>
       <div class='clear'></div>
       <div class='icon-link'></div>
       <div class='icon-play'></div>
@@ -564,15 +987,12 @@
     <div class='method'>
       <pre><code class='coffee prettyprint'>console.log (1).seconds
       # 1000</code></pre>
-      <code class='js'>
-      console.log(1..seconds);</code>
+      <code class='js'><!-- /= CoffeeScript.compile method["example"], bare: true --></code>
       <h3>
         <span class='prop'>#</span>
         seconds
       </h3>
-      <p>
-        Returns slef seconds in milliseconds
-      </p>
+      <p>Returns slef seconds in milliseconds</p>
       <div class='clear'></div>
       <div class='icon-link'></div>
       <div class='icon-play'></div>
@@ -580,15 +1000,12 @@
     <div class='method'>
       <pre><code class='coffee prettyprint'>console.log  (1).minutes
       # 60 000</code></pre>
-      <code class='js'>
-      console.log(1..minutes);</code>
+      <code class='js'><!-- /= CoffeeScript.compile method["example"], bare: true --></code>
       <h3>
         <span class='prop'>#</span>
         minutes
       </h3>
-      <p>
-        Returns slef minutes in milliseconds
-      </p>
+      <p>Returns slef minutes in milliseconds</p>
       <div class='clear'></div>
       <div class='icon-link'></div>
       <div class='icon-play'></div>
@@ -596,15 +1013,12 @@
     <div class='method'>
       <pre><code class='coffee prettyprint'>console.log  (1).hours
       # 3 600 00</code></pre>
-      <code class='js'>
-      console.log(1..hours);</code>
+      <code class='js'><!-- /= CoffeeScript.compile method["example"], bare: true --></code>
       <h3>
         <span class='prop'>#</span>
         hours
       </h3>
-      <p>
-        Returns slef hours in milliseconds
-      </p>
+      <p>Returns slef hours in milliseconds</p>
       <div class='clear'></div>
       <div class='icon-link'></div>
       <div class='icon-play'></div>
@@ -612,15 +1026,12 @@
     <div class='method'>
       <pre><code class='coffee prettyprint'>console.log  (1).days
       # 86 400 000</code></pre>
-      <code class='js'>
-      console.log(1..days);</code>
+      <code class='js'><!-- /= CoffeeScript.compile method["example"], bare: true --></code>
       <h3>
         <span class='prop'>#</span>
         days
       </h3>
-      <p>
-        Returns slef days in milliseconds
-      </p>
+      <p>Returns slef days in milliseconds</p>
       <div class='clear'></div>
       <div class='icon-link'></div>
       <div class='icon-play'></div>
@@ -632,29 +1043,19 @@
         <div class='icon-bolt'></div>
         Function
       </h2>
-      <p>
-        
-      </p>
+      
     </div>
     <div class='method'>
       <pre><code class='coffee prettyprint'>f = ->
         console.log 'Yey'
       f.delay 2000
       # returns interval id</code></pre>
-      <code class='js'>var f;
-      
-      f = function() {
-        return console.log('Yey');
-      };
-      
-      f.delay(2000);</code>
+      <code class='js'><!-- /= CoffeeScript.compile method["example"], bare: true --></code>
       <h3>
         <span class='fn'>$</span>
         delay(n = 0)
       </h3>
-      <p>
-        Delays the function for n milliseconds.
-      </p>
+      <p>Delays the function for n milliseconds.</p>
       <div class='clear'></div>
       <div class='icon-link'></div>
       <div class='icon-play'></div>
@@ -665,24 +1066,12 @@
       id = f.periodical 500
       # returns interval id
       (-> clearInterval(id)).delay 2000</code></pre>
-      <code class='js'>var f, id;
-      
-      f = function() {
-        return console.log('Yey');
-      };
-      
-      id = f.periodical(500);
-      
-      (function() {
-        return clearInterval(id);
-      }).delay(2000);</code>
+      <code class='js'><!-- /= CoffeeScript.compile method["example"], bare: true --></code>
       <h3>
         <span class='fn'>$</span>
         periodical(n = 0)
       </h3>
-      <p>
-        Runs the function every n milliseconds.
-      </p>
+      <p>Runs the function every n milliseconds.</p>
       <div class='clear'></div>
       <div class='icon-link'></div>
       <div class='icon-play'></div>
@@ -694,29 +1083,18 @@
         <div class='icon-asterisk'></div>
         Object
       </h2>
-      <p>
-        
-      </p>
+      
     </div>
     <div class='method'>
       <pre><code class='coffee prettyprint'>o = {a: '1', b: '2'}
       console.log o.toFormData()
       # [object FormData]</code></pre>
-      <code class='js'>var o;
-      
-      o = {
-        a: '1',
-        b: '2'
-      };
-      
-      console.log(o.toFormData());</code>
+      <code class='js'><!-- /= CoffeeScript.compile method["example"], bare: true --></code>
       <h3>
         <span class='fn'>$</span>
         toFormData()
       </h3>
-      <p>
-        Creates FormData from the object for XMLHTTPRequest.
-      </p>
+      <p>Creates FormData from the object for XMLHTTPRequest.</p>
       <div class='clear'></div>
       <div class='icon-link'></div>
       <div class='icon-play'></div>
@@ -725,21 +1103,12 @@
       <pre><code class='coffee prettyprint'>o = {a: '1', b: '2'}
       console.log o.toQueryString()
       # a=1&b=2</code></pre>
-      <code class='js'>var o;
-      
-      o = {
-        a: '1',
-        b: '2'
-      };
-      
-      console.log(o.toQueryString());</code>
+      <code class='js'><!-- /= CoffeeScript.compile method["example"], bare: true --></code>
       <h3>
         <span class='fn'>$</span>
         toQueryString()
       </h3>
-      <p>
-        Creates query string from the objects properties
-      </p>
+      <p>Creates query string from the objects properties</p>
       <div class='clear'></div>
       <div class='icon-link'></div>
       <div class='icon-play'></div>
@@ -748,23 +1117,12 @@
       <pre><code class='coffee prettyprint'>o = {a: '1', b: '2'}
       Object.each o, (key,value) -> console.log key+":"+value
       # a:1 b:2</code></pre>
-      <code class='js'>var o;
-      
-      o = {
-        a: '1',
-        b: '2'
-      };
-      
-      Object.each(o, function(key, value) {
-        return console.log(key + ":" + value);
-      });</code>
+      <code class='js'><!-- /= CoffeeScript.compile method["example"], bare: true --></code>
       <h3>
         <span class='self'>@</span>
         each(object, fn = (key,value) ->)
       </h3>
-      <p>
-        Iterates through the object properties / values.
-      </p>
+      <p>Iterates through the object properties / values.</p>
       <div class='clear'></div>
       <div class='icon-link'></div>
       <div class='icon-play'></div>
@@ -773,25 +1131,12 @@
       <pre><code class='coffee prettyprint'>o = {luke: {side: 'light'}, vader: {side: 'dark'}}
       console.log Object.pluck o, 'side'
       # [light,dark]</code></pre>
-      <code class='js'>var o;
-      
-      o = {
-        luke: {
-          side: 'light'
-        },
-        vader: {
-          side: 'dark'
-        }
-      };
-      
-      console.log(Object.pluck(o, 'side'));</code>
+      <code class='js'><!-- /= CoffeeScript.compile method["example"], bare: true --></code>
       <h3>
         <span class='self'>@</span>
         pluck(object, property)
       </h3>
-      <p>
-        Returns properties form values.
-      </p>
+      <p>Returns properties form values.</p>
       <div class='clear'></div>
       <div class='icon-link'></div>
       <div class='icon-play'></div>
@@ -800,21 +1145,12 @@
       <pre><code class='coffee prettyprint'>o = {a: '1', b: '2'}
       console.log Object.values o
       # 1,2</code></pre>
-      <code class='js'>var o;
-      
-      o = {
-        a: '1',
-        b: '2'
-      };
-      
-      console.log(Object.values(o));</code>
+      <code class='js'><!-- /= CoffeeScript.compile method["example"], bare: true --></code>
       <h3>
         <span class='self'>@</span>
         values(object)
       </h3>
-      <p>
-        Returns the objects values.
-      </p>
+      <p>Returns the objects values.</p>
       <div class='clear'></div>
       <div class='icon-link'></div>
       <div class='icon-play'></div>
@@ -823,20 +1159,12 @@
       <pre><code class='coffee prettyprint'>o = x: ->
       console.log Object.canRespondTo o, 'x'
       # true</code></pre>
-      <code class='js'>var o;
-      
-      o = {
-        x: function() {}
-      };
-      
-      console.log(Object.canRespondTo(o, 'x'));</code>
+      <code class='js'><!-- /= CoffeeScript.compile method["example"], bare: true --></code>
       <h3>
         <span class='self'>@</span>
         canRespondTo(object, 'fn1', 'fn2', ...)
       </h3>
-      <p>
-        Returns true if the object has all functions passed as arguments.
-      </p>
+      <p>Returns true if the object has all functions passed as arguments.</p>
       <div class='clear'></div>
       <div class='icon-link'></div>
       <div class='icon-play'></div>
@@ -848,26 +1176,18 @@
         <div class='icon-beaker'></div>
         Color
       </h2>
-      <p>
-        
-      </p>
+      
     </div>
     <div class='method'>
       <pre><code class='coffee prettyprint'>c = new Color('#ff0000')
       console.log c.rgba
       # rgba(255,0,0,1)</code></pre>
-      <code class='js'>var c;
-      
-      c = new Color('#ff0000');
-      
-      console.log(c.rgba);</code>
+      <code class='js'><!-- /= CoffeeScript.compile method["example"], bare: true --></code>
       <h3>
         <span class='new'>::</span>
         constructor(colorString)
       </h3>
-      <p>
-        Creates a new Color instance from the given string.
-      </p>
+      <p>Creates a new Color instance from the given string.</p>
       <div class='clear'></div>
       <div class='icon-link'></div>
       <div class='icon-play'></div>
@@ -876,18 +1196,12 @@
       <pre><code class='coffee prettyprint'>c = new Color("#fff")
       console.log c.invert().hex
       # 000000</code></pre>
-      <code class='js'>var c;
-      
-      c = new Color("#fff");
-      
-      console.log(c.invert().hex);</code>
+      <code class='js'><!-- /= CoffeeScript.compile method["example"], bare: true --></code>
       <h3>
         <span class='fn'>$</span>
         invert()
       </h3>
-      <p>
-        Returns a new Color which is inverse of the color.
-      </p>
+      <p>Returns a new Color which is inverse of the color.</p>
       <div class='clear'></div>
       <div class='icon-link'></div>
       <div class='icon-play'></div>
@@ -896,18 +1210,12 @@
       <pre><code class='coffee prettyprint'>c = new Color("#fff")
       console.log c.mix("#000").hex
       # 7F7F7F</code></pre>
-      <code class='js'>var c;
-      
-      c = new Color("#fff");
-      
-      console.log(c.mix("#000").hex);</code>
+      <code class='js'><!-- /= CoffeeScript.compile method["example"], bare: true --></code>
       <h3>
         <span class='fn'>$</span>
         mix(otherColor, precentage = 50)
       </h3>
-      <p>
-        Mixes together two colors. Specifically, takes the average of each of the RGB components, optionally weighted by the given percentage.
-      </p>
+      <p>Mixes together two colors. Specifically, takes the average of each of the RGB components, optionally weighted by the given percentage.</p>
       <div class='clear'></div>
       <div class='icon-link'></div>
       <div class='icon-play'></div>
@@ -917,20 +1225,12 @@
       c.alpha = 10
       console.log c.rgba
       # rgba(255,0,0,0.1)</code></pre>
-      <code class='js'>var c;
-      
-      c = new Color('#ff0000');
-      
-      c.alpha = 10;
-      
-      console.log(c.rgba);</code>
+      <code class='js'><!-- /= CoffeeScript.compile method["example"], bare: true --></code>
       <h3>
         <span class='prop'>#</span>
         alpha
       </h3>
-      <p>
-        Sets / Gets the alpha (opacity) property of the color.
-      </p>
+      <p>Sets / Gets the alpha (opacity) property of the color.</p>
       <div class='clear'></div>
       <div class='icon-link'></div>
       <div class='icon-play'></div>
@@ -940,20 +1240,12 @@
       c.hue = 120
       console.log c.hex
       # 00FF00</code></pre>
-      <code class='js'>var c;
-      
-      c = new Color('#ff0000');
-      
-      c.hue = 120;
-      
-      console.log(c.hex);</code>
+      <code class='js'><!-- /= CoffeeScript.compile method["example"], bare: true --></code>
       <h3>
         <span class='prop'>#</span>
         hue
       </h3>
-      <p>
-        Sets / Gets the hue of the color.
-      </p>
+      <p>Sets / Gets the hue of the color.</p>
       <div class='clear'></div>
       <div class='icon-link'></div>
       <div class='icon-play'></div>
@@ -963,20 +1255,12 @@
       c.saturation = 50
       console.log c.hex
       # BF4040</code></pre>
-      <code class='js'>var c;
-      
-      c = new Color('#ff0000');
-      
-      c.saturation = 50;
-      
-      console.log(c.hex);</code>
+      <code class='js'><!-- /= CoffeeScript.compile method["example"], bare: true --></code>
       <h3>
         <span class='prop'>#</span>
         saturation
       </h3>
-      <p>
-        Sets / Gets the saturation of the color.
-      </p>
+      <p>Sets / Gets the saturation of the color.</p>
       <div class='clear'></div>
       <div class='icon-link'></div>
       <div class='icon-play'></div>
@@ -986,20 +1270,12 @@
       c.lightness = 50
       console.log c.hex
       # 808080</code></pre>
-      <code class='js'>var c;
-      
-      c = new Color('#fff');
-      
-      c.lightness = 50;
-      
-      console.log(c.hex);</code>
+      <code class='js'><!-- /= CoffeeScript.compile method["example"], bare: true --></code>
       <h3>
         <span class='prop'>#</span>
         lightness
       </h3>
-      <p>
-        Sets / Gets the lightness of the color.
-      </p>
+      <p>Sets / Gets the lightness of the color.</p>
       <div class='clear'></div>
       <div class='icon-link'></div>
       <div class='icon-play'></div>
@@ -1009,20 +1285,12 @@
       c.red = 204
       console.log c.hex
       # #cc0000</code></pre>
-      <code class='js'>var c;
-      
-      c = new Color('#ff0000');
-      
-      c.red = 204;
-      
-      console.log(c.hex);</code>
+      <code class='js'><!-- /= CoffeeScript.compile method["example"], bare: true --></code>
       <h3>
         <span class='prop'>#</span>
         red
       </h3>
-      <p>
-        Sets / Gets the red property of the color.
-      </p>
+      <p>Sets / Gets the red property of the color.</p>
       <div class='clear'></div>
       <div class='icon-link'></div>
       <div class='icon-play'></div>
@@ -1032,20 +1300,12 @@
       c.green = 204
       console.log c.hex
       # #00cc00</code></pre>
-      <code class='js'>var c;
-      
-      c = new Color('#000000');
-      
-      c.green = 204;
-      
-      console.log(c.hex);</code>
+      <code class='js'><!-- /= CoffeeScript.compile method["example"], bare: true --></code>
       <h3>
         <span class='prop'>#</span>
         green
       </h3>
-      <p>
-        Sets / Gets the green property of the color.
-      </p>
+      <p>Sets / Gets the green property of the color.</p>
       <div class='clear'></div>
       <div class='icon-link'></div>
       <div class='icon-play'></div>
@@ -1055,20 +1315,12 @@
       c.blue = 204
       console.log c.hex
       # #0000cc</code></pre>
-      <code class='js'>var c;
-      
-      c = new Color('#000000');
-      
-      c.blue = 204;
-      
-      console.log(c.hex);</code>
+      <code class='js'><!-- /= CoffeeScript.compile method["example"], bare: true --></code>
       <h3>
         <span class='prop'>#</span>
         blue
       </h3>
-      <p>
-        Sets / Gets the red property of the color.
-      </p>
+      <p>Sets / Gets the red property of the color.</p>
       <div class='clear'></div>
       <div class='icon-link'></div>
       <div class='icon-play'></div>
@@ -1077,18 +1329,12 @@
       <pre><code class='coffee prettyprint'>c = new Color('#ff0000')
       console.log c.rgba
       # rgba(255,0,0,1)</code></pre>
-      <code class='js'>var c;
-      
-      c = new Color('#ff0000');
-      
-      console.log(c.rgba);</code>
+      <code class='js'><!-- /= CoffeeScript.compile method["example"], bare: true --></code>
       <h3>
         <span class='prop'>#</span>
         rgba
       </h3>
-      <p>
-        Returns the rgba string representation of the color
-      </p>
+      <p>Returns the rgba string representation of the color</p>
       <div class='clear'></div>
       <div class='icon-link'></div>
       <div class='icon-play'></div>
@@ -1097,18 +1343,12 @@
       <pre><code class='coffee prettyprint'>c = new Color('#ff0000')
       console.log c.rgb
       # rgba(255,0,0)</code></pre>
-      <code class='js'>var c;
-      
-      c = new Color('#ff0000');
-      
-      console.log(c.rgb);</code>
+      <code class='js'><!-- /= CoffeeScript.compile method["example"], bare: true --></code>
       <h3>
         <span class='prop'>#</span>
         rgb
       </h3>
-      <p>
-        Returns the rgb string representation of the color
-      </p>
+      <p>Returns the rgb string representation of the color</p>
       <div class='clear'></div>
       <div class='icon-link'></div>
       <div class='icon-play'></div>
@@ -1117,18 +1357,12 @@
       <pre><code class='coffee prettyprint'>c = new Color('#ff0000')
       console.log c.hsl
       # hsl(0,100%,50%)</code></pre>
-      <code class='js'>var c;
-      
-      c = new Color('#ff0000');
-      
-      console.log(c.hsl);</code>
+      <code class='js'><!-- /= CoffeeScript.compile method["example"], bare: true --></code>
       <h3>
         <span class='prop'>#</span>
         hsl
       </h3>
-      <p>
-        Returns the hsl string representation of the color
-      </p>
+      <p>Returns the hsl string representation of the color</p>
       <div class='clear'></div>
       <div class='icon-link'></div>
       <div class='icon-play'></div>
@@ -1137,18 +1371,12 @@
       <pre><code class='coffee prettyprint'>c = new Color('#ff0000')
       console.log c.hsla
       # hsla(0,100%,50%,1)</code></pre>
-      <code class='js'>var c;
-      
-      c = new Color('#ff0000');
-      
-      console.log(c.hsla);</code>
+      <code class='js'><!-- /= CoffeeScript.compile method["example"], bare: true --></code>
       <h3>
         <span class='prop'>#</span>
         hsla
       </h3>
-      <p>
-        Returns the hsla string representation of the color
-      </p>
+      <p>Returns the hsla string representation of the color</p>
       <div class='clear'></div>
       <div class='icon-link'></div>
       <div class='icon-play'></div>
@@ -1157,18 +1385,12 @@
       <pre><code class='coffee prettyprint'>c = new Color('#ff0000')
       console.log c.hex
       # FF0000</code></pre>
-      <code class='js'>var c;
-      
-      c = new Color('#ff0000');
-      
-      console.log(c.hex);</code>
+      <code class='js'><!-- /= CoffeeScript.compile method["example"], bare: true --></code>
       <h3>
         <span class='prop'>#</span>
         hex
       </h3>
-      <p>
-        Sets/Gets the hex representation of the color
-      </p>
+      <p>Sets/Gets the hex representation of the color</p>
       <div class='clear'></div>
       <div class='icon-link'></div>
       <div class='icon-play'></div>
@@ -1180,26 +1402,18 @@
         <div class='icon-strikethrough'></div>
         String
       </h2>
-      <p>
-        
-      </p>
+      
     </div>
     <div class='method'>
       <pre><code class='coffee prettyprint'>s = 'deathstar'
       console.log s.test /star/
       # true</code></pre>
-      <code class='js'>var s;
-      
-      s = 'deathstar';
-      
-      console.log(s.test(/star/));</code>
+      <code class='js'><!-- /= CoffeeScript.compile method["example"], bare: true --></code>
       <h3>
         <span class='fn'>$</span>
         test(regexp)
       </h3>
-      <p>
-        Works like match but returns true or false
-      </p>
+      <p>Works like match but returns true or false</p>
       <div class='clear'></div>
       <div class='icon-link'></div>
       <div class='icon-play'></div>
@@ -1208,18 +1422,12 @@
       <pre><code class='coffee prettyprint'>s = "\\'$"
       console.log s.escape()
       # \\\'\$</code></pre>
-      <code class='js'>var s;
-      
-      s = "\\'$";
-      
-      console.log(s.escape());</code>
+      <code class='js'><!-- /= CoffeeScript.compile method["example"], bare: true --></code>
       <h3>
         <span class='fn'>$</span>
         escape()
       </h3>
-      <p>
-        Escapes the string for regexp
-      </p>
+      <p>Escapes the string for regexp</p>
       <div class='clear'></div>
       <div class='icon-link'></div>
       <div class='icon-play'></div>
@@ -1228,18 +1436,12 @@
       <pre><code class='coffee prettyprint'>s = "This is a long text and will be cut off."
       console.log s.ellipsis(14)
       # This is a long...</code></pre>
-      <code class='js'>var s;
-      
-      s = "This is a long text and will be cut off.";
-      
-      console.log(s.ellipsis(14));</code>
+      <code class='js'><!-- /= CoffeeScript.compile method["example"], bare: true --></code>
       <h3>
         <span class='fn'>$</span>
         ellipsis(length = 10)
       </h3>
-      <p>
-        Cuts off and inserts ellipsis(…) at given length
-      </p>
+      <p>Cuts off and inserts ellipsis(…) at given length</p>
       <div class='clear'></div>
       <div class='icon-link'></div>
       <div class='icon-play'></div>
@@ -1248,18 +1450,12 @@
       <pre><code class='coffee prettyprint'>s = "There are    multiple   whitespace in    this!"
       console.log s.compact()
       # There are multiple whitespace in this!</code></pre>
-      <code class='js'>var s;
-      
-      s = "There are    multiple   whitespace in    this!";
-      
-      console.log(s.compact());</code>
+      <code class='js'><!-- /= CoffeeScript.compile method["example"], bare: true --></code>
       <h3>
         <span class='fn'>$</span>
         compact()
       </h3>
-      <p>
-        Removes extra whitespace
-      </p>
+      <p>Removes extra whitespace</p>
       <div class='clear'></div>
       <div class='icon-link'></div>
       <div class='icon-play'></div>
@@ -1268,18 +1464,12 @@
       <pre><code class='coffee prettyprint'>s = "This-will be_converted"
       console.log s.camelCase()
       # ThisWillBeConverted</code></pre>
-      <code class='js'>var s;
-      
-      s = "This-will be_converted";
-      
-      console.log(s.camelCase());</code>
+      <code class='js'><!-- /= CoffeeScript.compile method["example"], bare: true --></code>
       <h3>
         <span class='fn'>$</span>
         camelCase()
       </h3>
-      <p>
-        Converts -, space, _ to camelcase
-      </p>
+      <p>Converts -, space, _ to camelcase</p>
       <div class='clear'></div>
       <div class='icon-link'></div>
       <div class='icon-play'></div>
@@ -1288,18 +1478,12 @@
       <pre><code class='coffee prettyprint'>s = "ThisWillBeConverted"
       console.log s.hyphenate()
       # this-will-be-converted</code></pre>
-      <code class='js'>var s;
-      
-      s = "ThisWillBeConverted";
-      
-      console.log(s.hyphenate());</code>
+      <code class='js'><!-- /= CoffeeScript.compile method["example"], bare: true --></code>
       <h3>
         <span class='fn'>$</span>
         hyphenate()
       </h3>
-      <p>
-        Converts a camelcased string to a hyphenated string
-      </p>
+      <p>Converts a camelcased string to a hyphenated string</p>
       <div class='clear'></div>
       <div class='icon-link'></div>
       <div class='icon-play'></div>
@@ -1308,18 +1492,12 @@
       <pre><code class='coffee prettyprint'>s = "this will be converted"
       console.log s.capitalize()
       # This Will Be Converted</code></pre>
-      <code class='js'>var s;
-      
-      s = "this will be converted";
-      
-      console.log(s.capitalize());</code>
+      <code class='js'><!-- /= CoffeeScript.compile method["example"], bare: true --></code>
       <h3>
         <span class='fn'>$</span>
         capitalize()
       </h3>
-      <p>
-        Converts the first letter of each word in a string to uppercase
-      </p>
+      <p>Converts the first letter of each word in a string to uppercase</p>
       <div class='clear'></div>
       <div class='icon-link'></div>
       <div class='icon-play'></div>
@@ -1328,18 +1506,12 @@
       <pre><code class='coffee prettyprint'>s = "This will be indented."
       console.log '"'+s.indent()+'"'
       # "  This will be indented"</code></pre>
-      <code class='js'>var s;
-      
-      s = "This will be indented.";
-      
-      console.log('"' + s.indent() + '"');</code>
+      <code class='js'><!-- /= CoffeeScript.compile method["example"], bare: true --></code>
       <h3>
         <span class='fn'>$</span>
         indent(n = 2)
       </h3>
-      <p>
-        Indents all lines of the string by n spaces
-      </p>
+      <p>Indents all lines of the string by n spaces</p>
       <div class='clear'></div>
       <div class='icon-link'></div>
       <div class='icon-play'></div>
@@ -1348,18 +1520,12 @@
       <pre><code class='coffee prettyprint'>s = "  This will be outdented."
       console.log '"'+s.outdent()+'"'
       # "This will be outdented"</code></pre>
-      <code class='js'>var s;
-      
-      s = "  This will be outdented.";
-      
-      console.log('"' + s.outdent() + '"');</code>
+      <code class='js'><!-- /= CoffeeScript.compile method["example"], bare: true --></code>
       <h3>
         <span class='fn'>$</span>
         outdent(n = 2)
       </h3>
-      <p>
-        Outdents all lines of the string by n spaces
-      </p>
+      <p>Outdents all lines of the string by n spaces</p>
       <div class='clear'></div>
       <div class='icon-link'></div>
       <div class='icon-play'></div>
@@ -1368,18 +1534,12 @@
       <pre><code class='coffee prettyprint'>s = "<>&\""
       console.log s.entities()
       # &amp;lt;&amp;gt;&amp;amp;&amp;quot;</code></pre>
-      <code class='js'>var s;
-      
-      s = "<>&\"";
-      
-      console.log(s.entities());</code>
+      <code class='js'><!-- /= CoffeeScript.compile method["example"], bare: true --></code>
       <h3>
         <span class='fn'>$</span>
         entities()
       </h3>
-      <p>
-        Converts <,>, &, " into their html entities.
-      </p>
+      <p>Converts &lt;,&gt;, &amp;, &quot; into their html entities.</p>
       <div class='clear'></div>
       <div class='icon-link'></div>
       <div class='icon-play'></div>
@@ -1388,18 +1548,12 @@
       <pre><code class='coffee prettyprint'>s = "q=search%20string"
       console.log s.parseQueryString().q
       # search string</code></pre>
-      <code class='js'>var s;
-      
-      s = "q=search%20string";
-      
-      console.log(s.parseQueryString().q);</code>
+      <code class='js'><!-- /= CoffeeScript.compile method["example"], bare: true --></code>
       <h3>
         <span class='fn'>$</span>
         parseQueryString()
       </h3>
-      <p>
-        Parses the string as query string
-      </p>
+      <p>Parses the string as query string</p>
       <div class='clear'></div>
       <div class='icon-link'></div>
       <div class='icon-play'></div>
@@ -1408,18 +1562,12 @@
       <pre><code class='coffee prettyprint'>s = "Luke is awesome"
       console.log s.wordWrap 7, ':'
       # Luke is :awesome</code></pre>
-      <code class='js'>var s;
-      
-      s = "Luke is awesome";
-      
-      console.log(s.wordWrap(7, ':'));</code>
+      <code class='js'><!-- /= CoffeeScript.compile method["example"], bare: true --></code>
       <h3>
         <span class='fn'>$</span>
         wordWrap(width = 15, separator = "\n", cut = false)
       </h3>
-      <p>
-        Inserts separator at every width character. If cut is true then words will be cut when necessary.
-      </p>
+      <p>Inserts separator at every width character. If cut is true then words will be cut when necessary.</p>
       <div class='clear'></div>
       <div class='icon-link'></div>
       <div class='icon-play'></div>
@@ -1427,15 +1575,12 @@
     <div class='method'>
       <pre><code class='coffee prettyprint'>console.log String.random(10)
       # 10 character lenght random string</code></pre>
-      <code class='js'>
-      console.log(String.random(10));</code>
+      <code class='js'><!-- /= CoffeeScript.compile method["example"], bare: true --></code>
       <h3>
         <span class='self'>@</span>
         random(length = 10)
       </h3>
-      <p>
-        Generates a random string
-      </p>
+      <p>Generates a random string</p>
       <div class='clear'></div>
       <div class='icon-link'></div>
       <div class='icon-play'></div>
@@ -1447,26 +1592,18 @@
         <div class='icon-th'></div>
         Array
       </h2>
-      <p>
-        
-      </p>
+      
     </div>
     <div class='method'>
       <pre><code class='coffee prettyprint'>a = [null, undefined, false, '',0,'Luke','Leia']
       console.log a.compact()
       # Luke, Leia</code></pre>
-      <code class='js'>var a;
-      
-      a = [null, void 0, false, '', 0, 'Luke', 'Leia'];
-      
-      console.log(a.compact());</code>
+      <code class='js'><!-- /= CoffeeScript.compile method["example"], bare: true --></code>
       <h3>
         <span class='fn'>$</span>
         compact()
       </h3>
-      <p>
-        Returns a new Array with falsy values removed.
-      </p>
+      <p>Returns a new Array with falsy values removed.</p>
       <div class='clear'></div>
       <div class='icon-link'></div>
       <div class='icon-play'></div>
@@ -1475,18 +1612,12 @@
       <pre><code class='coffee prettyprint'>a = ['Yoda','Wader','Luke','Leia','Yoda','Luke']
       console.log a.uniq()
       # Yoda, Wader, Luke, Leia</code></pre>
-      <code class='js'>var a;
-      
-      a = ['Yoda', 'Wader', 'Luke', 'Leia', 'Yoda', 'Luke'];
-      
-      console.log(a.uniq());</code>
+      <code class='js'><!-- /= CoffeeScript.compile method["example"], bare: true --></code>
       <h3>
         <span class='fn'>$</span>
         uniq()
       </h3>
-      <p>
-        Returns a new Array with duplicate values removed.
-      </p>
+      <p>Returns a new Array with duplicate values removed.</p>
       <div class='clear'></div>
       <div class='icon-link'></div>
       <div class='icon-play'></div>
@@ -1495,18 +1626,12 @@
       <pre><code class='coffee prettyprint'>a = ['Yoda','Wader','Luke','Leia','Yoda','Luke']
       console.log a.remove('Yoda')
       # Wader, Luke, Leia, Yoda, Luke</code></pre>
-      <code class='js'>var a;
-      
-      a = ['Yoda', 'Wader', 'Luke', 'Leia', 'Yoda', 'Luke'];
-      
-      console.log(a.remove('Yoda'));</code>
+      <code class='js'><!-- /= CoffeeScript.compile method["example"], bare: true --></code>
       <h3>
         <span class='fn'>$</span>
         remove(item)
       </h3>
-      <p>
-        Removes the first instance of given item from the array.
-      </p>
+      <p>Removes the first instance of given item from the array.</p>
       <div class='clear'></div>
       <div class='icon-link'></div>
       <div class='icon-play'></div>
@@ -1515,18 +1640,12 @@
       <pre><code class='coffee prettyprint'>a = ['Yoda','Wader','Luke','Leia','Yoda','Luke']
       console.log a.removeAll('Yoda')
       # Wader, Luke, Leia, Luke</code></pre>
-      <code class='js'>var a;
-      
-      a = ['Yoda', 'Wader', 'Luke', 'Leia', 'Yoda', 'Luke'];
-      
-      console.log(a.removeAll('Yoda'));</code>
+      <code class='js'><!-- /= CoffeeScript.compile method["example"], bare: true --></code>
       <h3>
         <span class='fn'>$</span>
         removeAll(item)
       </h3>
-      <p>
-        Removes all instances of given item from the array.
-      </p>
+      <p>Removes all instances of given item from the array.</p>
       <div class='clear'></div>
       <div class='icon-link'></div>
       <div class='icon-play'></div>
@@ -1535,18 +1654,12 @@
       <pre><code class='coffee prettyprint'>a = ['Yoda','Wader','Luke','Leia','Yoda','Luke']
       console.log a.shuffle('Yoda')
       # a random combination of the items</code></pre>
-      <code class='js'>var a;
-      
-      a = ['Yoda', 'Wader', 'Luke', 'Leia', 'Yoda', 'Luke'];
-      
-      console.log(a.shuffle('Yoda'));</code>
+      <code class='js'><!-- /= CoffeeScript.compile method["example"], bare: true --></code>
       <h3>
         <span class='fn'>$</span>
         shuffle()
       </h3>
-      <p>
-        Arranges items in the array randomly.
-      </p>
+      <p>Arranges items in the array randomly.</p>
       <div class='clear'></div>
       <div class='icon-link'></div>
       <div class='icon-play'></div>
@@ -1555,18 +1668,12 @@
       <pre><code class='coffee prettyprint'>a = ['Yoda','Wader','Luke','Leia','Yoda','Luke']
       console.log a.include('Yoda')
       # true</code></pre>
-      <code class='js'>var a;
-      
-      a = ['Yoda', 'Wader', 'Luke', 'Leia', 'Yoda', 'Luke'];
-      
-      console.log(a.include('Yoda'));</code>
+      <code class='js'><!-- /= CoffeeScript.compile method["example"], bare: true --></code>
       <h3>
         <span class='fn'>$</span>
         include()
       </h3>
-      <p>
-        Return true if the item is included in the array false if not.
-      </p>
+      <p>Return true if the item is included in the array false if not.</p>
       <div class='clear'></div>
       <div class='icon-link'></div>
       <div class='icon-play'></div>
@@ -1578,26 +1685,12 @@
       ]
       console.log a.pluck('name')
       # Wader, Luke</code></pre>
-      <code class='js'>var a;
-      
-      a = [
-        {
-          name: 'Wader',
-          side: 'dark'
-        }, {
-          name: 'Luke',
-          side: 'light'
-        }
-      ];
-      
-      console.log(a.pluck('name'));</code>
+      <code class='js'><!-- /= CoffeeScript.compile method["example"], bare: true --></code>
       <h3>
         <span class='fn'>$</span>
         pluck()
       </h3>
-      <p>
-        Returns a new Array of the given property of the items.
-      </p>
+      <p>Returns a new Array of the given property of the items.</p>
       <div class='clear'></div>
       <div class='icon-link'></div>
       <div class='icon-play'></div>
@@ -1606,18 +1699,12 @@
       <pre><code class='coffee prettyprint'>a = ['Yoda','Wader','Luke','Leia','Yoda','Luke']
       console.log a.dup()
       # Yoda, Wader, Luke, Leia, Yoda, Luke</code></pre>
-      <code class='js'>var a;
-      
-      a = ['Yoda', 'Wader', 'Luke', 'Leia', 'Yoda', 'Luke'];
-      
-      console.log(a.dup());</code>
+      <code class='js'><!-- /= CoffeeScript.compile method["example"], bare: true --></code>
       <h3>
         <span class='fn'>$</span>
         dup()
       </h3>
-      <p>
-        Creates a duplicate of the array.
-      </p>
+      <p>Creates a duplicate of the array.</p>
       <div class='clear'></div>
       <div class='icon-link'></div>
       <div class='icon-play'></div>
@@ -1626,18 +1713,12 @@
       <pre><code class='coffee prettyprint'>a = ['Yoda','Wader','Luke','Leia','Yoda','Luke']
       console.log a.sample
       # Any Star Wars character above</code></pre>
-      <code class='js'>var a;
-      
-      a = ['Yoda', 'Wader', 'Luke', 'Leia', 'Yoda', 'Luke'];
-      
-      console.log(a.sample);</code>
+      <code class='js'><!-- /= CoffeeScript.compile method["example"], bare: true --></code>
       <h3>
         <span class='prop'>#</span>
         sample
       </h3>
-      <p>
-        Returns a random item from the array.
-      </p>
+      <p>Returns a random item from the array.</p>
       <div class='clear'></div>
       <div class='icon-link'></div>
       <div class='icon-play'></div>
@@ -1646,18 +1727,12 @@
       <pre><code class='coffee prettyprint'>a = ['Yoda','Wader','Luke','Leia','Yoda','Luke']
       console.log a.first
       # Yoda</code></pre>
-      <code class='js'>var a;
-      
-      a = ['Yoda', 'Wader', 'Luke', 'Leia', 'Yoda', 'Luke'];
-      
-      console.log(a.first);</code>
+      <code class='js'><!-- /= CoffeeScript.compile method["example"], bare: true --></code>
       <h3>
         <span class='prop'>#</span>
         first
       </h3>
-      <p>
-        Returns first item from the array
-      </p>
+      <p>Returns first item from the array</p>
       <div class='clear'></div>
       <div class='icon-link'></div>
       <div class='icon-play'></div>
@@ -1666,18 +1741,12 @@
       <pre><code class='coffee prettyprint'>a = ['Yoda','Wader','Luke','Leia','Yoda','Luke']
       console.log a.last
       # Luke</code></pre>
-      <code class='js'>var a;
-      
-      a = ['Yoda', 'Wader', 'Luke', 'Leia', 'Yoda', 'Luke'];
-      
-      console.log(a.last);</code>
+      <code class='js'><!-- /= CoffeeScript.compile method["example"], bare: true --></code>
       <h3>
         <span class='prop'>#</span>
         last
       </h3>
-      <p>
-        Returns the last item from the array
-      </p>
+      <p>Returns the last item from the array</p>
       <div class='clear'></div>
       <div class='icon-link'></div>
       <div class='icon-play'></div>
@@ -1689,26 +1758,18 @@
         <div class='icon-time'></div>
         Date
       </h2>
-      <p>
-        Adds utility functions to the Date object.
-      </p>
+      <p>Adds utility functions to the Date object.</p>
     </div>
     <div class='method'>
       <pre><code class='coffee prettyprint'>d = new Date("1987-05-28")
       console.log d.format("%Y.%M.%D")
       # 1987.05.28</code></pre>
-      <code class='js'>var d;
-      
-      d = new Date("1987-05-28");
-      
-      console.log(d.format("%Y.%M.%D"));</code>
+      <code class='js'><!-- /= CoffeeScript.compile method["example"], bare: true --></code>
       <h3>
         <span class='fn'>$</span>
         format(str)
       </h3>
-      <p>
-        Formats the date according to the given string.
-      </p>
+      <p>Formats the date according to the given string.</p>
       <div class='clear'></div>
       <div class='icon-link'></div>
       <div class='icon-play'></div>
@@ -1717,18 +1778,12 @@
       <pre><code class='coffee prettyprint'>d = new Date(Date.now()-(2).days)
       console.log d.ago
       # 2 days ago</code></pre>
-      <code class='js'>var d;
-      
-      d = new Date(Date.now() - 2..days);
-      
-      console.log(d.ago);</code>
+      <code class='js'><!-- /= CoffeeScript.compile method["example"], bare: true --></code>
       <h3>
         <span class='prop'>#</span>
         ago
       </h3>
-      <p>
-        Returns the literal representation of the time passed (10 seconds ago).
-      </p>
+      <p>Returns the literal representation of the time passed (10 seconds ago).</p>
       <div class='clear'></div>
       <div class='icon-link'></div>
       <div class='icon-play'></div>
@@ -1737,18 +1792,12 @@
       <pre><code class='coffee prettyprint'>d = new Date('2012-05-28')
       console.log d.day
       # 28</code></pre>
-      <code class='js'>var d;
-      
-      d = new Date('2012-05-28');
-      
-      console.log(d.day);</code>
+      <code class='js'><!-- /= CoffeeScript.compile method["example"], bare: true --></code>
       <h3>
         <span class='prop'>#</span>
         day
       </h3>
-      <p>
-        Returns the date portion.
-      </p>
+      <p>Returns the date portion.</p>
       <div class='clear'></div>
       <div class='icon-link'></div>
       <div class='icon-play'></div>
@@ -1757,18 +1806,12 @@
       <pre><code class='coffee prettyprint'>d = new Date('2012-05-28 09:12')
       console.log d.hours
       # 9</code></pre>
-      <code class='js'>var d;
-      
-      d = new Date('2012-05-28 09:12');
-      
-      console.log(d.hours);</code>
+      <code class='js'><!-- /= CoffeeScript.compile method["example"], bare: true --></code>
       <h3>
         <span class='prop'>#</span>
         hours
       </h3>
-      <p>
-        Returns the hour portion.
-      </p>
+      <p>Returns the hour portion.</p>
       <div class='clear'></div>
       <div class='icon-link'></div>
       <div class='icon-play'></div>
@@ -1777,18 +1820,12 @@
       <pre><code class='coffee prettyprint'>d = new Date('2012-05-28 09:12')
       console.log d.minutes
       # 12</code></pre>
-      <code class='js'>var d;
-      
-      d = new Date('2012-05-28 09:12');
-      
-      console.log(d.minutes);</code>
+      <code class='js'><!-- /= CoffeeScript.compile method["example"], bare: true --></code>
       <h3>
         <span class='prop'>#</span>
         minutes
       </h3>
-      <p>
-        Returns the minutes portion.
-      </p>
+      <p>Returns the minutes portion.</p>
       <div class='clear'></div>
       <div class='icon-link'></div>
       <div class='icon-play'></div>
@@ -1797,18 +1834,12 @@
       <pre><code class='coffee prettyprint'>d = new Date('2012-05-28 09:12:10')
       console.log d.seconds
       # 10</code></pre>
-      <code class='js'>var d;
-      
-      d = new Date('2012-05-28 09:12:10');
-      
-      console.log(d.seconds);</code>
+      <code class='js'><!-- /= CoffeeScript.compile method["example"], bare: true --></code>
       <h3>
         <span class='prop'>#</span>
         seconds
       </h3>
-      <p>
-        Returns the seconds portion.
-      </p>
+      <p>Returns the seconds portion.</p>
       <div class='clear'></div>
       <div class='icon-link'></div>
       <div class='icon-play'></div>
@@ -1817,18 +1848,12 @@
       <pre><code class='coffee prettyprint'>d = new Date('2012-05-28 09:12')
       console.log d.year
       # 2012</code></pre>
-      <code class='js'>var d;
-      
-      d = new Date('2012-05-28 09:12');
-      
-      console.log(d.year);</code>
+      <code class='js'><!-- /= CoffeeScript.compile method["example"], bare: true --></code>
       <h3>
         <span class='prop'>#</span>
         year
       </h3>
-      <p>
-        Returns the year portion.
-      </p>
+      <p>Returns the year portion.</p>
       <div class='clear'></div>
       <div class='icon-link'></div>
       <div class='icon-play'></div>
@@ -1837,18 +1862,12 @@
       <pre><code class='coffee prettyprint'>d = new Date('2012-05-28 09:12')
       console.log d.month
       # 5</code></pre>
-      <code class='js'>var d;
-      
-      d = new Date('2012-05-28 09:12');
-      
-      console.log(d.month);</code>
+      <code class='js'><!-- /= CoffeeScript.compile method["example"], bare: true --></code>
       <h3>
         <span class='prop'>#</span>
         month
       </h3>
-      <p>
-        Returns the month portion.
-      </p>
+      <p>Returns the month portion.</p>
       <div class='clear'></div>
       <div class='icon-link'></div>
       <div class='icon-play'></div>
@@ -1857,15 +1876,12 @@
       <pre><code class='coffee prettyprint'># Get the locale format
       console.log Date.Locale.format
       # %Y-%M-%D</code></pre>
-      <code class='js'>
-      console.log(Date.Locale.format);</code>
+      <code class='js'><!-- /= CoffeeScript.compile method["example"], bare: true --></code>
       <h3>
         <span class='self'>@</span>
         Locale
       </h3>
-      <p>
-        Object that represents the current language data for Date.
-      </p>
+      <p>Object that represents the current language data for Date.</p>
       <div class='clear'></div>
       <div class='icon-link'></div>
       <div class='icon-play'></div>

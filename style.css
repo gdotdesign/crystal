@@ -920,14 +920,13 @@ body {
     border-right: 1.08em solid transparent; }
 
 .i {
-  top: 0.5em;
-  left: 0.4em;
+  top: 0.25em;
+  left: 0.45em;
   position: relative;
   width: 1.11em;
-  height: 0.6em;
-  -webkit-transform: rotate(90deg); }
+  height: 0.6em; }
   .i:before, .i:after {
-    background: rgba(0, 0, 0, 0.5);
+    background: rgba(255, 0, 0, 0.5);
     content: "";
     position: absolute;
     top: 0;
@@ -944,7 +943,7 @@ body {
     -webkit-transform: rotate(45deg); }
 
 body {
-  font-family: "Source Sans Pro";
+  font-family: "Source Sans Pro", Ubuntu;
   background-color: #f2f2f2;
   color: #333333;
   -webkit-user-select: none; }
@@ -953,7 +952,7 @@ nav {
   z-index: 2;
   top: 30px;
   left: 0;
-  width: 12%;
+  width: 18%;
   padding: 10px; }
   nav h1 {
     margin: 0;
@@ -979,7 +978,7 @@ nav {
   padding-bottom: 50px;
   position: absolute;
   top: 30px;
-  left: 15%;
+  left: 18%;
   right: 0; }
   .class:hover h2 [class*=icon] {
     color: #514c3d; }
@@ -1878,7 +1877,9 @@ span.new {
     margin: 0;
     font-size: 14px; }
     .method pre code {
-      font-family: "Ubuntu Mono"; }
+      font-family: "Ubuntu Mono", sans-serif; }
+  .method p {
+    margin-right: 390px; }
   .method:hover {
     -webkit-transition-delay: 0ms !important;
     background-color: rgba(255, 255, 255, 0.5); }
