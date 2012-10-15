@@ -117,7 +117,7 @@ Object.defineProperty HTMLInputElement::, 'caretToEnd', value: ->
   length = @value.length
   @setSelectionRange(length, length)
 
-Object.defineProperties HTMLElement::
+properties = 
   id:
     get: -> @getAttribute 'id'
     set: (value) -> @setAttribute 'id', value
@@ -137,6 +137,8 @@ Object.defineProperties HTMLElement::
   class:
     get: -> @getAttribute 'class'
     set: (value) -> @setAttribute 'class', value
+
+Object.defineProperties HTMLElement::, properties
 
 Object.defineProperty Node::, 'delegateEventListener', value: (event,listener,useCapture) ->
   [baseEvent,selector] = event.split(':')
