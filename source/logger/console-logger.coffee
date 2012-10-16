@@ -1,7 +1,7 @@
 # @requires ./logger
 
 window.ConsoleLogger = class Logging.ConsoleLogger extends Logging.Logger
-constructor: -> super
+  constructor: -> super
 
 ['debug', 'error', 'fatal', 'info', 'warn','log'].forEach (type) ->
   ConsoleLogger::["_"+type] = (text) ->

@@ -1,10 +1,11 @@
 (function(Crystal){
  (function() {
-  var Attributes, Color, Keyboard, Logging, MVC, Mediator, NWDialogs, NWFile, SPECIAL_KEYS, Store, Types, Unit, Utils, css, i18n, key, method, methods, methods_element, methods_node, prefixes, properties, types, value, _find, _parseName, _ref, _wrap,
+  var Attributes, Color, Keyboard, Logging, MVC, NWDialogs, NWFile, SPECIAL_KEYS, Store, Types, Unit, Utils, css, i18n, key, method, methods, methods_element, methods_node, prefixes, properties, types, value, _find, _parseName, _ref, _wrap,
     __hasProp = {}.hasOwnProperty,
     __slice = [].slice,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
-    __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
+    __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
+    __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
   MVC = {};
 
@@ -20,6 +21,12 @@
 
 
   methods = {
+    remove$: function(item) {
+      var index;
+      if ((index = this.indexOf(item)) !== -1) {
+        return this.splice(index, 1);
+      }
+    },
     remove: function(item) {
       var b, index;
       b = this.dup();
@@ -191,22 +198,22 @@
   Object.defineProperties(Number.prototype, {
     seconds: {
       get: function() {
-        return this.valueOf() * 1000;
+        return this.valueOf() * 1e+3;
       }
     },
     minutes: {
       get: function() {
-        return this.seconds * 60;
+        return this.valueOf() * 6e+4;
       }
     },
     hours: {
       get: function() {
-        return this.minutes * 60;
+        return this.valueOf() * 3.6e+6;
       }
     },
     days: {
       get: function() {
-        return this.hours * 24;
+        return this.valueOf() * 8.64e+7;
       }
     },
     upto: {
@@ -276,7 +283,7 @@
         if (val > max) {
           return val % max;
         } else if (val < min) {
-          return max - val % max;
+          return max - Math.abs(val % max);
         } else {
           return val;
         }
@@ -295,7 +302,7 @@
       minutes: " minutes ago",
       hours: " hours ago",
       days: " days ago",
-      now: "just no"
+      now: "just now"
     },
     format: "%Y-%M-%D"
   };
@@ -306,11 +313,11 @@
         var diff;
         diff = +new Date() - this;
         if (diff < 1..seconds) {
-          return "just now";
+          return Date.Locale.ago.now;
         } else if (diff < 1..minutes) {
           return Math.round(diff / 1000) + Date.Locale.ago.seconds;
-        } else if (diff < 1..seconds) {
-          return Math.round(diff / 1..minutes) + Date.Locale.ago.minues;
+        } else if (diff < 1..hours) {
+          return Math.round(diff / 1..minutes) + Date.Locale.ago.minutes;
         } else if (diff < 1..days) {
           return Math.round(diff / 1..hours) + Date.Locale.ago.hours;
         } else if (diff < 30..days) {
@@ -475,7 +482,7 @@
     }
   });
 
-  ['debug', 'error', 'fatal', 'info', 'warn'].forEach(function(type) {
+  ['debug', 'error', 'fatal', 'info', 'warn', 'log'].forEach(function(type) {
     return ConsoleLogger.prototype["_" + type] = function(text) {
       if (type === 'debug') {
         type = 'log';
@@ -525,7 +532,7 @@
     return value.regexp = new RegExp(value.prefix + ("(.*?)(?=" + prefixes + ")"), "g");
   });
 
-  _wrap = function(fn) {
+  _wrap = NodeList._wrap = function(fn) {
     return function() {
       var args, el, _i, _len, _results;
       args = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
@@ -539,11 +546,9 @@
   };
 
   _find = function(property, selector, el) {
-    var elements;
-    elements = document.querySelectorAll(selector);
     while (el = el[property]) {
       if (el instanceof Element) {
-        if (elements.include(el)) {
+        if (el.webkitMatchesSelector(selector)) {
           return el;
         }
       }
@@ -551,13 +556,22 @@
   };
 
   _parseName = function(name, atts) {
-    var ret;
+    var cssattributes, ret;
     if (atts == null) {
       atts = {};
     }
+    cssattributes = {};
+    name = name.replace(/\[(.*?)=(.*?)\]/g, function(m, name, value) {
+      cssattributes[name] = value;
+      return "";
+    });
+    name = name.replace(/\[(.*)?\]/g, function(m, name) {
+      cssattributes[name] = true;
+      return "";
+    });
     ret = {
       tag: name.match(new RegExp("^.*?(?=" + prefixes + ")"))[0] || 'div',
-      attributes: {}
+      attributes: cssattributes
     };
     Object.each(Attributes, function(key, value) {
       var m, map;
@@ -602,8 +616,6 @@
         el = elements[_i];
         if (el instanceof Node) {
           _results.push(this.appendChild(el));
-        } else {
-          _results.push(void 0);
         }
       }
       return _results;
@@ -628,6 +640,18 @@
     },
     empty: function() {
       return this.querySelectorAll("*").dispose();
+    },
+    moveUp: function() {
+      var prev;
+      if (this.parent && (prev = this.prev())) {
+        return this.parent.insertBefore(this, prev);
+      }
+    },
+    moveDown: function() {
+      var next;
+      if (this.parent && (next = this.next())) {
+        return this.parent.insertBefore(next, this);
+      }
     }
   };
 
@@ -697,13 +721,29 @@
       }
     },
     set: function(el) {
-      if (this.chidren.include(el)) {
-        return this.selectedIndex = this.children.indexOf(el);
+      if (this.childNodes.include(el)) {
+        return this.selectedIndex = Array.prototype.slice.call(this.children).indexOf(el);
       }
     }
   });
 
+  Object.defineProperty(HTMLInputElement.prototype, 'caretToEnd', {
+    value: function() {
+      var length;
+      length = this.value.length;
+      return this.setSelectionRange(length, length);
+    }
+  });
+
   properties = {
+    id: {
+      get: function() {
+        return this.getAttribute('id');
+      },
+      set: function(value) {
+        return this.setAttribute('id', value);
+      }
+    },
     tag: {
       get: function() {
         return this.tagName.toLowerCase();
@@ -752,8 +792,11 @@
     value: function(event, listener, useCapture) {
       var baseEvent, selector, _ref;
       _ref = event.split(':'), baseEvent = _ref[0], selector = _ref[1];
+      if (selector == null) {
+        selector = "*";
+      }
       return this.addEventListener(baseEvent, function(e) {
-        if (e.target.webkitMatchesSelector(selector)) {
+        if (e.relatedTarget.webkitMatchesSelector(selector)) {
           return listener(e);
         }
       });
@@ -780,7 +823,7 @@
     switch (typeof node) {
       case 'string':
         _ref = _parseName(node, atts), tag = _ref.tag, attributes = _ref.attributes;
-        node = document.createElement(tag);
+        node = document.createElement(tag.replace(/[^A-Za-z_\-0-9]/, ''));
         for (key in attributes) {
           value = attributes[key];
           if ((desc = properties[key])) {
@@ -978,39 +1021,107 @@
 
 
   SPECIAL_KEYS = {
-    backspace: 8,
-    tab: 9,
-    enter: 13,
-    shift: 16,
-    ctrl: 17,
-    alt: 18,
-    pause: 19,
-    capslock: 20,
-    esc: 27,
-    pageup: 33,
-    pagedown: 34,
-    end: 35,
-    home: 36,
-    left: 37,
-    up: 38,
-    right: 39,
-    down: 40,
-    insert: 45,
-    "delete": 46,
-    multiply: 106,
-    plus: 107,
-    minus: 109,
-    divide: 111
+    0: "\\",
+    8: "backspace",
+    9: "tab",
+    12: "num",
+    13: "enter",
+    16: "shift",
+    17: "ctrl",
+    18: "alt",
+    19: "pause",
+    20: "capslock",
+    27: "esc",
+    32: "space",
+    33: "pageup",
+    34: "pagedown",
+    35: "end",
+    36: "home",
+    37: "left",
+    38: "up",
+    39: "right",
+    40: "down",
+    44: "print",
+    45: "insert",
+    46: "delete",
+    48: "0",
+    49: "1",
+    50: "2",
+    51: "3",
+    52: "4",
+    53: "5",
+    54: "6",
+    55: "7",
+    56: "8",
+    57: "9",
+    65: "a",
+    66: "b",
+    67: "c",
+    68: "d",
+    69: "e",
+    70: "f",
+    71: "g",
+    72: "h",
+    73: "i",
+    74: "j",
+    75: "k",
+    76: "l",
+    77: "m",
+    78: "n",
+    79: "o",
+    80: "p",
+    81: "q",
+    82: "r",
+    83: "s",
+    84: "t",
+    85: "u",
+    86: "v",
+    87: "w",
+    88: "x",
+    89: "y",
+    90: "z",
+    91: "cmd",
+    92: "cmd",
+    93: "cmd",
+    96: "num_0",
+    97: "num_1",
+    98: "num_2",
+    99: "num_3",
+    100: "num_4",
+    101: "num_5",
+    102: "num_6",
+    103: "num_7",
+    104: "num_8",
+    105: "num_9",
+    106: "multiply",
+    107: "add",
+    108: "enter",
+    109: "subtract",
+    110: "decimal",
+    111: "divide",
+    124: "print",
+    144: "num",
+    145: "scroll",
+    186: ";",
+    187: "=",
+    188: ",",
+    189: "-",
+    190: ".",
+    191: "/",
+    192: "`",
+    219: "[",
+    220: "\\",
+    221: "]",
+    222: "\'",
+    224: "cmd",
+    57392: "ctrl",
+    63289: "num"
   };
 
   Object.defineProperty(KeyboardEvent.prototype, 'key', {
     get: function() {
-      var value;
-      for (key in SPECIAL_KEYS) {
-        value = SPECIAL_KEYS[key];
-        if (value === this.keyCode) {
-          return key;
-        }
+      if (key = SPECIAL_KEYS[this.keyCode]) {
+        return key;
       }
       return String.fromCharCode(this.keyCode).toLowerCase();
     }
@@ -1022,12 +1133,9 @@
 
   window.Keyboard = Keyboard = (function() {
 
-    function Keyboard() {
-      var _this = this;
-      document.addEventListener('keyup', function(e) {
-        var combo, pressed, sc, _i, _len, _ref, _ref1, _results;
-        console.log(e.keyCode);
-        e.preventDefault();
+    Keyboard.prototype.handleKeydown = function(e) {
+      var combo, pressed, sc, _i, _len, _ref, _results;
+      if (!e.cancelled) {
         combo = [];
         if (e.ctrlKey) {
           combo.push("ctrl");
@@ -1039,27 +1147,47 @@
           combo.push("alt");
         }
         combo.push(e.key);
-        _ref = _this.shortcuts;
         _results = [];
-        for (sc in _ref) {
-          method = _ref[sc];
+        for (sc in this) {
+          method = this[sc];
           pressed = true;
-          _ref1 = sc.split("+");
-          for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
-            key = _ref1[_i];
+          _ref = sc.split("+");
+          for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+            key = _ref[_i];
             if (combo.indexOf(key) === -1) {
               pressed = false;
               break;
             }
           }
           if (pressed) {
-            _this[method].call(_this);
+            method.call(this);
+            e.preventDefault();
+            e.cancelled = true;
+            e.stopPropagation();
             break;
           } else {
             _results.push(void 0);
           }
         }
         return _results;
+      }
+    };
+
+    function Keyboard(focus) {
+      var _this = this;
+      this.focus = focus != null ? focus : false;
+      this.handleKeydown = __bind(this.handleKeydown, this);
+
+      document.addEventListener('keydown', function(e) {
+        if (_this.focus) {
+          if (document.first(":focus")) {
+            return _this.handleKeydown(e);
+          }
+        } else {
+          if (!document.first(':focus')) {
+            return _this.handleKeydown(e);
+          }
+        }
       });
       if (typeof this.initialize === "function") {
         this.initialize();
@@ -1075,39 +1203,18 @@
   */
 
 
-  Mediator = {
-    events: {},
-    listeners: {},
-    fireEvent: function(type, event) {
-      if (this.listeners[type]) {
-        return this.listeners[type].apply(this, event);
+  Crystal.Utils.Event = Utils.Event = (function() {
+
+    function Event(target) {
+      if (!target) {
+        throw "No target";
       }
-    },
-    addListener: function(type, callback) {
-      return this.listeners[type] = callback;
-    },
-    removeListener: function(type) {
-      return delete this.listeners[type];
-    }
-  };
-
-  Utils.Event = (function() {
-
-    function Event(type, target) {
+      if (!(target instanceof Object)) {
+        throw "Invalid target!";
+      }
       this.cancelled = false;
       this.target = target;
-      this.type = type;
     }
-
-    Event.prototype.destroy = function() {
-      var value, _results;
-      _results = [];
-      for (key in this) {
-        value = this[key];
-        _results.push(this[key] = null);
-      }
-      return _results;
-    };
 
     Event.prototype.stop = function() {
       return this.cancelled = true;
@@ -1117,103 +1224,107 @@
 
   })();
 
-  Utils.Evented = (function() {
+  Utils.Mediator = (function() {
 
-    function Evented() {}
+    function Mediator() {
+      this.listeners = {};
+    }
 
-    Evented.prototype.publish = function() {
-      var args, event, type;
-      type = arguments[0], args = 2 <= arguments.length ? __slice.call(arguments, 1) : [];
-      this.trigger.apply(this, Array.prototype.slice(arguments));
-      event = new Event(type, this);
-      args.push(event);
-      return Mediator.fireEvent(type, args);
-    };
-
-    Evented.prototype.trigger = function() {
-      var args, callback, event, type, _i, _len, _ref, _results;
-      type = arguments[0], args = 2 <= arguments.length ? __slice.call(arguments, 1) : [];
-      this.ensureEvents();
-      event = new Event(type, this);
-      args.push(event);
-      if (this.__events__[type]) {
-        _ref = this.__events__[type];
+    Mediator.prototype.fireEvent = function(type, args) {
+      var callback, event, _i, _len, _ref, _results;
+      event = args.first;
+      if (!(event instanceof Utils.Event)) {
+        throw "Not Utils.Event!";
+      }
+      if (this.listeners[type]) {
+        _ref = this.listeners[type];
         _results = [];
         for (_i = 0, _len = _ref.length; _i < _len; _i++) {
           callback = _ref[_i];
-          _results.push(callback.apply(this, args));
+          if (!event.cancelled) {
+            _results.push(callback.apply(event.target, args));
+          } else {
+            _results.push(void 0);
+          }
         }
         return _results;
       }
     };
 
-    Evented.prototype.ensureEvents = function() {
-      if (!this.__events__) {
-        return Object.defineProperty(this, '__events__', {
-          value: {}
-        });
+    Mediator.prototype.addListener = function(type, callback) {
+      if (!(callback instanceof Function)) {
+        throw "Only functions can be added as callback";
+      }
+      if (!this.listeners[type]) {
+        this.listeners[type] = [];
+      }
+      return this.listeners[type].push(callback);
+    };
+
+    Mediator.prototype.removeListener = function(type, callback) {
+      this.listeners[type].remove$(callback);
+      if (this.listeners[type].length === 0) {
+        return delete this.listeners[type];
       }
     };
 
-    Evented.prototype.on = function(type, callback, bind) {
-      var _base, _ref;
-      this.ensureEvents();
-      if ((_ref = (_base = this.__events__)[type]) == null) {
-        _base[type] = [];
-      }
-      if (bind) {
-        callback = callback.bind(bind);
-      }
-      return this.__events__[type].push(callback);
+    return Mediator;
+
+  })();
+
+  window.Mediator = new Utils.Mediator;
+
+  Crystal.Utils.Evented = Utils.Evented = (function() {
+
+    function Evented() {}
+
+    Evented.prototype._ensureMediator = function() {
+      var _ref;
+      return (_ref = this._mediator) != null ? _ref : this._mediator = new Utils.Mediator;
+    };
+
+    Evented.prototype.toString = function() {
+      return "[Object " + this.__proto__.constructor.name + "]";
+    };
+
+    Evented.prototype.trigger = function() {
+      var args, event, type;
+      type = arguments[0], args = 2 <= arguments.length ? __slice.call(arguments, 1) : [];
+      event = new Utils.Event(this);
+      args.unshift(event);
+      this._ensureMediator();
+      return this._mediator.fireEvent(type, args);
+    };
+
+    Evented.prototype.on = function(type, callback) {
+      this._ensureMediator();
+      return this._mediator.addListener(type, callback);
     };
 
     Evented.prototype.off = function(type, callback) {
-      this.ensureEvents();
-      if (this.__events__[type]) {
-        if (this.__events__[type].include(callback)) {
-          return this.__events__[type].remove(callback);
-        }
-      }
+      this._ensureMediator();
+      return this._mediator.removeListener(type, callback);
+    };
+
+    Evented.prototype.publish = function() {
+      var args, event, type;
+      type = arguments[0], args = 2 <= arguments.length ? __slice.call(arguments, 1) : [];
+      event = new Utils.Event(this);
+      args.unshift(event);
+      return Mediator.fireEvent(type, args);
     };
 
     Evented.prototype.subscribe = function(type, callback) {
-      if (!Mediator.events[type]) {
-        Mediator.addListener(type, function(event) {
-          var cb, _i, _len, _ref;
-          _ref = Mediator.events[event.type];
-          for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-            cb = _ref[_i];
-            if (event.cancelled) {
-              break;
-            }
-            cb(event);
-          }
-          return event.destroy();
-        });
-        Mediator.events[type] = [];
-      }
-      return Mediator.events[type].push(callback);
+      return Mediator.addListener(type, callback);
     };
 
     Evented.prototype.unsubscribe = function(type, callback) {
-      if (Mediator.events[type] === void 0) {
-        console.error("No channel '" + type + "' exists");
-        return false;
-      }
-      if (Mediator.events[type].include(callback)) {
-        Mediator.events[type].remove(callback);
-      }
-      if (Mediator.events[type].length === 0) {
-        delete Mediator.events[type];
-        return Mediator.removeListener(type);
-      }
+      return Mediator.removeListener(type, callback);
     };
 
     return Evented;
 
   })();
-
-  window.Evented = Utils.Evented;
 
   /*
   --------------- /home/gdot/github/crystal/source/utils/history.coffee--------------
@@ -1253,55 +1364,7 @@
 
     return History;
 
-  })(Evented);
-
-  /*
-  --------------- /home/gdot/github/crystal/source/utils/i18n.coffee--------------
-  */
-
-
-  i18n = (function() {
-
-    function i18n() {}
-
-    i18n.locales = {};
-
-    i18n.t = function(path) {
-      var arg, locale, params, str, _path;
-      if (arguments.length === 2) {
-        if ((arg = arguments[1]) instanceof Object) {
-          params = arg;
-        } else {
-          locale = arg;
-        }
-      }
-      if (arguments.length === 3) {
-        locale = arguments[2];
-        params = arguments[1];
-      }
-      if (locale == null) {
-        locale = document.querySelector('html').getAttribute('lang') || 'en';
-      }
-      _path = new Path(this.locales[locale]);
-      str = _path.lookup(path);
-      if (!str) {
-        console.warn("No translation found for '" + path + "' for locale '" + locale + "'");
-        return path;
-      }
-      return str.replace(/\{\{(.*?)\}\}/g, function(m, prop) {
-        if (params[prop] !== void 0) {
-          return params[prop].toString();
-        } else {
-          return '';
-        }
-      });
-    };
-
-    return i18n;
-
-  })();
-
-  window.i18n = i18n;
+  })(Utils.Evented);
 
   /*
   --------------- /home/gdot/github/crystal/source/utils/path.coffee--------------
@@ -1359,11 +1422,97 @@
   })();
 
   /*
+  --------------- /home/gdot/github/crystal/source/utils/i18n.coffee--------------
+  */
+
+
+  i18n = (function() {
+
+    function i18n() {}
+
+    i18n.locales = {};
+
+    i18n.t = function(path) {
+      var arg, locale, params, str, _path;
+      if (arguments.length === 2) {
+        if ((arg = arguments[1]) instanceof Object) {
+          params = arg;
+        } else {
+          locale = arg;
+        }
+      }
+      if (arguments.length === 3) {
+        locale = arguments[2];
+        params = arguments[1];
+      }
+      if (locale == null) {
+        locale = document.querySelector('html').getAttribute('lang') || 'en';
+      }
+      _path = new Path(this.locales[locale]);
+      str = _path.lookup(path);
+      if (!str) {
+        console.warn("No translation found for '" + path + "' for locale '" + locale + "'");
+        return path;
+      }
+      return str.replace(/\{\{(.*?)\}\}/g, function(m, prop) {
+        if (params[prop] !== void 0) {
+          return params[prop].toString();
+        } else {
+          return '';
+        }
+      });
+    };
+
+    return i18n;
+
+  })();
+
+  window.i18n = i18n;
+
+  /*
   --------------- /home/gdot/github/crystal/source/types/string.coffee--------------
   */
 
 
   Object.defineProperties(String.prototype, {
+    wordWrap: {
+      value: function(width, separator, cut) {
+        var regex;
+        if (width == null) {
+          width = 15;
+        }
+        if (separator == null) {
+          separator = "\n";
+        }
+        if (cut == null) {
+          cut = false;
+        }
+        regex = ".{1," + width + "}(\\s|$)" + (cut ? "|.{" + width + "}|.+$" : "|\\S+?(\\s|$)");
+        return this.match(RegExp(regex, "g")).join(separator);
+      }
+    },
+    test: {
+      value: function(regexp) {
+        return !!this.match(regexp);
+      }
+    },
+    escape: {
+      value: function() {
+        return this.replace(/[-[\]{}()*+?.\/'\\^$|#]/g, "\\$&");
+      }
+    },
+    ellipsis: {
+      value: function(length) {
+        if (length == null) {
+          length = 10;
+        }
+        if (this.length > length) {
+          return this.slice(0, (length - 1) + 1 || 9e9) + "...";
+        } else {
+          return this.valueOf();
+        }
+      }
+    },
     compact: {
       value: function() {
         var s;
@@ -1380,7 +1529,9 @@
     },
     hyphenate: {
       value: function() {
-        return this.replace(/[A-Z]/g, function(match) {
+        return this.replace(/^[A-Z]/, function(match) {
+          return match.toLowerCase();
+        }).replace(/[A-Z]/g, function(match) {
           return "-" + match.toLowerCase();
         });
       }
@@ -1432,13 +1583,16 @@
   });
 
   String.random = function(length) {
-    var chars, i, str, _i;
+    var chars, i, str, _i, _ref;
+    if (length == null) {
+      length = 10;
+    }
     chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXTZabcdefghiklmnopqrstuvwxyz'.split('');
     if (!length) {
       length = Math.floor(Math.random() * chars.length);
     }
     str = '';
-    for (i = _i = 0; 0 <= length ? _i <= length : _i >= length; i = 0 <= length ? ++_i : --_i) {
+    for (i = _i = 0, _ref = length - 1; 0 <= _ref ? _i <= _ref : _i >= _ref; i = 0 <= _ref ? ++_i : --_i) {
       str += chars.sample;
     }
     return str;
@@ -1452,35 +1606,9 @@
   window.Response = Utils.Response = (function() {
 
     function Response(headers, body, status) {
-      var df, div, node;
       this.headers = headers;
       this.raw = body;
       this.status = status;
-      this.body = (function() {
-        var _i, _len, _ref;
-        switch (this.headers['Content-Type']) {
-          case "text/html":
-            div = document.createElement('div');
-            div.innerHTML = body;
-            df = document.createDocumentFragment();
-            _ref = div.childNodes;
-            for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-              node = _ref[_i];
-              df.appendChild(node);
-            }
-            return df;
-          case "text/json":
-          case "application/json":
-            try {
-              return JSON.parse(body);
-            } catch (e) {
-              return body;
-            }
-            break;
-          default:
-            return body;
-        }
-      }).call(this);
     }
 
     return Response;
@@ -1503,6 +1631,37 @@
         }).compact().length > 0;
       }
     });
+  });
+
+  Object.defineProperty(Response.prototype, 'body', {
+    get: function() {
+      var df, div, node, p, _i, _len, _ref;
+      switch (this.headers['Content-Type']) {
+        case "text/html":
+          div = document.createElement('div');
+          div.innerHTML = this.raw;
+          df = document.createDocumentFragment();
+          _ref = Array.prototype.slice.call(div.childNodes);
+          for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+            node = _ref[_i];
+            df.appendChild(node);
+          }
+          return df;
+        case "text/json":
+        case "application/json":
+          try {
+            return JSON.parse(this.raw);
+          } catch (e) {
+            return this.raw;
+          }
+          break;
+        case "text/xml":
+          p = new DOMParser();
+          return p.parseFromString(this.raw, "text/xml");
+        default:
+          return this.raw;
+      }
+    }
   });
 
   window.Request = Utils.Request = (function() {
@@ -1644,7 +1803,7 @@
   */
 
 
-  Utils.Base64 = (function() {
+  window.Base64 = new (Utils.Base64 = (function() {
 
     function Base64() {}
 
@@ -1654,7 +1813,7 @@
       var chr1, chr2, chr3, enc1, enc2, enc3, enc4, i, output;
       output = "";
       i = 0;
-      input = Base64.UTF8Encode(input);
+      input = this.UTF8Encode(input);
       while (i < input.length) {
         chr1 = input.charCodeAt(i++);
         chr2 = input.charCodeAt(i++);
@@ -1696,7 +1855,7 @@
           output = output + String.fromCharCode(chr3);
         }
       }
-      output = Base64.UTF8Decode(output);
+      output = this.UTF8Decode(output);
       return output;
     };
 
@@ -1748,24 +1907,7 @@
 
     return Base64;
 
-  })();
-
-  /*
-  --------------- /home/gdot/github/crystal/source/mvc/collectionElement.coffee--------------
-  */
-
-
-  Object.defineProperty(Node.prototype, 'context', {
-    set: function(value) {
-      this.templates = Array.prototype.slice.call(this.children);
-      this.emtpy();
-      if (value instanceof Collection) {
-        value.on('add', function(item) {});
-        value.on('remove');
-        return value.on('change');
-      }
-    }
-  });
+  })());
 
   /*
   --------------- /home/gdot/github/crystal/source/mvc/collection.coffee--------------
@@ -1867,7 +2009,7 @@
 
   })(Array);
 
-  _ref = Evented.prototype;
+  _ref = Utils.Evented.prototype;
   for (key in _ref) {
     value = _ref[key];
     Collection.prototype[key] = value;
@@ -1888,6 +2030,8 @@
       if (color == null) {
         color = "FFFFFF";
       }
+      color = color.toString();
+      color = color.replace(/\s/g, '');
       if ((match = color.match(/^#?([0-9a-f]{3}|[0-9a-f]{6})$/i))) {
         if (color.match(/^#/)) {
           hex = color.slice(1);
@@ -1901,9 +2045,9 @@
         this._hex = hex;
         this._alpha = 100;
         this._update('hex');
-      } else if ((match = color.match(/^hsla?\((\d{0,3}),\s*(\d{1,3})%,\s*(\d{1,3})%(,\s*([01]?\.?\d*))?\)$/)) != null) {
+      } else if ((match = color.match(/^hsla?\((-?\d+),\s*(-?\d{1,3})%,\s*(-?\d{1,3})%(,\s*([01]?\.?\d*))?\)$/)) != null) {
         this.type = 'hsl';
-        this._hue = parseInt(match[1]).clamp(0, 360);
+        this._hue = parseInt(match[1]).clampRange(0, 360);
         this._saturation = parseInt(match[2]).clamp(0, 100);
         this._lightness = parseInt(match[3]).clamp(0, 100);
         this._alpha = parseInt(parseFloat(match[5]) * 100) || 100;
@@ -1932,15 +2076,22 @@
       return this;
     };
 
-    /*
-      TODO refactor
-      mix: (color2, alpha) ->
-        for item in [0,1,2]
-          @rgb[item] = Utils.clamp(((@rgb[item] / 100 * (100 - alpha))+(color2.rgb[item] / 100 * alpha)), 0, 255)
-        @_update 'rgb'
-        @
-    */
-
+    Color.prototype.mix = function(color2, alpha) {
+      var c, item, _i, _len, _ref1;
+      if (alpha == null) {
+        alpha = 50;
+      }
+      if (!(color2 instanceof Color)) {
+        color2 = new Color(color2);
+      }
+      c = new Color();
+      _ref1 = ['red', 'green', 'blue'];
+      for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
+        item = _ref1[_i];
+        c[item] = Math.round((color2[item] / 100 * (100 - alpha)) + (this[item] / 100 * alpha)).clamp(0, 255);
+      }
+      return c;
+    };
 
     Color.prototype._hsl2rgb = function() {
       var h, i, l, rgb, s, t1, t2, t3, val;
@@ -1948,8 +2099,10 @@
       s = this._saturation / 100;
       l = this._lightness / 100;
       if (s === 0) {
-        val = l * 255;
-        return [val, val, val];
+        val = Math.round(l * 255);
+        this._red = val;
+        this._green = val;
+        this._blue = val;
       }
       if (l < 0.5) {
         t2 = l * (1 + s);
@@ -1975,9 +2128,9 @@
         rgb[i] = val * 255;
         i++;
       }
-      this._red = rgb[0];
-      this._green = rgb[1];
-      return this._blue = rgb[2];
+      this._red = Math.round(rgb[0]);
+      this._green = Math.round(rgb[1]);
+      return this._blue = Math.round(rgb[2]);
     };
 
     Color.prototype._hex2rgb = function() {
@@ -2114,7 +2267,7 @@
         return this._hue;
       },
       set: function(value) {
-        this._hue = parseInt(value).clamp(0, 360);
+        this._hue = parseInt(value).clampRange(0, 360);
         return this._update('hsl');
       }
     },
@@ -2136,27 +2289,29 @@
   Object.defineProperties(Function.prototype, {
     delay: {
       value: function() {
-        var args, bind, id, ms;
+        var args, bind, id, ms,
+          _this = this;
         ms = arguments[0], bind = arguments[1], args = 3 <= arguments.length ? __slice.call(arguments, 2) : [];
         if (bind == null) {
           bind = this;
         }
-        return id = setTimeout(ms, function() {
-          clearTimeout(id);
-          return this.apply(bind, args);
-        });
+        return id = setTimeout(function() {
+          _this.apply(bind, args);
+          return clearTimeout(id);
+        }, ms);
       }
     },
     periodical: {
       value: function() {
-        var args, bind, ms;
+        var args, bind, ms,
+          _this = this;
         ms = arguments[0], bind = arguments[1], args = 3 <= arguments.length ? __slice.call(arguments, 2) : [];
         if (bind == null) {
           bind = this;
         }
-        return setInterval(ms, function() {
-          return this.apply(bind, args);
-        });
+        return setInterval(function() {
+          return _this.apply(bind, args);
+        }, ms);
       }
     }
   });
@@ -2166,20 +2321,21 @@
   */
 
 
-  Unit = (function() {
+  window.Unit = Unit = (function() {
 
     Unit.UNITS = {
-      px: 0,
-      em: 1,
-      pt: 2
+      px: true,
+      em: true
     };
 
-    Unit.TABLE = [1, 16, 16 / 12];
-
-    function Unit(value) {
+    function Unit(value, basePX) {
       if (value == null) {
         value = "0px";
       }
+      if (basePX == null) {
+        basePX = 16;
+      }
+      this.base = basePX;
       this.set(value);
     }
 
@@ -2190,29 +2346,33 @@
       if (!(type in Unit.UNITS)) {
         return this._value + "px";
       }
-      return Math.round(this._value / Unit.TABLE[Unit.UNITS[type]] * 100) / 100 + type;
+      if (type === 'em') {
+        return (this._value / this.base) + "em";
+      } else {
+        return this._value + "px";
+      }
     };
 
     Unit.prototype.set = function(value) {
-      var factor, m, v;
-      if ((m = value.match(/(\d+)(\w{2,5})$/))) {
-        v = parseInt(m[1]) || 0;
-        factor = Unit.TABLE[Unit.UNITS[m[2]]];
-        if (isNaN(v) || factor === void 0) {
-          throw 'Wrong Unit format!';
+      var m, match, type, v;
+      if ((match = value.match(/(\d+)(px|em)$/))) {
+        m = match[0], value = match[1], type = match[2];
+        v = parseFloat(value) || 0;
+        if (type === 'em') {
+          return this._value = parseInt(this.base * v);
+        } else {
+          return this._value = parseInt(v);
         }
       } else {
-        v = 0;
-        factor = 0;
+        throw 'Wrong Unit format!';
       }
-      return this._value = v * factor;
     };
 
     return Unit;
 
   })();
 
-  ['px', 'em', 'pt'].forEach(function(type) {
+  ['px', 'em'].forEach(function(type) {
     return Object.defineProperty(Unit.prototype, type, {
       get: function() {
         return this.toString(type);
@@ -2321,9 +2481,22 @@
     }
   });
 
-  DocumentFragment.create = function() {
+  DocumentFragment.Create = function() {
     return document.createDocumentFragment();
   };
+
+  /*
+  --------------- /home/gdot/github/crystal/source/app/env.coffee--------------
+  */
+
+
+  window.Platforms = {
+    WEBSTORE: 1,
+    NODE_WEBKIT: 2,
+    WEB: 3
+  };
+
+  window.PLATFORM = window.location.href.match(/^chrome-extension\:\/\//) ? Platforms.WEBSTORE : 'require' in window ? Platforms.NODE_WEBKIT : Platforms.WEB;
 
   /*
   --------------- /home/gdot/github/crystal/source/store/store.coffee--------------
@@ -2357,7 +2530,7 @@
           case 0:
             if (indexedDB) {
               return Store.IndexedDB;
-            } else if (openDatabase) {
+            } else if (websql) {
               return Store.WebSQL;
             } else if (requestFileSystem) {
               return Store.FileSystem;
@@ -2375,7 +2548,7 @@
             }
             return Store.IndexedDB;
           case 2:
-            if (!openDatabase) {
+            if (!websql) {
               throw "WebSQL not supported!";
             }
             return Store.WebSQL;
@@ -2510,7 +2683,6 @@
       return this.request.get({
         key: key
       }, function(response) {
-        console.log(response.body);
         return typeof callback === "function" ? callback(_this.deserialize(response.body)) : void 0;
       });
     };
@@ -2832,27 +3004,40 @@
     IndexedDB.prototype.init = function(callback) {
       var a, request,
         _this = this;
-      this.version = "1.0";
+      this.version = "2";
       this.database = 'store';
       a = window;
       a.indexedDB = a.indexedDB || a.webkitIndexedDB || a.mozIndexedDB;
-      request = window.indexedDB.open(this.prefix);
+      request = window.indexedDB.open(this.prefix, this.version);
+      request.onupgradeneeded = function(e) {
+        var store;
+        _this.db = e.target.result;
+        if (!_this.db.objectStoreNames.contains("note")) {
+          return store = _this.db.createObjectStore(_this.database, {
+            keyPath: "key"
+          });
+        }
+      };
       request.onsuccess = function(e) {
         var setVrequest;
         _this.db = e.target.result;
-        if (_this.version !== _this.db.version) {
-          setVrequest = _this.db.setVersion(_this.version);
-          setVrequest.onfailure = _this.error;
-          return setVrequest.onsuccess = function(e) {
-            var store, trans;
-            store = _this.db.createObjectStore(_this.database, {
-              keyPath: "key"
-            });
-            trans = setVrequest.result;
-            return trans.oncomplete = function() {
-              return callback(this);
+        if (__indexOf.call(_this.db, 'setVersion') >= 0) {
+          if (_this.version !== _this.db.version) {
+            setVrequest = _this.db.setVersion(_this.version);
+            setVrequest.onfailure = _this.error;
+            return setVrequest.onsuccess = function(e) {
+              var store, trans;
+              store = _this.db.createObjectStore(_this.database, {
+                keyPath: "key"
+              });
+              trans = setVrequest.result;
+              return trans.oncomplete = function() {
+                return callback(this);
+              };
             };
-          };
+          } else {
+            return callback(_this);
+          }
         } else {
           return callback(_this);
         }

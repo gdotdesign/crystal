@@ -144,7 +144,8 @@ Object.defineProperty Node::, 'delegateEventListener', value: (event,listener,us
   [baseEvent,selector] = event.split(':')
   selector ?= "*"
   @addEventListener baseEvent, (e) ->
-    listener e if e.relatedTarget.webkitMatchesSelector selector
+    target = e.relatedTarget or e.target
+    listener e if target.webkitMatchesSelector selector
 
 ['addEventListener','removeEventListener','delegateEventListener'].forEach (prop) ->
   Object.defineProperty Node::, prop.replace("Listener",''), value: Node::[prop]

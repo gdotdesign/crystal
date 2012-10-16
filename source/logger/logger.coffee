@@ -37,5 +37,5 @@ Object.defineProperties Logger::,
 ['debug', 'log', 'error', 'fatal', 'info', 'warn'].forEach (type) ->
   Logger::["_"+type] = ->
   Logger::[type] = (args...) ->
-    if @level >= Logger[type.toUpperCase()]
+    if @level >= Logging.Logger[type.toUpperCase()]
       @["_"+type] @_format args

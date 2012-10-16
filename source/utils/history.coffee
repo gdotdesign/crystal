@@ -1,6 +1,4 @@
-# @requires ./evented
-
-window.History = class Utils.History extends Utils.Evented
+window.History = class Utils.History
   constructor: ->
     @_type = if 'pushState' of history then 'popstate' else 'hashchange'
     window.addEventListener @_type, (event) =>
@@ -9,7 +7,7 @@ window.History = class Utils.History extends Utils.Evented
           window.location.pathname
         when 'hashchange'
           window.location.hash
-      @trigger 'change', url
+      @[url.trim()]() if @[url.trim()] instanceof Function
     @stateid = 0
   push: (url) ->
     switch @_type
