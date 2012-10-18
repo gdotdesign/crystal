@@ -36,6 +36,9 @@ window.Application = class Application extends Utils.Evented
   def: (key, fn) ->
     @[key] = fn
 
+  event: (key,fn) ->
+    document.delegateEvent key, fn.bind @
+
   on: (name,fn)->
     if name is 'end'
       window.onbeforeunload = fn
