@@ -29,7 +29,9 @@ window.Mediator = new Utils.Mediator
 
 Crystal.Utils.Evented = class Utils.Evented
   constructor: ->
-    @_mediator = new Utils.Mediator
+
+  _ensureMediator: ->
+    @_mediator ?= new Utils.Mediator
 
   toString: ->
     "[Object #{@__proto__.constructor.name}]"
@@ -37,12 +39,15 @@ Crystal.Utils.Evented = class Utils.Evented
   trigger: (type,args...) ->
     event = new Utils.Event @
     args.unshift event
+    @_ensureMediator()
     @_mediator.fireEvent type, args
 
   on: (type, callback) ->
+    @_ensureMediator()
     @_mediator.addListener type, callback
 
   off: (type,callback) ->
+    @_ensureMediator()
     @_mediator.removeListener type, callback
 
   publish: (type,args...) ->

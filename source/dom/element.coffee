@@ -117,7 +117,7 @@ Object.defineProperty HTMLInputElement::, 'caretToEnd', value: ->
   length = @value.length
   @setSelectionRange(length, length)
 
-Object.defineProperties HTMLElement::
+properties = 
   id:
     get: -> @getAttribute 'id'
     set: (value) -> @setAttribute 'id', value
@@ -138,11 +138,14 @@ Object.defineProperties HTMLElement::
     get: -> @getAttribute 'class'
     set: (value) -> @setAttribute 'class', value
 
+Object.defineProperties HTMLElement::, properties
+
 Object.defineProperty Node::, 'delegateEventListener', value: (event,listener,useCapture) ->
   [baseEvent,selector] = event.split(':')
   selector ?= "*"
   @addEventListener baseEvent, (e) ->
-    listener e if e.relatedTarget.webkitMatchesSelector selector
+    target = e.relatedTarget or e.target
+    listener e if target.webkitMatchesSelector selector
 
 ['addEventListener','removeEventListener','delegateEventListener'].forEach (prop) ->
   Object.defineProperty Node::, prop.replace("Listener",''), value: Node::[prop]

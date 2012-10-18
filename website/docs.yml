@@ -45,20 +45,83 @@ packages:
           - name: "moveDown()"
             type: fn
             description: "Moves self after the next element"
+          - name: "delegateEventListener(expression, handler)"
+            type: fn
+            description: |
+              Delegates events acconding to the expression:     
+              **event**:*selector*    
+              **click**:*a[href]*
+            example: |
+              document.body.delegateEventListener 'click:*', (e) ->
+                console.log e.tag
+              # tag of the clicked element
+          - name: "addEvent"
+            type: fn
+            description: "Alias for addEventListener"
+          - name: "removeEvent"
+            type: fn
+            description: "Alias for aremoveEventListener"
+          - name: "delegateEvent"
+            type: fn
+            description: "Alias for delegateEventListener"
+      NodeList:
+        description: "Extensions for NodeList."
+        icon: "th-list"
+        methods:
+          - name: "forEach(fn)"
+            description: "Iterates through the element in the node list."
+            type: fn
+            example: |
+              document.all("h1").forEach (el) ->
+                console.log el
+          - name: "map(fn)"
+            description: "Creates an array with the results of calling a provided function on every element in the node list."
+            type: fn
+            example: |
+              console.log document.all("h1").map (el) ->
+                el.text
+          - name: "pluck"
+            description: ""
+            type: "fn"
+            example: |
+              console.log document.all("h1").pluck 'text'
+              # [...]
+          - name: "include"
+            description: ""
+            type: "fn"
+            example: |
+              h1 = document.first("h1")
+              document.body.inlcude(h1)
+              # false
+          - name: "first"
+            description: ""
+            type: "prop"
+            example: |
+              h1 = document.all("h1").first
+              console.log h1
+              # Element
+          - name: "last"
+            description: ""
+            type: "prop"
+            example: |
+              h1 = document.all("h1").last
+              console.log h1
+              # Element
       HTMLElement:
         description: ""
-        icon: "asterisk"
+        icon: "sign-blank"
         methods:
           - name: "create(zen)"
             type: self
             description: |
-              Shortcut for creating element via zen string.
-              [type=text][hidden] - attributes
-              .class1.class2 - classes
-              #id - id
+              Shortcut for creating element via zen string.           
+              
+              *  **[type=text][hidden]** - attributes
+              *  **.class1.class2** - classes
+              *  **#id** - id
             example: |
               input = Element.create("input.class#id[type=text]")
-              console.log input.class, input.id, input.getAttribute 'type'
+              console.log input.class input.getAttribute 'type'
               # class, id, text
           - name: "dispose()"
             type: fn
@@ -133,6 +196,33 @@ packages:
               el.parent = document.body
               console.log document.contains(el)
               # true
+      HTMLInputElement:
+        description: ""
+        icon: ""
+        methods:
+          - name: "caretToEnd"
+            type: "fn"
+            description: "Moves the caret of the element to the end when focused."
+      HTMLSelectElement:
+        description: ""
+        icon: ""
+        methods:
+          - name: "selectedOption"
+            type: prop
+            description: Sets / Gets the selected option element of the select.
+      DocumentFragment:
+        description: ""
+        icon: ""
+        methods:
+          - name: "create()"
+            type: fn
+            description: Alias for document.createDocumentFragment()
+          - name: "remove(el)"
+            type: fn
+            description: Removes **el** from the document fragment
+          - name: "children"
+            type: prop
+            description: Alias for **childnodes**
   Logging:
     icon: 'align-left'
     classes:

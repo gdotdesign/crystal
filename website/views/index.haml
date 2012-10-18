@@ -59,8 +59,7 @@
           %h2
             %div{class: "icon-#{cls['icon']}"}
             = key
-          %p
-            = cls['description']
+          = Markdown.new(cls['description']).to_html
         - if cls['methods']
           - cls['methods'].each do |method|
             .method
@@ -75,8 +74,7 @@
               %h3
                 %span{class: method['type']}= types[method['type']]
                 = method['name']
-              %p
-                = method['description']
+              = Markdown.new(method['description']).to_html
               .clear
               .icon-link
               .icon-play

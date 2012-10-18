@@ -1,6 +1,7 @@
 # @requires ../types/keyboard-event
 window.Keyboard = class Keyboard
   handleKeydown: (e) =>
+    delimeters = /-|\+|:|_/g
     unless e.cancelled
       combo = []
       combo.push "ctrl" if e.ctrlKey
@@ -9,7 +10,7 @@ window.Keyboard = class Keyboard
       combo.push e.key
       for sc, method of @
         pressed = true
-        for key in sc.split "+"
+        for key in sc.split delimeters
           if combo.indexOf(key) is -1
             pressed = false
             break
