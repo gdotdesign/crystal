@@ -22,106 +22,6 @@ body
     :display inline
     :margin-right 10px
   :margin-bottom 10px
-.logo
-  :margin-top 23px
-  :margin-bottom 20px
-  :font-size 56px
-  :width 2em
-  :height 2em
-  .q1,.q2,.q3,.q4
-    :float left
-    position: relative
-.q1
-  width: 0
-  height: 0
-  border-bottom: 0.5em solid #81C8F1
-  border-left: 0.4em solid transparent
-  border-right: 0.6em solid #81C8F1
-  &:after
-    content: ""
-    position: absolute
-    top: -0.05em
-    left: -0.48em
-    width: 0
-    height: 0
-    z-index: -1
-    border-bottom: 0.55em solid #fff
-    border-left: 0.45em solid transparent
-    border-right: 0.63em solid #fff
-
-.q2
-  width: 0
-  height: 0
-  border-bottom: 0.5em solid #1FA1C5
-  border-right: 0.4em solid transparent
-  border-left: 0.6em solid #1FA1C5
-  &:after
-    content: ""
-    position: absolute
-    top: -0.05em
-    left: -0.6em
-    width: 0
-    height: 0
-    z-index: -1
-    border-bottom: 0.55em solid #fff
-    border-right: 0.45em solid transparent
-    border-left: 0.63em solid #fff
-
-.q3
-  width: 0
-  height: 0
-  border-top: 1.5em solid #55BAED
-  border-left: 1em solid transparent
-  &:after
-    content: ""
-    position: absolute
-    top: -1.5em
-    left: -1.08em
-    width: 0
-    height: 0
-    z-index: -1
-    border-top: 1.6em solid #fff
-    border-left: 1.08em solid transparent
-
-.q4
-  width: 0
-  height: 0
-  border-top: 1.5em solid #32799B
-  border-right: 1em solid transparent
-  &:after
-    content: ""
-    position: absolute
-    top: -1.5em
-    left: 0em
-    width: 0
-    height: 0
-    z-index: -1
-    border-top: 1.6em solid #fff
-    border-right: 1.08em solid transparent
-.i
-  $size: 0.3em
-  top: 0.25em
-  left: 0.45em
-  position: relative
-  width: $size*3.7
-  height: $size*2
-  &:before, &:after
-    background: rgba(#F00,0.5)
-    content: ""
-    position: absolute
-    top: 0
-    left: 0
-    width: $size
-    height: $size
-    border: $size/2.5 solid #fff
-    border-radius: $size $size 0 $size
-    -webkit-transform: rotate(-45deg)
-  &:after
-    left: auto
-    right: 0
-    border-radius: $size $size $size 0
-    -webkit-transform: rotate(45deg)
-
 
 
 body
@@ -306,15 +206,10 @@ h3
 h2
   :margin 15px 0
 h2 [class*=icon]
-  @extend .circle
   :color rgba(#514C3D, 0.5)
   :position absolute
-  :top -30px
-  :right -30px
+  :top 13px
+  :right 30px
   :border none
   :font-size 35px
-  :width 80px
-  :height 80px
-  :line-height 80px
-  background-color: #f2f2f2
   :box-shadow none

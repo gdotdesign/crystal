@@ -2,12 +2,29 @@
 - types = {'new' => '::', 'fn' => '$','prop' => '#',   'self' => '@'}
 .content
   %nav
-    .logo
-      .q1
-      .q2
-      .q3
-      .q4
-      .i
+    %svg{:version => "1.1", :xmlns => "http://www.w3.org/2000/svg", :width => "168", :height=>"133"}
+      %defs
+        %linearGradient#q1{:x1 => "0%", :x2 => "100%", :y1 => "0%", :y2 => "0%"}
+          %stop{:offset => "0%", :style => "stop-color:#9ed4f4;stop-opacity:1"}/
+          %stop{:offset => "100%", :style => "stop-color:#42acea;stop-opacity:1"}/
+
+        %linearGradient#q2{:x1 => "0%", :x2 => "100%", :y1 => "0%", :y2 => "0%"}
+          %stop{:offset => "0%", :style => "stop-color:#4d9ec5;stop-opacity:1"}/
+          %stop{:offset => "100%", :style => "stop-color:#c3e4f8;stop-opacity:1"}/
+
+        %linearGradient#q4{:x1 => "0%", :x2 => "100%", :y1 => "0%", :y2 => "0%"}
+          %stop{:offset => "0%", :style => "stop-color:#4d9ec5;stop-opacity:1"}/
+          %stop{:offset => "100%", :style => "stop-color:#42acea;stop-opacity:1"}/
+
+        %linearGradient#q3{:x1 => "0%", :x2 => "100%", :y1 => "0%", :y2 => "0%"}
+          %stop{:offset => "0%", :style => "stop-color:#c3e4f8;stop-opacity:1"}/
+          %stop{:offset => "100%", :style => "stop-color:#42acea;stop-opacity:1"}/
+      %g{ transform:"scale(0.8) translate(5, 5)", stroke: "rgba(255,255,255,0.2)" }
+        %path{d: "M0 25 L40 0 L120 0 L160 25 L80 125 Z", fill: "none", "stroke-width" => 5, stroke: "white"}
+        %polygon{points: "0,25 40,0 80,0 80,25", fill:"url(#q1)"}
+        %polygon{points: "0,25 80,25 80,125", fill:"url(#q3)"}
+        %polygon{points: "80,0 120,0 160,25 80,25", fill:"url(#q2)"}
+        %polygon{points: "80,25 160,25 80,125", fill:"url(#q4)"}
     %h1
       %a{href:"#main"} Crystal
     .btn-circle
@@ -52,7 +69,7 @@
                   = method["example"]
               %code.js
                 - begin
-                  = CoffeeScript.compile method["example"], bare: true
+                  //= CoffeeScript.compile method["example"], bare: true
                 - rescue
                   = ""
               %h3
