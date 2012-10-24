@@ -1,0 +1,22 @@
+@import url(//fonts.googleapis.com/css?family=Montserrat+Alternates)
+@import url(//netdna.bootstrapcdn.com/font-awesome/2.0/css/font-awesome.css)
+
+#list
+  :position relative
+.item
+  :background #333
+  :color #eee
+  :height 30px
+  :box-sizing border-box
+  :line-height 30px
+  :padding 0 10px
+  :width 200px
+  &.done
+    :text-decoration line-through
+  i
+    :float right
+    :cursor pointer
+    :-webkit-transition-duration 320ms
+    &.hidden
+      :opacity 0
+  :-webkit-transition-duration 320ms

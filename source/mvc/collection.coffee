@@ -7,52 +7,69 @@ window.Collection = class MVC.Collection extends Array
     @push.apply @, args
     @
 
-  pop: ->
-    item = super
-    @trigger 'remove', item
-    @trigger 'change'
-    item
+  transaction: (fn) ->
+    old = @dup()
+    fn.call @
+    @_compare old
+    @
 
-  push: ->
-    oldl = @length
-    l = super
-    for item in arguments
-      @trigger 'add', item
-      @trigger 'change'
-    l
+  switch: (index1,index2) ->
+    return unless 0 <= index1 <= @length-1
+    return unless 0 <= index2 <= @length-1
+    old = @dup()
+    x = @[index2]
+    @[index2] = @[index1]
+    @[index1] = x
+    @_compare old
+    @
 
-  shift: ->
-    item = super
-    @trigger 'remove', item
-    @trigger 'change'
-    item
-
-  reverse: ->
-    r = super
-    @trigger 'change'
+  splice: (index,length,args...) ->
+    old = @dup()
+    r = Collection.__super__.splice.apply @, [index,length]
+    items = args.uniq().compact().filter (item) => @indexOf(item) is -1
+    items.unshift index, 0
+    r = Collection.__super__.splice.apply @, items
+    @_compare old
     r
 
-  sort: ->
-    r = super
-    @trigger 'change'
-    r
+  _compare: (old) ->
+    
+    n = @map((item,i) =>
+      if old.indexOf(item) is -1
+        [item,i]
+      else false
+    ).compact()
 
-  splice: (index, length, args...) ->
-    a = for i in [index..index+length-1] then @[i]
-    r = super
-    for item in a
-      @trigger 'remove', item if item
-    for item in args
-      @trigger 'add', item
-    r
+    moves = []
+    removes = []
+    old.map((item,i) =>
+      index = @indexOf item
+      if index isnt -1 and index isnt i
+        moves.push [i,index]
+      if index is -1
+        removes.push i
+    ).compact()
 
-  unshift: ->
-    l = super
-    for item in arguments
-      @trigger 'add', item
-      @trigger 'change'
-    l
+    @trigger 'change', {
+      removed: removes
+      added: n
+      moved: moves
+    }
+
+['push','unshift'].forEach (key) ->
+  Collection::[key] = (args...)->
+    old = @dup()
+    items = args.uniq().compact().filter (item) => @indexOf(item) is -1
+    r = Array::[key].apply @, items
+    @_compare old
+    r
+  
+['pop','shift','sort','reverse'].forEach (key) ->
+  Collection::[key] = (args...)->
+    old = @dup()
+    r = Array::[key].apply @, args
+    @_compare old
+    r
 
 for key, value of Utils.Evented::
   Collection::[key] = value
-Collection
