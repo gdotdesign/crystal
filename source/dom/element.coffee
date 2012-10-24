@@ -75,6 +75,8 @@ methods_node =
     @parent.insertBefore @, prev if @parent and (prev = @prev())
   moveDown: ->
     @parent.insertBefore next, @ if @parent and (next = @next())
+  indexOf: (el) ->
+    Array::slice.call(@childNodes).indexOf el
 
 # Methods only for HTMLElement, NodeList
 methods_element =
