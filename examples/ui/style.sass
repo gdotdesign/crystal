@@ -1,19 +1,103 @@
-@import url(//fonts.googleapis.com/css?family=Montserrat+Alternates)
+@import url(//fonts.googleapis.com/css?family=Signika+Negative:300,400,600,700)
 @import url(//netdna.bootstrapcdn.com/font-awesome/2.0/css/font-awesome.css)
 
+body
+  :margin 2vw
+  :overflow hidden
+  :font-family "Signika Negative"
+  :background #222
+  :font-weight 400
+
+@-webkit-keyframes load
+  0%
+    :-webkit-transform translateY(-200px)
+  100%
+    :-webkit-transform translateY(0)
+
+@-webkit-keyframes load2
+  0%
+    :-webkit-transform translateX(-130%)
+  100%
+    :-webkit-transform translateX(0)
+
+input
+  :background #eee
+  :border none
+  :margin 0
+  :padding 0
+  :height 30px
+  :line-height 30px
+  :display block
+  :float left
+  :box-sizing border-box
+  :-webkit-transition-duration 320ms
+  &[type=text]
+    :-webkit-animation load 500ms 1s both
+    :font-size 14px
+    :line-height 14px
+    :margin-bottom 1vw
+    :padding 8px 10px
+    :width 79vw
+    :margin-right 1vw
+    &:focus
+      :outline none
+      :box-shadow 0 0 5px #1C84A3 inset
+input[type=button]
+  :-webkit-animation load 500ms 1.2s both
+.menu i
+  :-webkit-animation load 500ms 1.4s both
+input[type=button], .menu i
+  :width 10vw
+  :font-family "Signika Negative"
+  :color #fff
+  :font-weight 600
+  :background #1C84A3
+  :text-transform uppercase
+  :cursor pointer
+.menu i
+  :width 5vw
+  :margin-left 1vw
+  :display block
+  :float left
+  :height 30px
+  :line-height 33px
+  :text-align center
 #list
   :position relative
+  :clear both
+  @for $i from 1 through 2000
+    .item:nth-child(#{$i})
+      :-webkit-animation-delay 1000ms+$i*70ms
 .item
-  :background #333
+  :-webkit-animation load2 500ms backwards
+  :background-color #333
+  :background-image -webkit-linear-gradient(rgba(#fff,0.05), rgba(#fff,0))
   :color #eee
   :height 30px
   :box-sizing border-box
-  :line-height 30px
-  :padding 0 10px
-  :width 200px
+  :line-height 27px
+  :padding 0 5px
+  :width 100%
+  :-webkit-user-select none
+  :border-radius 2px
+  :text-shadow 0 1px 1px rgba(#000,0.4)
+  :border-top 1px solid rgba(#fff,0.14)
+  :box-shadow 0 2px 1px rgba(#000,0.2)
+  &.edit
+    :-webkit-transform rotateX(180deg)
   &.done
     :text-decoration line-through
+    :background-color #555
+    :color #999
+  .icon-ok
+    :float left
+    :margin-right 10px
   i
+    :line-height 30px
+    :text-shadow 0 -1px 1px rgba(#000,0.4)
+    :font-size 14px
+    :text-align center
+    :width 20px
     :float right
     :cursor pointer
     :-webkit-transition-duration 320ms

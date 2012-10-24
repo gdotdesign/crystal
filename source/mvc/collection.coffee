@@ -4,7 +4,8 @@
 window.Collection = class MVC.Collection extends Array
   constructor: (args...) ->
     super
-    @push.apply @, args
+    if args.length > 0
+      @push.apply @, args
     @
 
   transaction: (fn) ->
@@ -16,11 +17,10 @@ window.Collection = class MVC.Collection extends Array
   switch: (index1,index2) ->
     return unless 0 <= index1 <= @length-1
     return unless 0 <= index2 <= @length-1
-    old = @dup()
-    x = @[index2]
-    @[index2] = @[index1]
-    @[index1] = x
-    @_compare old
+    @transaction ->
+      x = @[index2]
+      @[index2] = @[index1]
+      @[index1] = x
     @
 
   splice: (index,length,args...) ->
@@ -33,7 +33,7 @@ window.Collection = class MVC.Collection extends Array
     r
 
   _compare: (old) ->
-    
+
     n = @map((item,i) =>
       if old.indexOf(item) is -1
         [item,i]
@@ -63,7 +63,7 @@ window.Collection = class MVC.Collection extends Array
     r = Array::[key].apply @, items
     @_compare old
     r
-  
+
 ['pop','shift','sort','reverse'].forEach (key) ->
   Collection::[key] = (args...)->
     old = @dup()
