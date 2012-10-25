@@ -6,7 +6,7 @@ window.onload = ->
     add: (el,index)->
       el.css 'opacity', '0'
       el.css 'position', 'absolute'
-      el.css 'top', index*32+"px"
+      el.css 'top', index*33+"px"
       el.setAttribute 'index', index
       el.addEvent 'webkitAnimationEnd', ->
         el.css '-webkit-animation', 'none'
@@ -28,7 +28,7 @@ window.onload = ->
       elements = moves.map (move) => @base.first("[index='#{move[0]}']")
       for el,i in elements
         el.setAttribute 'index', moves[i][1]
-        el.css 'top', moves[i][1]*32+"px"
+        el.css 'top', moves[i][1]*33+"px"
 
   class ToDoCollection extends Collection
     constructor: ->
@@ -36,8 +36,9 @@ window.onload = ->
         @save()
       super
     load: ->
-      data = JSON.parse localStorage.getItem('data') 
-      data.forEach (todo) => @push new ToDoItem todo
+      data = JSON.parse localStorage.getItem('data')
+      if data
+        data.forEach (todo) => @push new ToDoItem todo
     save: ->
       localStorage.setItem 'data', JSON.stringify @
 
@@ -49,7 +50,7 @@ window.onload = ->
           proto[name].call instance, key, value
       else
         proto[name].call instance, data, fn
-  
+
   class Model extends Crystal.Utils.Evented
     _ensureProperties: ->
       unless @__properties__
@@ -60,7 +61,7 @@ window.onload = ->
     forEach: (fn) ->
       for key of @__properties__
         fn key, @[key]
-      
+
     @property: (name, value)->
       Object.defineProperty @, name,
         get: ->
@@ -95,8 +96,42 @@ window.onload = ->
     else
       olds obj
 
+  Bindings =
+    define: (key,value) ->
+      @[key] = value
+  Bindings.define 'text', (els,property) ->
+    els.forEach (el) => el.text = @[property]
+  Bindings.define 'toggleClass', (el,property,cls) ->
+    if @[property]
+      el.classList.add cls
+    else
+      el.classList.remove cls
+
+  class ModelView
+    constructor: (@model, @view)->
+      @model.on 'change', @render
+      @__bindings__ = []
+      for key,args of @bindings
+        args = [args] unless args instanceof Array
+        [selector,binding] = key.split ':'
+        if Bindings[binding]
+          @__bindings__.push [selector, binding, args]
+    render: =>
+      for bobj in @__bindings__
+        [selector,binding,args] = bobj
+        args = args.dup()
+        views = if selector is '.' then @view else @view.all(selector)
+        args.unshift views
+        console.log @model
+        Bindings[binding].apply @model, args
+
+
   # ----------------------------
 
+  class x extends ModelView
+    bindings:
+      '.text:text': 'name'
+      '.:toggleClass': ['done', 'done']
 
   window.ToDoItem = Model.create ->
     @property 'name'
@@ -104,14 +139,13 @@ window.onload = ->
 
   window.c = new ToDoCollection()
 
-  MV = class X extends ModelView
-
   l = new AbsoluteList
     collection:c
     zen: '.item'
     prepare: (el, item) ->
-      el.text = item.name
+      item.on 'change', -> c.save()
       el.css '-webkit-animation-delay', 0 if window.loaded
+      el.append Element.create 'span.text'
       el.append Element.create 'i.icon-remove'
       el.append Element.create 'i.icon-ok'
       el.append Element.create 'i.icon-chevron-up'
@@ -127,10 +161,12 @@ window.onload = ->
         index = @indexOf(e.target.parent)
         c.switch index-1, index
       el.delegateEvent 'click:i.icon-ok', (e) ->
-        el.classList.toggle 'done'
+        item.done = !item.done
       el.delegateEvent 'click:i.icon-remove', (e) =>
         index = @indexOf(e.target.parent)
         c.splice index, 1
+      mv = new x(item,el)
+      mv.render()
 
 
   c.on 'change', ->
@@ -143,21 +179,20 @@ window.onload = ->
       if index is c.length-1
         el.first('i.icon-chevron-down').classList.add 'hidden'
 
+
   c.load()
-  y = c[0]
-  y.on 'change:name', ->
-    console.log 'wtf'
+
 
   document.first("#add").addEvent 'click', ->
     window.loaded ?= true
     value = document.first("#text").value
-    c.push new ToDoItem(name: value) if text.value.trim() isnt ""
+    c.push new ToDoItem({name: value, done: false}) if text.value.trim() isnt ""
     document.first("#text").value = ''
   document.delegateEvent 'click:i.icon-sort', (e) =>
     c.sort (a, b) ->
       return 0 if a.name is b.name
       if a.name < b.name
         -1
-      else 
+      else
         1
   document.first("#list").append l.base
