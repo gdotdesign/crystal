@@ -36,19 +36,81 @@ window.onload = ->
         @save()
       super
     load: ->
-      data = localStorage.getItem('data')
-      data?.split("|").forEach (todo) => @push todo
+      data = JSON.parse localStorage.getItem('data') 
+      data.forEach (todo) => @push new ToDoItem todo
     save: ->
-      localStorage.setItem 'data', @join "|"
+      localStorage.setItem 'data', JSON.stringify @
+
+  # ----------------------------
+  _wrap = (name, proto, instance)->
+    (data,fn) ->
+      if data instanceof Object
+        for key, value of data
+          proto[name].call instance, key, value
+      else
+        proto[name].call instance, data, fn
+  
+  class Model extends Crystal.Utils.Evented
+    _ensureProperties: ->
+      unless @__properties__
+        Object.defineProperty @, '__properties__',
+          value: {}
+          enumerable: false
+
+    forEach: (fn) ->
+      for key of @__properties__
+        fn key, @[key]
+      
+    @property: (name, value)->
+      Object.defineProperty @, name,
+        get: ->
+          @_ensureProperties()
+          @__properties__[name]
+        set: (val) ->
+          @_ensureProperties()
+          if value instanceof Function
+            val = value val
+          if val isnt @__properties__[name]
+            @__properties__[name] = val
+            @trigger 'change'
+            @trigger 'change:'+name
+        enumerable: true
+
+    @create: (func) ->
+      class extends Model
+        constructor: (properties) ->
+          context = {}
+          for key of Model
+            context[key] = _wrap(key,Model, @)
+          func.call context
+          for key,value of properties
+            if Object.getOwnPropertyDescriptor(@,key)
+              @[key] = value
+
+  # FIX Stringify
+  olds = JSON.stringify
+  JSON.stringify = (obj) ->
+    if obj instanceof Array
+      olds Array::slice.call obj
+    else
+      olds obj
+
+  # ----------------------------
+
+
+  window.ToDoItem = Model.create ->
+    @property 'name'
+    @property 'done'
 
   window.c = new ToDoCollection()
 
+  MV = class X extends ModelView
 
   l = new AbsoluteList
     collection:c
     zen: '.item'
     prepare: (el, item) ->
-      el.text = item
+      el.text = item.name
       el.css '-webkit-animation-delay', 0 if window.loaded
       el.append Element.create 'i.icon-remove'
       el.append Element.create 'i.icon-ok'
@@ -82,11 +144,20 @@ window.onload = ->
         el.first('i.icon-chevron-down').classList.add 'hidden'
 
   c.load()
+  y = c[0]
+  y.on 'change:name', ->
+    console.log 'wtf'
 
   document.first("#add").addEvent 'click', ->
     window.loaded ?= true
     value = document.first("#text").value
-    c.push value if text.value.trim() isnt ""
+    c.push new ToDoItem(name: value) if text.value.trim() isnt ""
+    document.first("#text").value = ''
   document.delegateEvent 'click:i.icon-sort', (e) =>
-    c.sort()
+    c.sort (a, b) ->
+      return 0 if a.name is b.name
+      if a.name < b.name
+        -1
+      else 
+        1
   document.first("#list").append l.base

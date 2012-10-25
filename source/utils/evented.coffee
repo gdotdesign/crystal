@@ -31,7 +31,8 @@ Crystal.Utils.Evented = class Utils.Evented
   constructor: ->
 
   _ensureMediator: ->
-    @_mediator ?= new Utils.Mediator
+    unless @_mediator
+      Object.defineProperty @, "_mediator", value: new Utils.Mediator
 
   toString: ->
     "[Object #{@__proto__.constructor.name}]"
