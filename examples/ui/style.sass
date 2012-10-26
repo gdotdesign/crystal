@@ -132,6 +132,7 @@ input[type=button], .menu i
   > div:last-child
     :-webkit-transform perspective(1000) rotateX(-90deg)
     :border-radius 2px
+    :opacity 0
     input
       :border none
       :margin 0
@@ -162,9 +163,11 @@ input[type=button], .menu i
   :text-shadow 0 1px 1px rgba(#000,0.4)
   &.edit
     div:first-child
+      :opacity 0
       :-webkit-transition-delay 0
-      :-webkit-transform perspective(1000) rotateX(90deg)
+      :-webkit-transform perspective(1000) rotateX(90deg) translateZ(30px)
     div:last-child
+      :opacity 1
       :-webkit-transition-delay 160ms
       :-webkit-transform perspective(1000) rotateX(0)
   &.done
@@ -173,6 +176,7 @@ input[type=button], .menu i
       span
         :text-decoration line-through
     :opacity 0.3
+    :-webkit-transform perspective(1000) translateZ(-30px)
     :-webkit-filter blur(1px)
   .icon-ok
     :float left
