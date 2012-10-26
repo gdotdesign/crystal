@@ -7,7 +7,8 @@ Crystal is a JavaScript library (written in CoffeeScript) which extends native p
  *  Things that are not part of other libraries (Color, Unit, i18n, Keyboard, etc...)
  *  [Node-Webkit](https://github.com/rogerwang/node-webkit) utilities (File Dialogs,Tray, etc...)
  *  Properties on Classes / Types (array.first, 1.hours, date.ago, etc...)
- *  Powerfull MVC / UI
+ *  Event / PubSub system
+ *  MVC / UI
  *  Custom builds*
 
 ### What Crystal doesn't give you?
