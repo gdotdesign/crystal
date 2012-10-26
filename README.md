@@ -7,6 +7,7 @@ Crystal is a JavaScript library (written in CoffeeScript) which extends native p
  *  Things that are not part of other libraries (Color, Unit, i18n, Keyboard, etc...)
  *  [Node-Webkit](https://github.com/rogerwang/node-webkit) utilities (File Dialogs,Tray, etc...)
  *  Properties on Classes / Types (array.first, 1.hours, date.ago, etc...)
+ *  Powerfull MVC / UI
  *  Custom builds*
 
 ### What Crystal doesn't give you?
@@ -47,6 +48,11 @@ Browser:
 
  *  ```rake specserver```
  *  Open **http://localhost:5000** in your browser
+
+### Examples
+ 
+ *  ```rake specserver```
+ *  Open **http://localhost:5000/{example}** in your browser
 
 ### Building
 Simple compile to **crystal.js**
