@@ -1,13 +1,3 @@
-Layout = '''
-!!!
-%head
-  %script{:src => "/crystal", :type => "text/javascript", app: true}
-  %script{:src => "/js#{name}", :type => "text/javascript", app: true}
-  %link{rel: "stylesheet", href: "/style#{name}", app: true}
-  %meta{:content => "width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0", :name => "viewport"}
-%body
-  = yield
-'''
 class ExampleServer < Renee::Application
   app do
     path "/crystal" do
@@ -40,7 +30,7 @@ class ExampleServer < Renee::Application
       code = File.read("./examples/#{example}/view.haml")
       respond! do
         headers({'Content-Type' => 'text/html'})
-        body Haml::Engine.new(Layout).render(Object.new, {name: example}) { Haml::Engine.new(code).render(Object.new) }
+        body Haml::Engine.new(code).render(Object.new)
       end
     end
   end

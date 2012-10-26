@@ -10,7 +10,9 @@ window.Collection = class MVC.Collection extends Array
 
   transaction: (fn) ->
     old = @dup()
+    @silent = true
     fn.call @
+    @silent = false
     @_compare old
     @
 
@@ -33,28 +35,28 @@ window.Collection = class MVC.Collection extends Array
     r
 
   _compare: (old) ->
+    unless @silent
+      n = @map((item,i) =>
+        if old.indexOf(item) is -1
+          [item,i]
+        else false
+      ).compact()
 
-    n = @map((item,i) =>
-      if old.indexOf(item) is -1
-        [item,i]
-      else false
-    ).compact()
-
-    moves = []
-    removes = []
-    old.map((item,i) =>
-      index = @indexOf item
-      if index isnt -1 and index isnt i
-        moves.push [i,index]
-      if index is -1
-        removes.push i
-    ).compact()
-
-    @trigger 'change', {
-      removed: removes
-      added: n
-      moved: moves
-    }
+      moves = []
+      removes = []
+      old.map((item,i) =>
+        index = @indexOf item
+        if index isnt -1 and index isnt i
+          moves.push [i,index]
+        if index is -1
+          removes.push i
+      ).compact()
+      
+      @trigger 'change', {
+        removed: removes
+        added: n
+        moved: moves
+      }
 
 ['push','unshift'].forEach (key) ->
   Collection::[key] = (args...)->

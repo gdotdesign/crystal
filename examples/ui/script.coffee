@@ -1,198 +1,169 @@
-window.onload = ->
+# Custom ListView for absolute positioning
+class AbsoluteList extends UI.List
+  indexOf: (el) -> parseInt(el.getAttribute('index'))
+  itemOf: (el) -> @collection[@indexOf(el)]
 
-  class AbsoluteList extends UI.List
-    indexOf: (el) -> parseInt(el.getAttribute('index'))
+  change: (data) ->
+    for item in data.added
+      if @options.element instanceof HTMLElement
+        el = @options.element.cloneNode(true)
+      else
+        el = Element.create @options.element
+      if @options.prepare instanceof Function
+        @options.prepare.call @, el, item[0]
+      @add el, item[1]
+    @remove data.removed
+    if data.removed.length > 0
+      @move.delay 320, @, data.moved
+    else
+      @move data.moved
 
-    add: (el,index)->
-      el.css 'opacity', '0'
-      el.css 'position', 'absolute'
-      el.css 'top', index*33+"px"
-      el.setAttribute 'index', index
-      el.addEvent 'webkitAnimationEnd', ->
-        el.css '-webkit-animation', 'none'
-      @base.append el
-      setTimeout ->
-        el.css 'opacity', '1'
-      ,100
+  add: (el,index)->
+    el.css 'position', 'absolute'
+    el.css 'top', index*33+"px"
+    el.setAttribute 'index', index
+    el.addEvent 'webkitAnimationEnd', ->
+      el.css '-webkit-animation', 'none'
+    @base.append el
 
-    remove: (items)->
-      elements = for index in items then @base.first("[index='#{index}']")
+  remove: (items)->
+    elements = for index in items then @base.first("[index='#{index}']")
+    for el in elements
+      el.css '-webkit-transform', 'translateX(120%)'
+      el.css 'opacity', 0
+    setTimeout =>
       for el in elements
-        el.css '-webkit-transform', 'translateX(120%)'
-      setTimeout =>
-        for el in elements
-          el.dispose()
-      , 320
+        el.dispose()
+    , 320
 
-    move: (moves)->
-      elements = moves.map (move) => @base.first("[index='#{move[0]}']")
-      for el,i in elements
-        el.setAttribute 'index', moves[i][1]
-        el.css 'top', moves[i][1]*33+"px"
+  move: (moves)->
+    elements = moves.map (move) => @base.first("[index='#{move[0]}']")
+    for el,i in elements
+      el.setAttribute 'index', moves[i][1]
+      el.css 'top', moves[i][1]*33+"px"
+    @trigger 'moved'
 
-  class ToDoCollection extends Collection
-    constructor: ->
-      @on 'change', ->
-        @save()
-      super
-    load: ->
-      data = JSON.parse localStorage.getItem('data')
-      if data
-        data.forEach (todo) => @push new ToDoItem todo
-    save: ->
-      localStorage.setItem 'data', JSON.stringify @
+# Model
+class ToDoItem extends Model
+  properties:
+    name: {}
+    done: {}
 
-  # ----------------------------
-  _wrap = (name, proto, instance)->
-    (data,fn) ->
-      if data instanceof Object
-        for key, value of data
-          proto[name].call instance, key, value
-      else
-        proto[name].call instance, data, fn
+# Collection
+class ToDoCollection extends Collection
+  constructor: ->
+    @on 'change', (e,mutation) ->
+      for item in mutation.added
+        item[0].on 'change', @save
+        item[0].on 'moveup', (e) =>
+          index = @indexOf e.target
+          @switch index-1, index
+        item[0].on 'movedown', (e) =>
+          index = @indexOf e.target
+          @switch index+1, index
+        item[0].on 'remove', (e) =>
+          @remove$ e.target
+      # for item in mutation.removed
+      # TODO Garbage Collection
+      @save()
+    super
+  load: ->
+    if (data = JSON.parse localStorage.getItem('data'))
+      data.forEach (todo) => @push new ToDoItem todo
+  save: =>
+    localStorage.setItem 'data', JSON.stringify @
 
-  class Model extends Crystal.Utils.Evented
-    _ensureProperties: ->
-      unless @__properties__
-        Object.defineProperty @, '__properties__',
-          value: {}
-          enumerable: false
+# ModelView
+class ToDoItemView extends ModelView
+  bindings:
+    '.text|text': 'name'
+    '.|toggleClass': ['done', 'done']
+    'input[type=text]|value': 'name'
+  events:
+    'dblclick': (e)->
+      e.preventDefault()
+      e.stopPropagation()
+      @view.classList.toggle 'edit'
+      @view.first('input').focus()
+    'blur:input': ->
+      @view.classList.toggle 'edit'
+    'click:i.icon-chevron-down': (e)->
+      @model.trigger 'movedown'
+    'click:i.icon-chevron-up': (e)->
+      @model.trigger 'moveup'
+    'click:i.icon-ok': (e)->
+      @model.done = !@model.done
+    'click:i.icon-remove': (e)->
+      @model.trigger 'remove'
 
-    forEach: (fn) ->
-      for key of @__properties__
-        fn key, @[key]
+  constructor: (model,view) ->
+    super
+    @model.on 'change', @render.bind @
+    view.css '-webkit-animation-delay', 0 if window.loaded
 
-    @property: (name, value)->
-      Object.defineProperty @, name,
-        get: ->
-          @_ensureProperties()
-          @__properties__[name]
-        set: (val) ->
-          @_ensureProperties()
-          if value instanceof Function
-            val = value val
-          if val isnt @__properties__[name]
-            @__properties__[name] = val
-            @trigger 'change'
-            @trigger 'change:'+name
-        enumerable: true
-
-    @create: (func) ->
-      class extends Model
-        constructor: (properties) ->
-          context = {}
-          for key of Model
-            context[key] = _wrap(key,Model, @)
-          func.call context
-          for key,value of properties
-            if Object.getOwnPropertyDescriptor(@,key)
-              @[key] = value
-
-  # FIX Stringify
-  olds = JSON.stringify
-  JSON.stringify = (obj) ->
-    if obj instanceof Array
-      olds Array::slice.call obj
-    else
-      olds obj
-
-  Bindings =
-    define: (key,value) ->
-      @[key] = value
-  Bindings.define 'text', (els,property) ->
-    els.forEach (el) => el.text = @[property]
-  Bindings.define 'toggleClass', (el,property,cls) ->
-    if @[property]
-      el.classList.add cls
-    else
-      el.classList.remove cls
-
-  class ModelView
-    constructor: (@model, @view)->
-      @model.on 'change', @render
-      @__bindings__ = []
-      for key,args of @bindings
-        args = [args] unless args instanceof Array
-        [selector,binding] = key.split ':'
-        if Bindings[binding]
-          @__bindings__.push [selector, binding, args]
-    render: =>
-      for bobj in @__bindings__
-        [selector,binding,args] = bobj
-        args = args.dup()
-        views = if selector is '.' then @view else @view.all(selector)
-        args.unshift views
-        console.log @model
-        Bindings[binding].apply @model, args
-
-
-  # ----------------------------
-
-  class x extends ModelView
-    bindings:
-      '.text:text': 'name'
-      '.:toggleClass': ['done', 'done']
-
-  window.ToDoItem = Model.create ->
-    @property 'name'
-    @property 'done'
-
-  window.c = new ToDoCollection()
-
-  l = new AbsoluteList
-    collection:c
-    zen: '.item'
-    prepare: (el, item) ->
-      item.on 'change', -> c.save()
-      el.css '-webkit-animation-delay', 0 if window.loaded
-      el.append Element.create 'span.text'
-      el.append Element.create 'i.icon-remove'
-      el.append Element.create 'i.icon-ok'
-      el.append Element.create 'i.icon-chevron-up'
-      el.append Element.create 'i.icon-chevron-down'
-      el.addEvent 'dblclick', (e)->
-        e.preventDefault()
-        e.stopPropagation()
-        el.classList.toggle 'edit'
-      el.delegateEvent 'click:i.icon-chevron-down', (e) =>
-        index = @indexOf(e.target.parent)
-        c.switch index+1, index
-      el.delegateEvent 'click:i.icon-chevron-up', (e)=>
-        index = @indexOf(e.target.parent)
-        c.switch index-1, index
-      el.delegateEvent 'click:i.icon-ok', (e) ->
-        item.done = !item.done
-      el.delegateEvent 'click:i.icon-remove', (e) =>
-        index = @indexOf(e.target.parent)
-        c.splice index, 1
-      mv = new x(item,el)
-      mv.render()
-
-
-  c.on 'change', ->
-    for el in l.base.childNodes
-      index = l.indexOf el
-      el.first('i.icon-chevron-up').classList.remove 'hidden'
-      el.first('i.icon-chevron-down').classList.remove 'hidden'
-      if index is 0
-        el.first('i.icon-chevron-up').classList.add 'hidden'
-      if index is c.length-1
-        el.first('i.icon-chevron-down').classList.add 'hidden'
-
-
-  c.load()
-
-
-  document.first("#add").addEvent 'click', ->
+# Application
+window.app = Application.new ->
+  @def 'addItem', ->
     window.loaded ?= true
-    value = document.first("#text").value
-    c.push new ToDoItem({name: value, done: false}) if text.value.trim() isnt ""
-    document.first("#text").value = ''
-  document.delegateEvent 'click:i.icon-sort', (e) =>
-    c.sort (a, b) ->
-      return 0 if a.name is b.name
-      if a.name < b.name
-        -1
-      else
-        1
-  document.first("#list").append l.base
+    value = @text.value
+    if value.trim() isnt ""
+      item = new ToDoItem({name: value, done: false})
+      @collection.push item
+    @text.value = ''
+
+  @def 'chevrons', ->
+    for view in @listView.base.childNodes
+      index = @listView.indexOf view
+      view.first('i.icon-chevron-down').classList.remove 'hidden'
+      view.first('i.icon-chevron-up').classList.remove 'hidden'
+      if index is 0
+        view.first('i.icon-chevron-up').classList.add 'hidden'
+      if index is @collection.length-1
+       view.first('i.icon-chevron-down').classList.add 'hidden'
+
+  @event
+    'keydown:#text': (e)->
+      @addItem() if e.key is 'enter'
+    'click:#add': ->
+      @addItem()
+    'click:i.icon-sort': (e) ->
+      @collection.sort (a, b) ->
+        if a.done and b.done
+          if a.name is b.name
+            0
+          else if a.name < b.name
+            -1
+          else
+            1
+        else if a.done and !b.done
+          1
+        else
+          -1
+    'click:.menu i.icon-remove': (e) ->
+      @collection.transaction ->
+        dup = @dup()
+        for item,i in dup
+          @splice @indexOf(item), 1 if item.done
+
+  @on 'load', ->
+    @collection = new ToDoCollection()
+
+    @text = document.first('#text')
+    @listEl = document.first("#list")
+
+    template = document.first(".item")
+    template.dispose()
+    template.removeAttribute 'hidden'
+
+    @listView = new AbsoluteList
+      collection: @collection
+      element: template
+      prepare: (el, item) ->
+        mv = new ToDoItemView(item,el)
+        mv.render()
+    
+    @listEl.append @listView.base
+    @listView.on 'moved', => @chevrons()
+    @collection.on 'change', => @chevrons()
+      
+    @collection.load()

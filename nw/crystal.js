@@ -1,3210 +1,2074 @@
-(function(Crystal){
- (function() {
-  var Attributes, Color, Keyboard, Logging, MVC, NWDialogs, NWFile, SPECIAL_KEYS, Store, Types, Unit, Utils, css, i18n, key, method, methods, methods_element, methods_node, prefixes, properties, types, value, _find, _parseName, _ref, _wrap,
-    __hasProp = {}.hasOwnProperty,
-    __slice = [].slice,
-    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
-    __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
-    __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
-
-  MVC = {};
-
-  Logging = {};
-
-  Utils = {};
-
-  Store = {};
-
-  /*
-  --------------- /home/gdot/github/crystal/source/types/array.coffee--------------
-  */
-
-
-  methods = {
-    remove$: function(item) {
-      var index;
-      if ((index = this.indexOf(item)) !== -1) {
-        return this.splice(index, 1);
-      }
-    },
-    remove: function(item) {
-      var b, index;
-      b = this.dup();
-      if ((index = b.indexOf(item)) !== -1) {
-        b.splice(index, 1);
-      }
-      return b;
-    },
-    removeAll: function(item) {
-      var b, index;
-      b = this.dup();
-      while ((index = b.indexOf(item)) !== -1) {
-        b.splice(index, 1);
-      }
-      return b;
-    },
-    uniq: function() {
-      var b;
-      b = new this.__proto__.constructor;
-      this.filter(function(item) {
-        if (!b.include(item)) {
-          return b.push(item);
-        }
-      });
-      return b;
-    },
-    shuffle: function() {
-      var shuffled;
-      shuffled = [];
-      this.forEach(function(value, index) {
-        var rand;
-        rand = Math.floor(Math.random() * (index + 1));
-        shuffled[index] = shuffled[rand];
-        return shuffled[rand] = value;
-      });
-      return shuffled;
-    },
-    compact: function() {
-      return this.filter(function(item) {
-        return !!item;
-      });
-    },
-    dup: function(item) {
-      return this.filter(function() {
-        return true;
-      });
-    },
-    pluck: function(property) {
-      return this.map(function(item) {
-        return item[property];
-      });
-    },
-    include: function(item) {
-      return this.indexOf(item) !== -1;
-    }
-  };
-
-  for (key in methods) {
-    method = methods[key];
-    Object.defineProperty(Array.prototype, key, {
-      value: method
-    });
-  }
-
-  Object.defineProperties(Array.prototype, {
-    sample: {
-      get: function() {
-        return this[Math.floor(Math.random() * this.length)];
-      }
-    },
-    first: {
-      get: function() {
-        return this[0];
-      }
-    },
-    last: {
-      get: function() {
-        return this[this.length - 1];
-      }
-    }
-  });
-
-  /*
-  --------------- /home/gdot/github/crystal/source/types/object.coffee--------------
-  */
-
-
-  Object.defineProperties(Object.prototype, {
-    toFormData: {
-      value: function() {
-        var ret, value;
-        ret = new FormData();
-        for (key in this) {
-          if (!__hasProp.call(this, key)) continue;
-          value = this[key];
-          ret.append(key, value);
-        }
-        return ret;
-      }
-    },
-    toQueryString: {
-      value: function() {
-        var value;
-        return ((function() {
-          var _results;
-          _results = [];
-          for (key in this) {
-            if (!__hasProp.call(this, key)) continue;
-            value = this[key];
-            _results.push("" + key + "=" + (value.toString()));
-          }
-          return _results;
-        }).call(this)).join("&");
-      }
-    }
-  });
-
-  Object.each = function(object, fn) {
-    var value, _results;
-    _results = [];
-    for (key in object) {
-      if (!__hasProp.call(object, key)) continue;
-      value = object[key];
-      _results.push(fn.call(object, key, value));
-    }
-    return _results;
-  };
-
-  Object.pluck = function(object, prop) {
-    var value, _results;
-    _results = [];
-    for (key in object) {
-      if (!__hasProp.call(object, key)) continue;
-      value = object[key];
-      _results.push(value[prop]);
-    }
-    return _results;
-  };
-
-  Object.values = function(object) {
-    var value, _results;
-    _results = [];
-    for (key in object) {
-      if (!__hasProp.call(object, key)) continue;
-      value = object[key];
-      _results.push(value);
-    }
-    return _results;
-  };
-
-  Object.canRespondTo = function() {
-    var arg, args, object, ret, _i, _len;
-    object = arguments[0], args = 2 <= arguments.length ? __slice.call(arguments, 1) : [];
-    ret = true;
-    for (_i = 0, _len = args.length; _i < _len; _i++) {
-      arg = args[_i];
-      if (typeof object[arg] !== 'function') {
-        ret = false;
-      }
-    }
-    return ret;
-  };
-
-  /*
-  --------------- /home/gdot/github/crystal/source/types/number.coffee--------------
-  */
-
-
-  Object.defineProperties(Number.prototype, {
-    seconds: {
-      get: function() {
-        return this.valueOf() * 1e+3;
-      }
-    },
-    minutes: {
-      get: function() {
-        return this.valueOf() * 6e+4;
-      }
-    },
-    hours: {
-      get: function() {
-        return this.valueOf() * 3.6e+6;
-      }
-    },
-    days: {
-      get: function() {
-        return this.valueOf() * 8.64e+7;
-      }
-    },
-    upto: {
-      value: function(limit, func, bound) {
-        var i, _results;
-        if (bound == null) {
-          bound = this;
-        }
-        i = parseInt(this);
-        _results = [];
-        while (i <= limit) {
-          func.call(bound, i);
-          _results.push(i++);
-        }
-        return _results;
-      }
-    },
-    downto: {
-      value: function(limit, func, bound) {
-        var i, _results;
-        if (bound == null) {
-          bound = this;
-        }
-        i = parseInt(this);
-        _results = [];
-        while (i >= limit) {
-          func.call(bound, i);
-          _results.push(i--);
-        }
-        return _results;
-      }
-    },
-    times: {
-      value: function(func, bound) {
-        var i, _i, _ref, _results;
-        if (bound == null) {
-          bound = this;
-        }
-        _results = [];
-        for (i = _i = 1, _ref = parseInt(this); 1 <= _ref ? _i <= _ref : _i >= _ref; i = 1 <= _ref ? ++_i : --_i) {
-          _results.push(func.call(bound, i));
-        }
-        return _results;
-      }
-    },
-    clamp: {
-      value: function(min, max) {
-        var val;
-        min = parseFloat(min);
-        max = parseFloat(max);
-        val = this.valueOf();
-        if (val > max) {
-          return max;
-        } else if (val < min) {
-          return min;
-        } else {
-          return val;
-        }
-      }
-    },
-    clampRange: {
-      value: function(min, max) {
-        var val;
-        min = parseFloat(min);
-        max = parseFloat(max);
-        val = this.valueOf();
-        if (val > max) {
-          return val % max;
-        } else if (val < min) {
-          return max - Math.abs(val % max);
-        } else {
-          return val;
-        }
-      }
-    }
-  });
-
-  /*
-  --------------- /home/gdot/github/crystal/source/types/date.coffee--------------
-  */
-
-
-  Date.Locale = {
-    ago: {
-      seconds: " seconds ago",
-      minutes: " minutes ago",
-      hours: " hours ago",
-      days: " days ago",
-      now: "just now"
-    },
-    format: "%Y-%M-%D"
-  };
-
-  Object.defineProperties(Date.prototype, {
-    ago: {
-      get: function() {
-        var diff;
-        diff = +new Date() - this;
-        if (diff < 1..seconds) {
-          return Date.Locale.ago.now;
-        } else if (diff < 1..minutes) {
-          return Math.round(diff / 1000) + Date.Locale.ago.seconds;
-        } else if (diff < 1..hours) {
-          return Math.round(diff / 1..minutes) + Date.Locale.ago.minutes;
-        } else if (diff < 1..days) {
-          return Math.round(diff / 1..hours) + Date.Locale.ago.hours;
-        } else if (diff < 30..days) {
-          return Math.round(diff / 1..days) + Date.Locale.ago.days;
-        } else {
-          return this.format(Date.Locale.format);
-        }
-      }
-    },
-    format: {
-      value: function(str) {
-        var _this = this;
-        if (str == null) {
-          str = Date.Locale.format;
-        }
-        return str.replace(/%([a-zA-z])/g, function($0, $1) {
-          switch ($1) {
-            case 'D':
-              return _this.getDate().toString().replace(/^\d$/, "0$&");
-            case 'd':
-              return _this.getDate();
-            case 'Y':
-              return _this.getFullYear();
-            case 'h':
-              return _this.getHours();
-            case 'H':
-              return _this.getHours().toString().replace(/^\d$/, "0$&");
-            case 'M':
-              return (_this.getMonth() + 1).toString().replace(/^\d$/, "0$&");
-            case 'm':
-              return _this.getMonth() + 1;
-            case "T":
-              return _this.getMinutes().toString().replace(/^\d$/, "0$&");
-            case "t":
-              return _this.getMinutes();
-            default:
-              return "";
-          }
-        });
-      }
-    }
-  });
-
-  ['day:Date', 'year:FullYear', 'hours:Hours', 'minutes:Minutes', 'seconds:Seconds'].forEach(function(item) {
-    var meth, prop, _ref;
-    _ref = item.split(/:/), prop = _ref[0], meth = _ref[1];
-    return Object.defineProperty(Date.prototype, prop, {
-      get: function() {
-        return this["get" + meth]();
-      },
-      set: function(value) {
-        return this["set" + meth](parseInt(value));
-      }
-    });
-  });
-
-  Object.defineProperty(Date.prototype, 'month', {
-    get: function() {
-      return this.getMonth() + 1;
-    },
-    set: function(value) {
-      return this.setMonth(value - 1);
-    }
-  });
-
-  /*
-  --------------- /home/gdot/github/crystal/source/logger/logger.coffee--------------
-  */
-
-
-  window.Logger = Logging.Logger = (function() {
-
-    Logger.DEBUG = 4;
-
-    Logger.INFO = 3;
-
-    Logger.WARN = 2;
-
-    Logger.ERROR = 1;
-
-    Logger.FATAL = 0;
-
-    Logger.LOG = 4;
-
-    function Logger(level) {
-      if (level == null) {
-        level = 4;
-      }
-      if (isNaN(parseInt(level))) {
-        throw "Level must be Number";
-      }
-      this._level = parseInt(level).clamp(0, 4);
-      this._timestamp = true;
-    }
-
-    Logger.prototype._format = function() {
-      var args, line;
-      args = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
-      line = "";
-      if (this.timestamp) {
-        line += "[" + new Date().format("%Y-%M-%D %H:%T") + "] ";
-      }
-      return line += args.map(function(arg) {
-        return args.toString();
-      }).join(",");
-    };
-
-    return Logger;
-
-  })();
-
-  Object.defineProperties(Logger.prototype, {
-    timestamp: {
-      set: function(value) {
-        return this._timestamp = !!value;
-      },
-      get: function() {
-        return this._timestamp;
-      }
-    },
-    level: {
-      set: function(value) {
-        return this._level = parseInt(value).clamp(0, 4);
-      },
-      get: function() {
-        return this._level;
-      }
-    }
-  });
-
-  ['debug', 'log', 'error', 'fatal', 'info', 'warn'].forEach(function(type) {
-    Logger.prototype["_" + type] = function() {};
-    return Logger.prototype[type] = function() {
-      var args;
-      args = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
-      if (this.level >= Logger[type.toUpperCase()]) {
-        return this["_" + type](this._format(args));
-      }
-    };
-  });
-
-  /*
-  --------------- /home/gdot/github/crystal/source/logger/console-logger.coffee--------------
-  */
-
-
-  window.ConsoleLogger = Logging.ConsoleLogger = (function(_super) {
-
-    __extends(ConsoleLogger, _super);
-
-    function ConsoleLogger() {
-      return ConsoleLogger.__super__.constructor.apply(this, arguments);
-    }
-
-    return ConsoleLogger;
-
-  })(Logging.Logger);
-
-  ({
-    constructor: function() {
-      return constructor.__super__.constructor.apply(this, arguments);
-    }
-  });
-
-  ['debug', 'error', 'fatal', 'info', 'warn', 'log'].forEach(function(type) {
-    return ConsoleLogger.prototype["_" + type] = function(text) {
-      if (type === 'debug') {
-        type = 'log';
-      }
-      if (type === 'fatal') {
-        type = 'error';
-      }
-      return console[type](text);
-    };
-  });
-
-  /*
-  --------------- /home/gdot/github/crystal/source/dom/element.coffee--------------
-  */
-
-
-  Attributes = {
-    title: {
-      prefix: "!",
-      unique: true
-    },
-    name: {
-      prefix: "&",
-      unique: true
-    },
-    type: {
-      prefix: "%",
-      unique: true
-    },
-    id: {
-      prefix: "#",
-      unique: true
-    },
-    "class": {
-      prefix: "\\.",
-      unique: false
-    },
-    role: {
-      prefix: "~",
-      unique: true
-    }
-  };
-
-  prefixes = Object.pluck(Attributes, 'prefix').concat("$").join("|");
-
-  Object.each(Attributes, function(key, value) {
-    return value.regexp = new RegExp(value.prefix + ("(.*?)(?=" + prefixes + ")"), "g");
-  });
-
-  _wrap = NodeList._wrap = function(fn) {
-    return function() {
-      var args, el, _i, _len, _results;
-      args = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
-      _results = [];
-      for (_i = 0, _len = this.length; _i < _len; _i++) {
-        el = this[_i];
-        _results.push(fn.apply(el, args));
-      }
-      return _results;
-    };
-  };
-
-  _find = function(property, selector, el) {
-    while (el = el[property]) {
-      if (el instanceof Element) {
-        if (el.webkitMatchesSelector(selector)) {
-          return el;
-        }
-      }
-    }
-  };
-
-  _parseName = function(name, atts) {
-    var cssattributes, ret;
-    if (atts == null) {
-      atts = {};
-    }
-    cssattributes = {};
-    name = name.replace(/\[(.*?)=(.*?)\]/g, function(m, name, value) {
-      cssattributes[name] = value;
-      return "";
-    });
-    name = name.replace(/\[(.*)?\]/g, function(m, name) {
-      cssattributes[name] = true;
-      return "";
-    });
-    ret = {
-      tag: name.match(new RegExp("^.*?(?=" + prefixes + ")"))[0] || 'div',
-      attributes: cssattributes
-    };
-    Object.each(Attributes, function(key, value) {
-      var m, map;
-      if ((m = name.match(value.regexp)) !== null) {
-        name = name.replace(value.regexp, "");
-        if (value.unique) {
-          if (atts[key]) {
-            if (atts[key] !== null && atts[key] !== void 0) {
-              return ret.attributes[key] = atts[key];
-            }
-          } else {
-            return ret.attributes[key] = m.pop().slice(1);
-          }
-        } else {
-          map = m.map(function(item) {
-            return item.slice(1);
-          });
-          if (atts[key]) {
-            if (typeof atts[key] === 'string') {
-              map = map.concat(atts[key].split(" "));
-            } else {
-              map = map.concat(atts[key]);
-            }
-          }
-          return ret.attributes[key] = map.compact().join(" ");
-        }
-      } else {
-        if (atts[key] !== null && atts[key] !== void 0) {
-          return ret.attributes[key] = atts[key];
-        }
-      }
-    });
-    return ret;
-  };
-
-  methods_node = {
-    append: function() {
-      var el, elements, _i, _len, _results;
-      elements = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
-      _results = [];
-      for (_i = 0, _len = elements.length; _i < _len; _i++) {
-        el = elements[_i];
-        if (el instanceof Node) {
-          _results.push(this.appendChild(el));
-        }
-      }
-      return _results;
-    },
-    first: function(selector) {
-      if (selector == null) {
-        selector = "*";
-      }
-      return this.querySelector(selector);
-    },
-    last: function(selector) {
-      if (selector == null) {
-        selector = "*";
-      }
-      return this.querySelectorAll(selector).last;
-    },
-    all: function(selector) {
-      if (selector == null) {
-        selector = "*";
-      }
-      return this.querySelectorAll(selector);
-    },
-    empty: function() {
-      return this.querySelectorAll("*").dispose();
-    },
-    moveUp: function() {
-      var prev;
-      if (this.parent && (prev = this.prev())) {
-        return this.parent.insertBefore(this, prev);
-      }
-    },
-    moveDown: function() {
-      var next;
-      if (this.parent && (next = this.next())) {
-        return this.parent.insertBefore(next, this);
-      }
-    }
-  };
-
-  methods_element = {
-    dispose: function() {
-      var _ref;
-      return (_ref = this.parent) != null ? _ref.removeChild(this) : void 0;
-    },
-    ancestor: function(selector) {
-      if (selector == null) {
-        selector = "*";
-      }
-      return _find('parentElement', selector, this);
-    },
-    next: function(selector) {
-      if (selector == null) {
-        selector = "*";
-      }
-      return _find('nextSibling', selector, this);
-    },
-    prev: function(selector) {
-      if (selector == null) {
-        selector = "*";
-      }
-      return _find('previousSibling', selector, this);
-    },
-    css: function() {
-      var args, property, value;
-      args = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
-      property = args[0];
-      if (args.length === 1) {
-        if (this.currentStyle) {
-          value = this.currentStyle[property];
-        } else {
-          value = window.getComputedStyle(this)[property];
-        }
-        return value;
-      }
-      if (args.length === 2) {
-        value = args[1];
-        return this.style[property] = value;
-      }
-    }
-  };
-
-  for (key in methods_node) {
-    method = methods_node[key];
-    Object.defineProperty(Node.prototype, key, {
-      value: method
-    });
-  }
-
-  for (key in methods_element) {
-    method = methods_element[key];
-    Object.defineProperty(NodeList.prototype, key, {
-      value: _wrap(method)
-    });
-    Object.defineProperty(HTMLElement.prototype, key, {
-      value: method
-    });
-  }
-
-  Object.defineProperty(HTMLSelectElement.prototype, 'selectedOption', {
-    get: function() {
-      if (this.children) {
-        return this.children[this.selectedIndex];
-      }
-    },
-    set: function(el) {
-      if (this.childNodes.include(el)) {
-        return this.selectedIndex = Array.prototype.slice.call(this.children).indexOf(el);
-      }
-    }
-  });
-
-  Object.defineProperty(HTMLInputElement.prototype, 'caretToEnd', {
-    value: function() {
-      var length;
-      length = this.value.length;
-      return this.setSelectionRange(length, length);
-    }
-  });
-
-  properties = {
-    id: {
-      get: function() {
-        return this.getAttribute('id');
-      },
-      set: function(value) {
-        return this.setAttribute('id', value);
-      }
-    },
-    tag: {
-      get: function() {
-        return this.tagName.toLowerCase();
-      }
-    },
-    parent: {
-      get: function() {
-        return this.parentElement;
-      },
-      set: function(el) {
-        if (!(el instanceof HTMLElement)) {
-          return;
-        }
-        return el.append(this);
-      }
-    },
-    text: {
-      get: function() {
-        return this.textContent;
-      },
-      set: function(value) {
-        return this.textContent = value;
-      }
-    },
-    html: {
-      get: function() {
-        return this.innerHTML;
-      },
-      set: function(value) {
-        return this.innerHTML = value;
-      }
-    },
-    "class": {
-      get: function() {
-        return this.getAttribute('class');
-      },
-      set: function(value) {
-        return this.setAttribute('class', value);
-      }
-    }
-  };
-
-  Object.defineProperties(HTMLElement.prototype, properties);
-
-  Object.defineProperty(Node.prototype, 'delegateEventListener', {
-    value: function(event, listener, useCapture) {
-      var baseEvent, selector, _ref;
-      _ref = event.split(':'), baseEvent = _ref[0], selector = _ref[1];
-      if (selector == null) {
-        selector = "*";
-      }
-      return this.addEventListener(baseEvent, function(e) {
-        if (e.relatedTarget.webkitMatchesSelector(selector)) {
-          return listener(e);
-        }
-      });
-    }
-  });
-
-  ['addEventListener', 'removeEventListener', 'delegateEventListener'].forEach(function(prop) {
-    Object.defineProperty(Node.prototype, prop.replace("Listener", ''), {
-      value: Node.prototype[prop]
-    });
-    return Object.defineProperty(window, prop.replace("Listener", ''), {
-      value: window[prop]
-    });
-  });
-
-  Element.create = function(node, atts) {
-    var attributes, desc, tag, value, _ref;
-    if (atts == null) {
-      atts = {};
-    }
-    if (node instanceof Node) {
-      return node;
-    }
-    switch (typeof node) {
-      case 'string':
-        _ref = _parseName(node, atts), tag = _ref.tag, attributes = _ref.attributes;
-        node = document.createElement(tag.replace(/[^A-Za-z_\-0-9]/, ''));
-        for (key in attributes) {
-          value = attributes[key];
-          if ((desc = properties[key])) {
-            node[key] = value;
-            continue;
-          }
-          node.setAttribute(key, value);
-        }
-        break;
-      default:
-        node = document.createElement('div');
-    }
-    return node;
-  };
-
-  Node;
-
-
-  /*
-  --------------- /home/gdot/github/crystal/source/logger/flash-logger.coffee--------------
-  */
-
-
-  window.FlashLogger = Logging.FlashLogger = (function(_super) {
-
-    __extends(FlashLogger, _super);
-
-    function FlashLogger(el, level) {
-      if (!(el instanceof HTMLElement)) {
-        throw "Base Element must be HTMLElement";
-      }
-      FlashLogger.__super__.constructor.call(this, level);
-      this.visible = false;
-      this.el = el;
-    }
-
-    FlashLogger.prototype.hide = function() {
-      var _this = this;
-      clearTimeout(this.id);
-      return this.id = setTimeout(function() {
-        _this.visible = false;
-        _this.el.classList.toggle('hidden');
-        return _this.el.classList.toggle('visible');
-      }, 2000);
-    };
-
-    return FlashLogger;
-
-  })(Logging.Logger);
-
-  ['debug', 'error', 'fatal', 'info', 'warn', 'log'].forEach(function(type) {
-    return FlashLogger.prototype["_" + type] = function(text) {
-      if (this.visible) {
-        this.el.html += "</br>" + text;
-        return this.hide();
-      } else {
-        this.el.text = text;
-        this.el.classList.toggle('hidden');
-        this.el.classList.toggle('visible');
-        this.visible = true;
-        return this.hide();
-      }
-    };
-  });
-
-  /*
-  --------------- /home/gdot/github/crystal/source/logger/html-logger.coffee--------------
-  */
-
-
-  css = {
-    error: {
-      color: 'orangered'
-    },
-    info: {
-      color: 'blue'
-    },
-    warn: {
-      color: 'orange'
-    },
-    fatal: {
-      color: 'red',
-      'font-weight': 'bold'
-    },
-    debug: {
-      color: 'black'
-    },
-    log: {
-      color: 'black'
-    }
-  };
-
-  window.HTMLLogger = Logging.HTMLLogger = (function(_super) {
-
-    __extends(HTMLLogger, _super);
-
-    function HTMLLogger(el, level) {
-      if (!(el instanceof HTMLElement)) {
-        throw "Base Element must be HTMLElement";
-      }
-      HTMLLogger.__super__.constructor.call(this, level);
-      this.el = el;
-    }
-
-    return HTMLLogger;
-
-  })(Logging.Logger);
-
-  ['debug', 'error', 'fatal', 'info', 'warn', 'log'].forEach(function(type) {
-    return HTMLLogger.prototype["_" + type] = function(text) {
-      var el, prop, value, _ref;
-      el = Element.create('div.' + type);
-      _ref = css[type];
-      for (prop in _ref) {
-        value = _ref[prop];
-        el.css(prop, value);
-      }
-      el.text = text;
-      this.el.append(el);
-      return el;
-    };
-  });
-
-  /*
-  --------------- /home/gdot/github/crystal/source/nw/file.coffee--------------
-  */
-
-
-  window.NWFile = NWFile = (function() {
-
-    function NWFile(path) {
-      this.path = path;
-      this.fs = window.fs || require('fs');
-    }
-
-    NWFile.prototype.read = function() {
-      return this.fs.readFileSync(this.path, 'UTF-8');
-    };
-
-    NWFile.prototype.write = function(data) {
-      return this.fs.writeFileSync(this.path, data.toString(), 'UTF-8');
-    };
-
-    return NWFile;
-
-  })();
-
-  /*
-  --------------- /home/gdot/github/crystal/source/nw/dialogs.coffee--------------
-  */
-
-
-  window.NWDialogs = new (NWDialogs = (function() {
-
-    function NWDialogs() {
-      var _this = this;
-      this.input = Element.create('input');
-      this.input.setAttribute('type', 'file');
-      this.input.addEventListener('change', function() {
-        var file;
-        if (_this.input.files.length > 0) {
-          file = new NWFile(_this.input.files[0].path);
-          return _this.callback(file);
-        }
-      });
-    }
-
-    NWDialogs.prototype.open = function(callback) {
-      if (callback == null) {
-        callback = function() {};
-      }
-      this.input.removeAttribute('nwsaveas');
-      this.input.click();
-      this.type = "open";
-      return this.callback = callback;
-    };
-
-    NWDialogs.prototype.save = function(callback) {
-      if (callback == null) {
-        callback = function() {};
-      }
-      this.input.setAttribute('nwsaveas', 'true');
-      this.callback = callback;
-      this.type = "save";
-      return this.input.click();
-    };
-
-    return NWDialogs;
-
-  })());
-
-  /*
-  --------------- /home/gdot/github/crystal/source/types/keyboard-event.coffee--------------
-  */
-
-
-  SPECIAL_KEYS = {
-    0: "\\",
-    8: "backspace",
-    9: "tab",
-    12: "num",
-    13: "enter",
-    16: "shift",
-    17: "ctrl",
-    18: "alt",
-    19: "pause",
-    20: "capslock",
-    27: "esc",
-    32: "space",
-    33: "pageup",
-    34: "pagedown",
-    35: "end",
-    36: "home",
-    37: "left",
-    38: "up",
-    39: "right",
-    40: "down",
-    44: "print",
-    45: "insert",
-    46: "delete",
-    48: "0",
-    49: "1",
-    50: "2",
-    51: "3",
-    52: "4",
-    53: "5",
-    54: "6",
-    55: "7",
-    56: "8",
-    57: "9",
-    65: "a",
-    66: "b",
-    67: "c",
-    68: "d",
-    69: "e",
-    70: "f",
-    71: "g",
-    72: "h",
-    73: "i",
-    74: "j",
-    75: "k",
-    76: "l",
-    77: "m",
-    78: "n",
-    79: "o",
-    80: "p",
-    81: "q",
-    82: "r",
-    83: "s",
-    84: "t",
-    85: "u",
-    86: "v",
-    87: "w",
-    88: "x",
-    89: "y",
-    90: "z",
-    91: "cmd",
-    92: "cmd",
-    93: "cmd",
-    96: "num_0",
-    97: "num_1",
-    98: "num_2",
-    99: "num_3",
-    100: "num_4",
-    101: "num_5",
-    102: "num_6",
-    103: "num_7",
-    104: "num_8",
-    105: "num_9",
-    106: "multiply",
-    107: "add",
-    108: "enter",
-    109: "subtract",
-    110: "decimal",
-    111: "divide",
-    124: "print",
-    144: "num",
-    145: "scroll",
-    186: ";",
-    187: "=",
-    188: ",",
-    189: "-",
-    190: ".",
-    191: "/",
-    192: "`",
-    219: "[",
-    220: "\\",
-    221: "]",
-    222: "\'",
-    224: "cmd",
-    57392: "ctrl",
-    63289: "num"
-  };
-
-  Object.defineProperty(KeyboardEvent.prototype, 'key', {
-    get: function() {
-      if (key = SPECIAL_KEYS[this.keyCode]) {
-        return key;
-      }
-      return String.fromCharCode(this.keyCode).toLowerCase();
-    }
-    /*
-    --------------- /home/gdot/github/crystal/source/utils/keyboard.coffee--------------
-    */
-
-  });
-
-  window.Keyboard = Keyboard = (function() {
-
-    Keyboard.prototype.handleKeydown = function(e) {
-      var combo, pressed, sc, _i, _len, _ref, _results;
-      if (!e.cancelled) {
-        combo = [];
-        if (e.ctrlKey) {
-          combo.push("ctrl");
-        }
-        if (e.shiftKey) {
-          combo.push("shift");
-        }
-        if (e.altKey) {
-          combo.push("alt");
-        }
-        combo.push(e.key);
-        _results = [];
-        for (sc in this) {
-          method = this[sc];
-          pressed = true;
-          _ref = sc.split("+");
-          for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-            key = _ref[_i];
-            if (combo.indexOf(key) === -1) {
-              pressed = false;
-              break;
-            }
-          }
-          if (pressed) {
-            method.call(this);
-            e.preventDefault();
-            e.cancelled = true;
-            e.stopPropagation();
-            break;
-          } else {
-            _results.push(void 0);
-          }
-        }
-        return _results;
-      }
-    };
-
-    function Keyboard(focus) {
-      var _this = this;
-      this.focus = focus != null ? focus : false;
-      this.handleKeydown = __bind(this.handleKeydown, this);
-
-      document.addEventListener('keydown', function(e) {
-        if (_this.focus) {
-          if (document.first(":focus")) {
-            return _this.handleKeydown(e);
-          }
-        } else {
-          if (!document.first(':focus')) {
-            return _this.handleKeydown(e);
-          }
-        }
-      });
-      if (typeof this.initialize === "function") {
-        this.initialize();
-      }
-    }
-
-    return Keyboard;
-
-  })();
-
-  /*
-  --------------- /home/gdot/github/crystal/source/utils/evented.coffee--------------
-  */
-
-
-  Crystal.Utils.Event = Utils.Event = (function() {
-
-    function Event(target) {
-      if (!target) {
-        throw "No target";
-      }
-      if (!(target instanceof Object)) {
-        throw "Invalid target!";
-      }
-      this.cancelled = false;
-      this.target = target;
-    }
-
-    Event.prototype.stop = function() {
-      return this.cancelled = true;
-    };
-
-    return Event;
-
-  })();
-
-  Utils.Mediator = (function() {
-
-    function Mediator() {
-      this.listeners = {};
-    }
-
-    Mediator.prototype.fireEvent = function(type, args) {
-      var callback, event, _i, _len, _ref, _results;
-      event = args.first;
-      if (!(event instanceof Utils.Event)) {
-        throw "Not Utils.Event!";
-      }
-      if (this.listeners[type]) {
-        _ref = this.listeners[type];
-        _results = [];
-        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-          callback = _ref[_i];
-          if (!event.cancelled) {
-            _results.push(callback.apply(event.target, args));
-          } else {
-            _results.push(void 0);
-          }
-        }
-        return _results;
-      }
-    };
-
-    Mediator.prototype.addListener = function(type, callback) {
-      if (!(callback instanceof Function)) {
-        throw "Only functions can be added as callback";
-      }
-      if (!this.listeners[type]) {
-        this.listeners[type] = [];
-      }
-      return this.listeners[type].push(callback);
-    };
-
-    Mediator.prototype.removeListener = function(type, callback) {
-      this.listeners[type].remove$(callback);
-      if (this.listeners[type].length === 0) {
-        return delete this.listeners[type];
-      }
-    };
-
-    return Mediator;
-
-  })();
-
-  window.Mediator = new Utils.Mediator;
-
-  Crystal.Utils.Evented = Utils.Evented = (function() {
-
-    function Evented() {}
-
-    Evented.prototype._ensureMediator = function() {
-      var _ref;
-      return (_ref = this._mediator) != null ? _ref : this._mediator = new Utils.Mediator;
-    };
-
-    Evented.prototype.toString = function() {
-      return "[Object " + this.__proto__.constructor.name + "]";
-    };
-
-    Evented.prototype.trigger = function() {
-      var args, event, type;
-      type = arguments[0], args = 2 <= arguments.length ? __slice.call(arguments, 1) : [];
-      event = new Utils.Event(this);
-      args.unshift(event);
-      this._ensureMediator();
-      return this._mediator.fireEvent(type, args);
-    };
-
-    Evented.prototype.on = function(type, callback) {
-      this._ensureMediator();
-      return this._mediator.addListener(type, callback);
-    };
-
-    Evented.prototype.off = function(type, callback) {
-      this._ensureMediator();
-      return this._mediator.removeListener(type, callback);
-    };
-
-    Evented.prototype.publish = function() {
-      var args, event, type;
-      type = arguments[0], args = 2 <= arguments.length ? __slice.call(arguments, 1) : [];
-      event = new Utils.Event(this);
-      args.unshift(event);
-      return Mediator.fireEvent(type, args);
-    };
-
-    Evented.prototype.subscribe = function(type, callback) {
-      return Mediator.addListener(type, callback);
-    };
-
-    Evented.prototype.unsubscribe = function(type, callback) {
-      return Mediator.removeListener(type, callback);
-    };
-
-    return Evented;
-
-  })();
-
-  /*
-  --------------- /home/gdot/github/crystal/source/utils/history.coffee--------------
-  */
-
-
-  window.History = Utils.History = (function(_super) {
-
-    __extends(History, _super);
-
-    function History() {
-      var _this = this;
-      this._type = 'pushState' in history ? 'popstate' : 'hashchange';
-      window.addEventListener(this._type, function(event) {
-        var url;
-        url = (function() {
-          switch (this._type) {
-            case 'popstate':
-              return window.location.pathname;
-            case 'hashchange':
-              return window.location.hash;
-          }
-        }).call(_this);
-        return _this.trigger('change', url);
-      });
-      this.stateid = 0;
-    }
-
-    History.prototype.push = function(url) {
-      switch (this._type) {
-        case 'popstate':
-          return history.pushState({}, this.stateid++, url);
-        case 'hashchange':
-          return window.location.hash = url;
-      }
-    };
-
-    return History;
-
-  })(Utils.Evented);
-
-  /*
-  --------------- /home/gdot/github/crystal/source/utils/path.coffee--------------
-  */
-
-
-  window.Path = Utils.Path = (function() {
-
-    function Path(context) {
-      this.context = context != null ? context : {};
-    }
-
-    Path.prototype.create = function(path, value) {
-      var last, prop, segment, _i, _len;
-      path = path.toString();
-      last = this.context;
-      prop = (path = path.split(/\./)).pop();
-      for (_i = 0, _len = path.length; _i < _len; _i++) {
-        segment = path[_i];
-        if (!last.hasOwnProperty(segment)) {
-          last[segment] = {};
-        }
-        last = last[segment];
-      }
-      return last[prop] = value;
-    };
-
-    Path.prototype.exists = function(path) {
-      return this.lookup(path) !== void 0;
-    };
-
-    Path.prototype.lookup = function(path) {
-      var end, last, segment, _i, _len;
-      end = (path = path.split(/\./)).pop();
-      if (path.length === 0 && !this.context.hasOwnProperty(end)) {
-        return void 0;
-      }
-      last = this.context;
-      for (_i = 0, _len = path.length; _i < _len; _i++) {
-        segment = path[_i];
-        if (last.hasOwnProperty(segment)) {
-          last = last[segment];
-        } else {
-          return void 0;
-        }
-      }
-      if (last.hasOwnProperty(end)) {
-        return last[end];
-      }
-      return void 0;
-    };
-
-    return Path;
-
-  })();
-
-  /*
-  --------------- /home/gdot/github/crystal/source/utils/i18n.coffee--------------
-  */
-
-
-  i18n = (function() {
-
-    function i18n() {}
-
-    i18n.locales = {};
-
-    i18n.t = function(path) {
-      var arg, locale, params, str, _path;
-      if (arguments.length === 2) {
-        if ((arg = arguments[1]) instanceof Object) {
-          params = arg;
-        } else {
-          locale = arg;
-        }
-      }
-      if (arguments.length === 3) {
-        locale = arguments[2];
-        params = arguments[1];
-      }
-      if (locale == null) {
-        locale = document.querySelector('html').getAttribute('lang') || 'en';
-      }
-      _path = new Path(this.locales[locale]);
-      str = _path.lookup(path);
-      if (!str) {
-        console.warn("No translation found for '" + path + "' for locale '" + locale + "'");
-        return path;
-      }
-      return str.replace(/\{\{(.*?)\}\}/g, function(m, prop) {
-        if (params[prop] !== void 0) {
-          return params[prop].toString();
-        } else {
-          return '';
-        }
-      });
-    };
-
-    return i18n;
-
-  })();
-
-  window.i18n = i18n;
-
-  /*
-  --------------- /home/gdot/github/crystal/source/types/string.coffee--------------
-  */
-
-
-  Object.defineProperties(String.prototype, {
-    wordWrap: {
-      value: function(width, separator, cut) {
-        var regex;
-        if (width == null) {
-          width = 15;
-        }
-        if (separator == null) {
-          separator = "\n";
-        }
-        if (cut == null) {
-          cut = false;
-        }
-        regex = ".{1," + width + "}(\\s|$)" + (cut ? "|.{" + width + "}|.+$" : "|\\S+?(\\s|$)");
-        return this.match(RegExp(regex, "g")).join(separator);
-      }
-    },
-    test: {
-      value: function(regexp) {
-        return !!this.match(regexp);
-      }
-    },
-    escape: {
-      value: function() {
-        return this.replace(/[-[\]{}()*+?.\/'\\^$|#]/g, "\\$&");
-      }
-    },
-    ellipsis: {
-      value: function(length) {
-        if (length == null) {
-          length = 10;
-        }
-        if (this.length > length) {
-          return this.slice(0, (length - 1) + 1 || 9e9) + "...";
-        } else {
-          return this.valueOf();
-        }
-      }
-    },
-    compact: {
-      value: function() {
-        var s;
-        s = this.valueOf().trim();
-        return s.replace(/\s+/g, ' ');
-      }
-    },
-    camelCase: {
-      value: function() {
-        return this.replace(/[- _](\w)/g, function(matches) {
-          return matches[1].toUpperCase();
-        });
-      }
-    },
-    hyphenate: {
-      value: function() {
-        return this.replace(/^[A-Z]/, function(match) {
-          return match.toLowerCase();
-        }).replace(/[A-Z]/g, function(match) {
-          return "-" + match.toLowerCase();
-        });
-      }
-    },
-    capitalize: {
-      value: function() {
-        return this.replace(/^\w|\s\w/g, function(match) {
-          return match.toUpperCase();
-        });
-      }
-    },
-    indent: {
-      value: function(spaces) {
-        var s;
-        if (spaces == null) {
-          spaces = 2;
-        }
-        s = '';
-        spaces = spaces.times(function() {
-          return s += " ";
-        });
-        return this.replace(/^/gm, s);
-      }
-    },
-    outdent: {
-      value: function(spaces) {
-        if (spaces == null) {
-          spaces = 2;
-        }
-        return this.replace(new RegExp("^\\s{" + spaces + "}", "gm"), "");
-      }
-    },
-    entities: {
-      value: function() {
-        return this.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
-      }
-    },
-    parseQueryString: {
-      value: function() {
-        var match, regexp, ret;
-        ret = {};
-        regexp = /([^&=]+)=([^&]*)/g;
-        while (match = regexp.exec(this)) {
-          ret[decodeURIComponent(match[1])] = decodeURIComponent(match[2]);
-        }
-        return ret;
-      }
-    }
-  });
-
-  String.random = function(length) {
-    var chars, i, str, _i, _ref;
-    if (length == null) {
-      length = 10;
-    }
-    chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXTZabcdefghiklmnopqrstuvwxyz'.split('');
-    if (!length) {
-      length = Math.floor(Math.random() * chars.length);
-    }
-    str = '';
-    for (i = _i = 0, _ref = length - 1; 0 <= _ref ? _i <= _ref : _i >= _ref; i = 0 <= _ref ? ++_i : --_i) {
-      str += chars.sample;
-    }
-    return str;
-  };
-
-  /*
-  --------------- /home/gdot/github/crystal/source/utils/request.coffee--------------
-  */
-
-
-  window.Response = Utils.Response = (function() {
-
-    function Response(headers, body, status) {
-      this.headers = headers;
-      this.raw = body;
-      this.status = status;
-    }
-
-    return Response;
-
-  })();
-
-  types = {
-    script: ['text/javascript'],
-    html: ['text/html'],
-    JSON: ['text/json', 'application/json'],
-    XML: ['text/xml']
-  };
-
-  Object.each(types, function(key, value) {
-    return Object.defineProperty(Response.prototype, 'is' + key.capitalize(), {
-      value: function() {
-        var _this = this;
-        return value.map(function(type) {
-          return _this.headers['Content-Type'] === type;
-        }).compact().length > 0;
-      }
-    });
-  });
-
-  Object.defineProperty(Response.prototype, 'body', {
-    get: function() {
-      var df, div, node, p, _i, _len, _ref;
-      switch (this.headers['Content-Type']) {
-        case "text/html":
-          div = document.createElement('div');
-          div.innerHTML = this.raw;
-          df = document.createDocumentFragment();
-          _ref = Array.prototype.slice.call(div.childNodes);
-          for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-            node = _ref[_i];
-            df.appendChild(node);
-          }
-          return df;
-        case "text/json":
-        case "application/json":
-          try {
-            return JSON.parse(this.raw);
-          } catch (e) {
-            return this.raw;
-          }
-          break;
-        case "text/xml":
-          p = new DOMParser();
-          return p.parseFromString(this.raw, "text/xml");
-        default:
-          return this.raw;
-      }
-    }
-  });
-
-  window.Request = Utils.Request = (function() {
-
-    function Request(url, headers) {
-      if (headers == null) {
-        headers = {};
-      }
-      this.handleStateChange = __bind(this.handleStateChange, this);
-
-      this.uri = url;
-      this.headers = headers;
-      this._request = new XMLHttpRequest();
-      this._request.onreadystatechange = this.handleStateChange;
-    }
-
-    Request.prototype.request = function(method, data, callback) {
-      var value, _ref;
-      if (method == null) {
-        method = 'GET';
-      }
-      if ((this._request.readyState === 4) || (this._request.readyState === 0)) {
-        if (method.toUpperCase() === 'GET' && data !== void 0 && data !== null) {
-          this._request.open(method, this.uri + "?" + data.toQueryString());
-        } else {
-          this._request.open(method, this.uri);
-        }
-        _ref = this.headers;
-        for (key in _ref) {
-          if (!__hasProp.call(_ref, key)) continue;
-          value = _ref[key];
-          this._request.setRequestHeader(key.toString(), value.toString());
-        }
-        this._callback = callback;
-        return this._request.send(data != null ? data.toFormData() : void 0);
-      }
-    };
-
-    Request.prototype.parseResponseHeaders = function() {
-      var r;
-      r = {};
-      this._request.getAllResponseHeaders().split(/\n/).compact().forEach(function(header) {
-        var value, _ref;
-        _ref = header.split(/:\s/), key = _ref[0], value = _ref[1];
-        return r[key.trim()] = value.trim();
-      });
-      return r;
-    };
-
-    Request.prototype.handleStateChange = function() {
-      var body, headers, status;
-      if (this._request.readyState === 4) {
-        headers = this.parseResponseHeaders();
-        body = this._request.response;
-        status = this._request.status;
-        this._callback(new Response(headers, body, status));
-        return this._request.responseText;
-      }
-    };
-
-    return Request;
-
-  })();
-
-  ['get', 'post', 'put', 'delete', 'patch'].forEach(function(type) {
-    return Request.prototype[type] = function() {
-      var callback, data;
-      if (arguments.length === 2) {
-        data = arguments[0];
-        callback = arguments[1];
-      } else {
-        callback = arguments[0];
-      }
-      return this.request(type.toUpperCase(), data, callback);
-    };
-  });
-
-  /*
-  --------------- /home/gdot/github/crystal/source/utils/uri.coffee--------------
-  */
-
-
-  window.URI = Utils.URI = (function() {
-
-    function URI(uri) {
-      var m, parser, _ref, _ref1;
-      if (uri == null) {
-        uri = '';
-      }
-      parser = document.createElement('a');
-      parser.href = uri;
-      if (!!(m = uri.match(/\/\/(.*?):(.*?)@/))) {
-        _ref = m, m = _ref[0], this.user = _ref[1], this.password = _ref[2];
-      }
-      this.host = parser.hostname;
-      this.protocol = parser.protocol.replace(/:$/, '');
-      if (parser.port === "0") {
-        this.port = 80;
-      } else {
-        this.port = parser.port || 80;
-      }
-      this.hash = parser.hash.replace(/^#/, '');
-      this.query = ((_ref1 = uri.match(/\?(.*?)(?:#|$)/)) != null ? _ref1[1].parseQueryString() : void 0) || {};
-      this.path = parser.pathname.replace(/^\//, '');
-      this.parser = parser;
-      this;
-
-    }
-
-    URI.prototype.toString = function() {
-      var uri;
-      uri = this.protocol;
-      uri += "://";
-      if (this.user && this.password) {
-        uri += this.user.toString() + ":" + this.password.toString() + "@";
-      }
-      uri += this.host;
-      if (this.port !== 80) {
-        uri += ":" + this.port;
-      }
-      if (this.path !== "") {
-        uri += "/" + this.path;
-      }
-      if (Object.keys(this.query).length > 0) {
-        uri += "?" + this.query.toQueryString();
-      }
-      if (this.hash !== "") {
-        uri += "#" + this.hash;
-      }
-      return uri;
-    };
-
-    return URI;
-
-  })();
-
-  /*
-  --------------- /home/gdot/github/crystal/source/utils/base64.coffee--------------
-  */
-
-
-  window.Base64 = new (Utils.Base64 = (function() {
-
-    function Base64() {}
-
-    Base64.prototype._keyStr = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
-
-    Base64.prototype.encode = function(input) {
-      var chr1, chr2, chr3, enc1, enc2, enc3, enc4, i, output;
-      output = "";
-      i = 0;
-      input = this.UTF8Encode(input);
-      while (i < input.length) {
-        chr1 = input.charCodeAt(i++);
-        chr2 = input.charCodeAt(i++);
-        chr3 = input.charCodeAt(i++);
-        enc1 = chr1 >> 2;
-        enc2 = ((chr1 & 3) << 4) | (chr2 >> 4);
-        enc3 = ((chr2 & 15) << 2) | (chr3 >> 6);
-        enc4 = chr3 & 63;
-        if (isNaN(chr2)) {
-          enc3 = enc4 = 64;
-        } else {
-          if (isNaN(chr3)) {
-            enc4 = 64;
-          }
-        }
-        output = output + this._keyStr.charAt(enc1) + this._keyStr.charAt(enc2) + this._keyStr.charAt(enc3) + this._keyStr.charAt(enc4);
-      }
-      return output;
-    };
-
-    Base64.prototype.decode = function(input) {
-      var chr1, chr2, chr3, enc1, enc2, enc3, enc4, i, output;
-      output = "";
-      i = 0;
-      input = input.replace(/[^A-Za-z0-9\+\/\=]/g, "");
-      while (i < input.length) {
-        enc1 = this._keyStr.indexOf(input.charAt(i++));
-        enc2 = this._keyStr.indexOf(input.charAt(i++));
-        enc3 = this._keyStr.indexOf(input.charAt(i++));
-        enc4 = this._keyStr.indexOf(input.charAt(i++));
-        chr1 = (enc1 << 2) | (enc2 >> 4);
-        chr2 = ((enc2 & 15) << 4) | (enc3 >> 2);
-        chr3 = ((enc3 & 3) << 6) | enc4;
-        output = output + String.fromCharCode(chr1);
-        if (enc3 !== 64) {
-          output = output + String.fromCharCode(chr2);
-        }
-        if (enc4 !== 64) {
-          output = output + String.fromCharCode(chr3);
-        }
-      }
-      output = this.UTF8Decode(output);
-      return output;
-    };
-
-    Base64.prototype.UTF8Encode = function(string) {
-      var c, n, utftext;
-      string = string.replace(/\r\n/g, "\n");
-      utftext = "";
-      n = 0;
-      while (n < string.length) {
-        c = string.charCodeAt(n);
-        if (c < 128) {
-          utftext += String.fromCharCode(c);
-        } else if ((c > 127) && (c < 2048)) {
-          utftext += String.fromCharCode((c >> 6) | 192);
-          utftext += String.fromCharCode((c & 63) | 128);
-        } else {
-          utftext += String.fromCharCode((c >> 12) | 224);
-          utftext += String.fromCharCode(((c >> 6) & 63) | 128);
-          utftext += String.fromCharCode((c & 63) | 128);
-        }
-        n++;
-      }
-      return utftext;
-    };
-
-    Base64.prototype.UTF8Decode = function(utftext) {
-      var c, c1, c2, c3, i, string;
-      string = "";
-      i = 0;
-      c = c1 = c2 = 0;
-      while (i < utftext.length) {
-        c = utftext.charCodeAt(i);
-        if (c < 128) {
-          string += String.fromCharCode(c);
-          i++;
-        } else if ((c > 191) && (c < 224)) {
-          c2 = utftext.charCodeAt(i + 1);
-          string += String.fromCharCode(((c & 31) << 6) | (c2 & 63));
-          i += 2;
-        } else {
-          c2 = utftext.charCodeAt(i + 1);
-          c3 = utftext.charCodeAt(i + 2);
-          string += String.fromCharCode(((c & 15) << 12) | ((c2 & 63) << 6) | (c3 & 63));
-          i += 3;
-        }
-      }
-      return string;
-    };
-
-    return Base64;
-
-  })());
-
-  /*
-  --------------- /home/gdot/github/crystal/source/mvc/collection.coffee--------------
-  */
-
-
-  window.Collection = MVC.Collection = (function(_super) {
-
-    __extends(Collection, _super);
-
-    function Collection() {
-      var args;
-      args = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
-      Collection.__super__.constructor.apply(this, arguments);
-      this.push.apply(this, args);
-      this;
-
-    }
-
-    Collection.prototype.pop = function() {
-      var item;
-      item = Collection.__super__.pop.apply(this, arguments);
-      this.trigger('remove', item);
-      this.trigger('change');
-      return item;
-    };
-
-    Collection.prototype.push = function() {
-      var item, l, oldl, _i, _len;
-      oldl = this.length;
-      l = Collection.__super__.push.apply(this, arguments);
-      for (_i = 0, _len = arguments.length; _i < _len; _i++) {
-        item = arguments[_i];
-        this.trigger('add', item);
-        this.trigger('change');
-      }
-      return l;
-    };
-
-    Collection.prototype.shift = function() {
-      var item;
-      item = Collection.__super__.shift.apply(this, arguments);
-      this.trigger('remove', item);
-      this.trigger('change');
-      return item;
-    };
-
-    Collection.prototype.reverse = function() {
-      var r;
-      r = Collection.__super__.reverse.apply(this, arguments);
-      this.trigger('change');
-      return r;
-    };
-
-    Collection.prototype.sort = function() {
-      var r;
-      r = Collection.__super__.sort.apply(this, arguments);
-      this.trigger('change');
-      return r;
-    };
-
-    Collection.prototype.splice = function() {
-      var a, args, i, index, item, length, r, _i, _j, _len, _len1;
-      index = arguments[0], length = arguments[1], args = 3 <= arguments.length ? __slice.call(arguments, 2) : [];
-      a = (function() {
-        var _i, _ref, _results;
-        _results = [];
-        for (i = _i = index, _ref = index + length - 1; index <= _ref ? _i <= _ref : _i >= _ref; i = index <= _ref ? ++_i : --_i) {
-          _results.push(this[i]);
-        }
-        return _results;
-      }).call(this);
-      r = Collection.__super__.splice.apply(this, arguments);
-      for (_i = 0, _len = a.length; _i < _len; _i++) {
-        item = a[_i];
-        if (item) {
-          this.trigger('remove', item);
-        }
-      }
-      for (_j = 0, _len1 = args.length; _j < _len1; _j++) {
-        item = args[_j];
-        this.trigger('add', item);
-      }
-      return r;
-    };
-
-    Collection.prototype.unshift = function() {
-      var item, l, _i, _len;
-      l = Collection.__super__.unshift.apply(this, arguments);
-      for (_i = 0, _len = arguments.length; _i < _len; _i++) {
-        item = arguments[_i];
-        this.trigger('add', item);
-        this.trigger('change');
-      }
-      return l;
-    };
-
-    return Collection;
-
-  })(Array);
-
-  _ref = Utils.Evented.prototype;
-  for (key in _ref) {
-    value = _ref[key];
-    Collection.prototype[key] = value;
-  }
-
-  Collection;
-
-
-  /*
-  --------------- /home/gdot/github/crystal/source/types/color.coffee--------------
-  */
-
-
-  window.Color = Color = (function() {
-
-    function Color(color) {
-      var hex, match;
-      if (color == null) {
-        color = "FFFFFF";
-      }
-      color = color.toString();
-      color = color.replace(/\s/g, '');
-      if ((match = color.match(/^#?([0-9a-f]{3}|[0-9a-f]{6})$/i))) {
-        if (color.match(/^#/)) {
-          hex = color.slice(1);
-        } else {
-          hex = color;
-        }
-        if (hex.length === 3) {
-          hex = hex.replace(/([0-9a-f])/gi, '$1$1');
-        }
-        this.type = 'hex';
-        this._hex = hex;
-        this._alpha = 100;
-        this._update('hex');
-      } else if ((match = color.match(/^hsla?\((-?\d+),\s*(-?\d{1,3})%,\s*(-?\d{1,3})%(,\s*([01]?\.?\d*))?\)$/)) != null) {
-        this.type = 'hsl';
-        this._hue = parseInt(match[1]).clampRange(0, 360);
-        this._saturation = parseInt(match[2]).clamp(0, 100);
-        this._lightness = parseInt(match[3]).clamp(0, 100);
-        this._alpha = parseInt(parseFloat(match[5]) * 100) || 100;
-        this._alpha = this._alpha.clamp(0, 100);
-        this.type += match[5] ? "a" : "";
-        this._update('hsl');
-      } else if ((match = color.match(/^rgba?\((\d{1,3}),\s*(\d{1,3}),\s*(\d{1,3})(,\s*([01]?\.?\d*))?\)$/)) != null) {
-        this.type = 'rgb';
-        this._red = parseInt(match[1]).clamp(0, 255);
-        this._green = parseInt(match[2]).clamp(0, 255);
-        this._blue = parseInt(match[3]).clamp(0, 255);
-        this._alpha = parseInt(parseFloat(match[5]) * 100) || 100;
-        this._alpha = this._alpha.clamp(0, 100);
-        this.type += match[5] ? "a" : "";
-        this._update('rgb');
-      } else {
-        throw 'Wrong color format!';
-      }
-    }
-
-    Color.prototype.invert = function() {
-      this._red = 255 - this._red;
-      this._green = 255 - this._green;
-      this._blue = 255 - this._blue;
-      this._update('rgb');
-      return this;
-    };
-
-    Color.prototype.mix = function(color2, alpha) {
-      var c, item, _i, _len, _ref1;
-      if (alpha == null) {
-        alpha = 50;
-      }
-      if (!(color2 instanceof Color)) {
-        color2 = new Color(color2);
-      }
-      c = new Color();
-      _ref1 = ['red', 'green', 'blue'];
-      for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
-        item = _ref1[_i];
-        c[item] = Math.round((color2[item] / 100 * (100 - alpha)) + (this[item] / 100 * alpha)).clamp(0, 255);
-      }
-      return c;
-    };
-
-    Color.prototype._hsl2rgb = function() {
-      var h, i, l, rgb, s, t1, t2, t3, val;
-      h = this._hue / 360;
-      s = this._saturation / 100;
-      l = this._lightness / 100;
-      if (s === 0) {
-        val = Math.round(l * 255);
-        this._red = val;
-        this._green = val;
-        this._blue = val;
-      }
-      if (l < 0.5) {
-        t2 = l * (1 + s);
-      } else {
-        t2 = l + s - l * s;
-      }
-      t1 = 2 * l - t2;
-      rgb = [0, 0, 0];
-      i = 0;
-      while (i < 3) {
-        t3 = h + 1 / 3 * -(i - 1);
-        t3 < 0 && t3++;
-        t3 > 1 && t3--;
-        if (6 * t3 < 1) {
-          val = t1 + (t2 - t1) * 6 * t3;
-        } else if (2 * t3 < 1) {
-          val = t2;
-        } else if (3 * t3 < 2) {
-          val = t1 + (t2 - t1) * (2 / 3 - t3) * 6;
-        } else {
-          val = t1;
-        }
-        rgb[i] = val * 255;
-        i++;
-      }
-      this._red = Math.round(rgb[0]);
-      this._green = Math.round(rgb[1]);
-      return this._blue = Math.round(rgb[2]);
-    };
-
-    Color.prototype._hex2rgb = function() {
-      value = parseInt(this._hex, 16);
-      this._red = value >> 16;
-      this._green = (value >> 8) & 0xFF;
-      return this._blue = value & 0xFF;
-    };
-
-    Color.prototype._rgb2hex = function() {
-      var x;
-      value = this._red << 16 | (this._green << 8) & 0xffff | this._blue;
-      x = value.toString(16);
-      x = '000000'.substr(0, 6 - x.length) + x;
-      return this._hex = x.toUpperCase();
-    };
-
-    Color.prototype._rgb2hsl = function() {
-      var b, delta, g, h, l, max, min, r, s;
-      r = this._red / 255;
-      g = this._green / 255;
-      b = this._blue / 255;
-      min = Math.min(r, g, b);
-      max = Math.max(r, g, b);
-      delta = max - min;
-      if (max === min) {
-        h = 0;
-      } else if (r === max) {
-        h = (g - b) / delta;
-      } else if (g === max) {
-        h = 2 + (b - r) / delta;
-      } else {
-        if (b === max) {
-          h = 4 + (r - g) / delta;
-        }
-      }
-      h = Math.min(h * 60, 360);
-      if (h < 0) {
-        h += 360;
-      }
-      l = (min + max) / 2;
-      if (max === min) {
-        s = 0;
-      } else if (l <= 0.5) {
-        s = delta / (max + min);
-      } else {
-        s = delta / (2 - max - min);
-      }
-      this._hue = h;
-      this._saturation = s * 100;
-      return this._lightness = l * 100;
-    };
-
-    Color.prototype._update = function(type) {
-      switch (type) {
-        case 'rgb':
-          this._rgb2hsl();
-          return this._rgb2hex();
-        case 'hsl':
-          this._hsl2rgb();
-          return this._rgb2hex();
-        case 'hex':
-          this._hex2rgb();
-          return this._rgb2hsl();
-      }
-    };
-
-    Color.prototype.toString = function(type) {
-      if (type == null) {
-        type = 'hex';
-      }
-      switch (type) {
-        case "rgb":
-          return "rgb(" + this._red + ", " + this._green + ", " + this._blue + ")";
-        case "rgba":
-          return "rgba(" + this._red + ", " + this._green + ", " + this._blue + ", " + (this.alpha / 100) + ")";
-        case "hsl":
-          return "hsl(" + this._hue + ", " + (Math.round(this._saturation)) + "%, " + (Math.round(this._lightness)) + "%)";
-        case "hsla":
-          return "hsla(" + this._hue + ", " + (Math.round(this._saturation)) + "%, " + (Math.round(this._lightness)) + "%, " + (this.alpha / 100) + ")";
-        case "hex":
-          return this.hex;
-      }
-    };
-
-    return Color;
-
-  })();
-
-  ['red', 'green', 'blue'].forEach(function(item) {
-    return Object.defineProperty(Color.prototype, item, {
-      get: function() {
-        return this["_" + item];
-      },
-      set: function(value) {
-        this["_" + item] = parseInt(value).clamp(0, 255);
-        return this._update('rgb');
-      }
-    });
-  });
-
-  ['lightness', 'saturation'].forEach(function(item) {
-    return Object.defineProperty(Color.prototype, item, {
-      get: function() {
-        return this["_" + item];
-      },
-      set: function(value) {
-        this["_" + item] = parseInt(value).clamp(0, 100);
-        return this._update('hsl');
-      }
-    });
-  });
-
-  ['rgba', 'rgb', 'hsla', 'hsl'].forEach(function(item) {
-    return Object.defineProperty(Color.prototype, item, {
-      get: function() {
-        return this.toString(item);
-      }
-    });
-  });
-
-  Object.defineProperties(Color.prototype, {
-    hex: {
-      get: function() {
-        return this._hex;
-      },
-      set: function(value) {
-        this._hex = value;
-        return this._update('hex');
-      }
-    },
-    hue: {
-      get: function() {
-        return this._hue;
-      },
-      set: function(value) {
-        this._hue = parseInt(value).clampRange(0, 360);
-        return this._update('hsl');
-      }
-    },
-    alpha: {
-      get: function() {
-        return this._alpha;
-      },
-      set: function(value) {
-        return this._alpha = parseInt(value).clamp(0, 100);
-      }
-    }
-  });
-
-  /*
-  --------------- /home/gdot/github/crystal/source/types/function.coffee--------------
-  */
-
-
-  Object.defineProperties(Function.prototype, {
-    delay: {
-      value: function() {
-        var args, bind, id, ms,
-          _this = this;
-        ms = arguments[0], bind = arguments[1], args = 3 <= arguments.length ? __slice.call(arguments, 2) : [];
-        if (bind == null) {
-          bind = this;
-        }
-        return id = setTimeout(function() {
-          _this.apply(bind, args);
-          return clearTimeout(id);
-        }, ms);
-      }
-    },
-    periodical: {
-      value: function() {
-        var args, bind, ms,
-          _this = this;
-        ms = arguments[0], bind = arguments[1], args = 3 <= arguments.length ? __slice.call(arguments, 2) : [];
-        if (bind == null) {
-          bind = this;
-        }
-        return setInterval(function() {
-          return _this.apply(bind, args);
-        }, ms);
-      }
-    }
-  });
-
-  /*
-  --------------- /home/gdot/github/crystal/source/types/unit.coffee--------------
-  */
-
-
-  window.Unit = Unit = (function() {
-
-    Unit.UNITS = {
-      px: true,
-      em: true
-    };
-
-    function Unit(value, basePX) {
-      if (value == null) {
-        value = "0px";
-      }
-      if (basePX == null) {
-        basePX = 16;
-      }
-      this.base = basePX;
-      this.set(value);
-    }
-
-    Unit.prototype.toString = function(type) {
-      if (type == null) {
-        type = "px";
-      }
-      if (!(type in Unit.UNITS)) {
-        return this._value + "px";
-      }
-      if (type === 'em') {
-        return (this._value / this.base) + "em";
-      } else {
-        return this._value + "px";
-      }
-    };
-
-    Unit.prototype.set = function(value) {
-      var m, match, type, v;
-      if ((match = value.match(/(\d+)(px|em)$/))) {
-        m = match[0], value = match[1], type = match[2];
-        v = parseFloat(value) || 0;
-        if (type === 'em') {
-          return this._value = parseInt(this.base * v);
-        } else {
-          return this._value = parseInt(v);
-        }
-      } else {
-        throw 'Wrong Unit format!';
-      }
-    };
-
-    return Unit;
-
-  })();
-
-  ['px', 'em'].forEach(function(type) {
-    return Object.defineProperty(Unit.prototype, type, {
-      get: function() {
-        return this.toString(type);
-      }
-    });
-  });
-
-  /*
-  --------------- /home/gdot/github/crystal/source/crystal.coffee--------------
-  */
-
-
-  Types = {};
-
-  /*
-  --------------- /home/gdot/github/crystal/source/dom/node-list.coffee--------------
-  */
-
-
-  Object.defineProperties(NodeList.prototype, {
-    forEach: {
-      value: function(fn, bound) {
-        var i, node, _i, _len;
-        if (bound == null) {
-          bound = this;
-        }
-        for (i = _i = 0, _len = this.length; _i < _len; i = ++_i) {
-          node = this[i];
-          fn.call(bound, node, i);
-        }
-        return this;
-      }
-    },
-    map: {
-      value: function(fn, bound) {
-        var node, _i, _len, _results;
-        if (bound == null) {
-          bound = this;
-        }
-        _results = [];
-        for (_i = 0, _len = this.length; _i < _len; _i++) {
-          node = this[_i];
-          _results.push(fn.call(bound, node));
-        }
-        return _results;
-      }
-    },
-    pluck: {
-      value: function(property) {
-        var node, _i, _len, _results;
-        _results = [];
-        for (_i = 0, _len = this.length; _i < _len; _i++) {
-          node = this[_i];
-          _results.push(node[property]);
-        }
-        return _results;
-      }
-    },
-    include: {
-      value: function(el) {
-        var node, _i, _len;
-        for (_i = 0, _len = this.length; _i < _len; _i++) {
-          node = this[_i];
-          if (node === el) {
-            return true;
-          }
-        }
-        return false;
-      }
-    },
-    first: {
-      get: function() {
-        return this[0];
-      }
-    },
-    last: {
-      get: function() {
-        return this[this.length - 1];
-      }
-    }
-  });
-
-  /*
-  --------------- /home/gdot/github/crystal/source/dom/document-fragment.coffee--------------
-  */
-
-
-  Object.defineProperties(DocumentFragment.prototype, {
-    children: {
-      get: function() {
-        return this.childNodes;
-      }
-    },
-    remove: {
-      value: function(el) {
-        var node, _i, _len, _ref1;
-        _ref1 = this.childNodes;
-        for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
-          node = _ref1[_i];
-          if (node === el) {
-            this.removeChild(el);
-          }
-        }
-        return this;
-      }
-    }
-  });
-
-  DocumentFragment.Create = function() {
-    return document.createDocumentFragment();
-  };
-
-  /*
-  --------------- /home/gdot/github/crystal/source/app/env.coffee--------------
-  */
-
-
-  window.Platforms = {
-    WEBSTORE: 1,
-    NODE_WEBKIT: 2,
-    WEB: 3
-  };
-
-  window.PLATFORM = window.location.href.match(/^chrome-extension\:\/\//) ? Platforms.WEBSTORE : 'require' in window ? Platforms.NODE_WEBKIT : Platforms.WEB;
-
-  /*
-  --------------- /home/gdot/github/crystal/source/store/store.coffee--------------
-  */
-
-
-  window.Store = Store.Store = (function() {
-
-    function Store(options) {
-      var a, ad, adapter, indexedDB, localStore, requestFileSystem, websql, xhr,
-        _this = this;
-      if (options == null) {
-        options = {};
-      }
-      this.prefix = options.prefix || "";
-      ad = parseInt(options.adapter) || 0;
-      if (options.serialize instanceof Function) {
-        this.$serialize = options.serialize;
-      }
-      if (options.deserialize instanceof Function) {
-        this.$deserialize = options.deserialize;
-      }
-      a = window;
-      indexedDB = 'indexedDB' in a || 'webkitIndexedDB' in a || 'mozIndexedDB' in a;
-      requestFileSystem = 'requestFileSystem' in a || 'webkitRequestFileSystem' in a;
-      websql = 'openDatabase' in a;
-      localStore = 'localStorage' in a;
-      xhr = 'XMLHttpRequest' in a;
-      adapter = (function() {
-        switch (ad) {
-          case 0:
-            if (indexedDB) {
-              return Store.IndexedDB;
-            } else if (websql) {
-              return Store.WebSQL;
-            } else if (requestFileSystem) {
-              return Store.FileSystem;
-            } else if (xhr) {
-              return Store.Request;
-            } else if (localStorage) {
-              return Store.LocalStorage;
-            } else {
-              return Store.Memory;
-            }
-            break;
-          case 1:
-            if (!indexedDB) {
-              throw "IndexedDB not supported!";
-            }
-            return Store.IndexedDB;
-          case 2:
-            if (!websql) {
-              throw "WebSQL not supported!";
-            }
-            return Store.WebSQL;
-          case 3:
-            if (!requestFileSystem) {
-              throw "FileSystem not supported!";
-            }
-            return Store.FileSystem;
-          case 4:
-            if (!localStorage) {
-              throw "LocalStorage not supported!";
-            }
-            return Store.LocalStorage;
-          case 5:
-            if (!xhr) {
-              throw "XHR not supported!";
-            }
-            return Store.Request;
-          case 6:
-            return Store.Memory;
-          default:
-            throw "Adapter not found!";
-        }
-      })();
-      ['get', 'set', 'remove', 'list'].forEach(function(item) {
-        return _this[item] = function() {
-          var args;
-          args = Array.prototype.slice.call(arguments);
-          if (this.running) {
-            this.chain(item, args);
-          } else {
-            this.call(item, args);
-          }
-          return this;
-        };
-      });
-      this.$chain = [];
-      this.adapter = new adapter();
-      this.adapter.init.call(this, function(store) {
-        _this.ready = true;
-        if (typeof options.callback === "function") {
-          options.callback(_this);
-        }
-        return _this.callChain();
-      });
-    }
-
-    Store.prototype.error = function() {
-      return console.error(arguments);
-    };
-
-    Store.prototype.serialize = function(obj) {
-      if (this.$serialize) {
-        return this.$serialize(obj);
-      }
-      return JSON.stringify(obj);
-    };
-
-    Store.prototype.deserialize = function(json) {
-      if (this.$deserialize) {
-        return this.$deserialize(obj);
-      }
-      return JSON.parse(json);
-    };
-
-    Store.prototype.chain = function(type, args) {
-      return this.$chain.push([type, args]);
-    };
-
-    Store.prototype.callChain = function() {
-      var first;
-      if (this.$chain.length > 0) {
-        first = this.$chain.shift();
-        return this.call(first[0], first[1]);
-      }
-    };
-
-    Store.prototype.call = function(type, args) {
-      var callback,
-        _this = this;
-      if (!this.ready) {
-        return this.chain(type, args);
-      } else {
-        this.running = true;
-        if ((type === 'set' && args.length === 3) || (type === 'list' && args.length === 1) || ((type === 'get' || type === 'remove') && args.length === 2)) {
-          callback = args.pop();
-        }
-        return this.adapter[type].apply(this, args.concat(function(data) {
-          if (typeof callback === 'function') {
-            callback(data);
-          }
-          _this.running = false;
-          return _this.callChain();
-        }));
-      }
-    };
-
-    Store.ADAPTER_BEST = 0;
-
-    Store.INDEXED_DB = 1;
-
-    Store.WEB_SQL = 2;
-
-    Store.FILE_SYSTEM = 3;
-
-    Store.LOCAL_STORAGE = 4;
-
-    Store.XHR = 5;
-
-    Store.MEMORY = 6;
-
-    return Store;
-
-  })();
-
-  /*
-  --------------- /home/gdot/github/crystal/source/store/adapters/xhr.coffee--------------
-  */
-
-
-  window.Store.Request = Store.XHR = (function() {
-
-    function XHR() {}
-
-    XHR.prototype.init = function(callback) {
-      this.request = new Request(this.prefix);
-      return callback(this);
-    };
-
-    XHR.prototype.get = function(key, callback) {
-      var _this = this;
-      return this.request.get({
-        key: key
-      }, function(response) {
-        return typeof callback === "function" ? callback(_this.deserialize(response.body)) : void 0;
-      });
-    };
-
-    XHR.prototype.set = function(key, value, callback) {
-      var _this = this;
-      return this.request.post({
-        key: key,
-        value: this.serialize(value)
-      }, function(response) {
-        return typeof callback === "function" ? callback(response.body) : void 0;
-      });
-    };
-
-    XHR.prototype.list = function(callback) {
-      var _this = this;
-      return this.request.get(function(response) {
-        return typeof callback === "function" ? callback(response.body) : void 0;
-      });
-    };
-
-    XHR.prototype.remove = function(key, callback) {
-      var _this = this;
-      return this.request["delete"]({
-        key: key
-      }, function(response) {
-        return typeof callback === "function" ? callback(response.body) : void 0;
-      });
-    };
-
-    return XHR;
-
-  })();
-
-  /*
-  --------------- /home/gdot/github/crystal/source/store/adapters/file-system.coffee--------------
-  */
-
-
-  window.Store.FileSystem = Store.FileSystem = (function() {
-
-    function FileSystem() {}
-
-    FileSystem.prototype.init = function(callback) {
-      var rfs,
-        _this = this;
-      rfs = window.RequestFileSystem || window.webkitRequestFileSystem;
-      return rfs(window.PRESISTENT, 50 * 1024 * 1024, function(store) {
-        _this.storage = store;
-        return callback(_this);
-      }, this.error);
-    };
-
-    FileSystem.prototype.list = function(callback) {
-      var dirReader, entries, readEntries,
-        _this = this;
-      dirReader = this.storage.root.createReader();
-      entries = [];
-      readEntries = function() {
-        return dirReader.readEntries(function(results) {
-          if (!results.length) {
-            entries.sort();
-            return callback(entries.map(function(item) {
-              return item.name;
-            }));
-          } else {
-            entries = entries.concat(Array.prototype.slice.call(results));
-            return readEntries();
-          }
-        }, _this.error);
-      };
-      return readEntries();
-    };
-
-    FileSystem.prototype.remove = function(file, callback) {
-      var _this = this;
-      return this.storage.root.getFile(file, null, function(fe) {
-        return fe.remove(function() {
-          return callback(true);
-        }, function() {
-          return callback(false);
-        });
-      }, function() {
-        return callback(false);
-      });
-    };
-
-    FileSystem.prototype.get = function(file, callback) {
-      var _this = this;
-      return this.storage.root.getFile(file, null, function(fe) {
-        return fe.file(function(f) {
-          var reader;
-          reader = new FileReader();
-          reader.onloadend = function(e) {
-            return callback(_this.deserialize(e.target.result));
-          };
-          return reader.readAsText(f);
-        }, function() {
-          return callback(false);
-        });
-      }, function() {
-        return callback(false);
-      });
-    };
-
-    FileSystem.prototype.set = function(file, data, callback) {
-      var _this = this;
-      if (callback == null) {
-        callback = function() {};
-      }
-      return this.storage.root.getFile(file, {
-        create: true
-      }, function(fe) {
-        return fe.createWriter(function(fileWriter) {
-          var bb;
-          fileWriter.onwriteend = function(e) {
-            return callback(true);
-          };
-          fileWriter.onerror = function(e) {
-            return callback(false);
-          };
-          bb = new (window.WebKitBlobBuilder || BlobBuilder());
-          bb.append(_this.serialize(data));
-          return fileWriter.write(bb.getBlob('text/plain'));
-        }, function() {
-          return callback(false);
-        });
-      }, function() {
-        return callback(false);
-      });
-    };
-
-    return FileSystem;
-
-  })();
-
-  /*
-  --------------- /home/gdot/github/crystal/source/store/adapters/websql.coffee--------------
-  */
-
-
-  window.Store.WebSQL = Store.WebSQL = (function() {
-
-    function WebSQL() {}
-
-    WebSQL.prototype.init = function(callback) {
-      var _this = this;
-      this.exec = function(statement, callback, args) {
-        var _this = this;
-        if (callback == null) {
-          callback = (function() {});
-        }
-        return this.db.transaction(function(tr) {
-          return tr.executeSql(statement, args, callback, function(tr, err) {
-            return callback(false);
-          }, function() {
-            return callback(false);
-          });
-        });
-      };
-      this.db = openDatabase(this.prefix, '1.0', 'Store', 5 * 1024 * 1024);
-      return this.exec("CREATE TABLE IF NOT EXISTS store ( 'key' VARCHAR PRIMARY KEY NOT NULL, 'value' TEXT)", function() {
-        return callback(_this);
-      });
-    };
-
-    WebSQL.prototype.get = function(key, callback) {
-      var _this = this;
-      return this.exec("SELECT * FROM store WHERE key = '" + key + "'", function(tr, result) {
-        var ret;
-        if (result.rows.length > 0) {
-          ret = _this.deserialize(result.rows.item(0).value);
-        } else {
-          ret = false;
-        }
-        return callback.call(_this, ret);
-      });
-    };
-
-    WebSQL.prototype.set = function(key, value, callback) {
-      var _this = this;
-      return this.exec("SELECT * FROM store WHERE key = '" + key + "'", function(tr, result) {
-        if (!(result.rows.length > 0)) {
-          return _this.exec("INSERT INTO store (key, value) VALUES ('" + key + "','" + (_this.serialize(value)) + "')", function(tr, result) {
-            if (result.rowsAffected === 1) {
-              return callback(true);
-            } else {
-              return callback(false);
-            }
-          });
-        } else {
-          return _this.exec("UPDATE store SET value = '" + (_this.serialize(value)) + "' WHERE key = '" + key + "'", function(tr, result) {
-            if (result.rowsAffected === 1) {
-              return callback(true);
-            } else {
-              return callback(false);
-            }
-          });
-        }
-      });
-    };
-
-    WebSQL.prototype.list = function(callback) {
-      var _this = this;
-      return this.exec("SELECT key FROM store", function(tr, results) {
-        var keys, _i, _ref1, _results;
-        keys = [];
-        if (results.rows.length > 0) {
-          (function() {
-            _results = [];
-            for (var _i = 0, _ref1 = results.rows.length - 1; 0 <= _ref1 ? _i <= _ref1 : _i >= _ref1; 0 <= _ref1 ? _i++ : _i--){ _results.push(_i); }
-            return _results;
-          }).apply(this).forEach(function(i) {
-            return keys.push(results.rows.item(i).key);
-          });
-        }
-        return callback(keys);
-      });
-    };
-
-    WebSQL.prototype.remove = function(key, callback) {
-      var _this = this;
-      return this.exec("DELETE FROM store WHERE key = '" + key + "'", function(tr, result) {
-        if (result.rowsAffected === 1) {
-          return callback(true);
-        } else {
-          return callback(false);
-        }
-      });
-    };
-
-    return WebSQL;
-
-  })();
-
-  /*
-  --------------- /home/gdot/github/crystal/source/store/adapters/memory.coffee--------------
-  */
-
-
-  window.Store.Memory = Store.Memory = (function() {
-
-    function Memory() {}
-
-    Memory.prototype.init = function(callback) {
-      this.store = {};
-      return typeof callback === "function" ? callback(this) : void 0;
-    };
-
-    Memory.prototype.get = function(key, callback) {
-      var a, ret;
-      if ((a = this.store[key.toString()])) {
-        ret = this.deserialize(a);
-      } else {
-        ret = false;
-      }
-      return typeof callback === "function" ? callback(ret) : void 0;
-    };
-
-    Memory.prototype.set = function(key, value, callback) {
-      var ret;
-      try {
-        this.store[key.toString()] = this.serialize(value);
-        ret = true;
-      } catch (error) {
-        this.error(error);
-      }
-      return typeof callback === "function" ? callback(ret || false) : void 0;
-    };
-
-    Memory.prototype.list = function(callback) {
-      var ret;
-      ret = [];
-      try {
-        ret = (function() {
-          var _ref1, _results;
-          _ref1 = this.store;
-          _results = [];
-          for (key in _ref1) {
-            if (!__hasProp.call(_ref1, key)) continue;
-            _results.push(key);
-          }
-          return _results;
-        }).call(this);
-      } catch (error) {
-        this.error(error);
-      }
-      return typeof callback === "function" ? callback(ret) : void 0;
-    };
-
-    Memory.prototype.remove = function(key, callback) {
-      var ret;
-      if (this.store[key.toString()] === void 0) {
-        callback(false);
-        return;
-      }
-      try {
-        delete this.store[key.toString()];
-        ret = true;
-      } catch (error) {
-        this.error(error);
-      }
-      return typeof callback === "function" ? callback(ret || false) : void 0;
-    };
-
-    return Memory;
-
-  })();
-
-  /*
-  --------------- /home/gdot/github/crystal/source/store/adapters/indexed-db.coffee--------------
-  */
-
-
-  window.Store.IndexedDB = Store.IndexedDB = (function() {
-
-    function IndexedDB() {}
-
-    IndexedDB.prototype.init = function(callback) {
-      var a, request,
-        _this = this;
-      this.version = "2";
-      this.database = 'store';
-      a = window;
-      a.indexedDB = a.indexedDB || a.webkitIndexedDB || a.mozIndexedDB;
-      request = window.indexedDB.open(this.prefix, this.version);
-      request.onupgradeneeded = function(e) {
-        var store;
-        _this.db = e.target.result;
-        if (!_this.db.objectStoreNames.contains("note")) {
-          return store = _this.db.createObjectStore(_this.database, {
-            keyPath: "key"
-          });
-        }
-      };
-      request.onsuccess = function(e) {
-        var setVrequest;
-        _this.db = e.target.result;
-        if (__indexOf.call(_this.db, 'setVersion') >= 0) {
-          if (_this.version !== _this.db.version) {
-            setVrequest = _this.db.setVersion(_this.version);
-            setVrequest.onfailure = _this.error;
-            return setVrequest.onsuccess = function(e) {
-              var store, trans;
-              store = _this.db.createObjectStore(_this.database, {
-                keyPath: "key"
-              });
-              trans = setVrequest.result;
-              return trans.oncomplete = function() {
-                return callback(this);
-              };
-            };
-          } else {
-            return callback(_this);
-          }
-        } else {
-          return callback(_this);
-        }
-      };
-      return request.onfailure = this.error;
-    };
-
-    IndexedDB.prototype.get = function(key, callback) {
-      var request, store, trans,
-        _this = this;
-      trans = this.db.transaction([this.database], 'readwrite');
-      store = trans.objectStore(this.database);
-      request = store.get(key.toString());
-      request.onerror = function() {
-        return callback(false);
-      };
-      return request.onsuccess = function(e) {
-        var result;
-        result = e.target.result;
-        if (result) {
-          return callback(_this.deserialize(result.value));
-        } else {
-          return callback(false);
-        }
-      };
-    };
-
-    IndexedDB.prototype.set = function(key, value, callback) {
-      var request, store, trans;
-      trans = this.db.transaction([this.database], 'readwrite');
-      store = trans.objectStore(this.database);
-      request = store.put({
-        key: key.toString(),
-        value: this.serialize(value)
-      });
-      request.onsuccess = function() {
-        return callback(true);
-      };
-      return request.onerror = this.error;
-    };
-
-    IndexedDB.prototype.list = function(callback) {
-      var cursorRequest, ret, store, trans,
-        _this = this;
-      trans = this.db.transaction([this.database], 'readwrite');
-      store = trans.objectStore(this.database);
-      cursorRequest = store.openCursor();
-      cursorRequest.onerror = this.error;
-      ret = [];
-      return cursorRequest.onsuccess = function(e) {
-        var result;
-        result = e.target.result;
-        if (result) {
-          ret.push(result.value.key);
-          return result["continue"]();
-        } else {
-          return callback(ret);
-        }
-      };
-    };
-
-    IndexedDB.prototype.remove = function(key, callback) {
-      var r, store, trans,
-        _this = this;
-      trans = this.db.transaction([this.database], 'readwrite');
-      store = trans.objectStore(this.database);
-      r = store.get(key.toString());
-      r.onerror = function() {
-        return callback(false);
-      };
-      return r.onsuccess = function(e) {
-        var result;
-        result = e.target.result;
-        if (result) {
-          r = store["delete"](key.toString());
-          r.onsuccess = function() {
-            return callback(true);
-          };
-          return r.onerror = function() {
-            return callback(false);
-          };
-        } else {
-          return callback(false);
-        }
-      };
-    };
-
-    return IndexedDB;
-
-  })();
-
-  /*
-  --------------- /home/gdot/github/crystal/source/store/adapters/localstorage.coffee--------------
-  */
-
-
-  window.Store.LocalStorage = Store.LocalStorage = (function() {
-
-    function LocalStorage() {}
-
-    LocalStorage.prototype.init = function(callback) {
-      if (this.prefix !== "") {
-        this.prefix += "::";
-      }
-      return callback(this);
-    };
-
-    LocalStorage.prototype.get = function(key, callback) {
-      var ret;
-      try {
-        ret = this.deserialize(localStorage.getItem(this.prefix + key.toString()));
-      } catch (error) {
-        this.error(error);
-      }
-      return callback(ret || false);
-    };
-
-    LocalStorage.prototype.set = function(key, value, callback) {
-      var ret;
-      try {
-        localStorage.setItem(this.prefix + key.toString(), this.serialize(value));
-        ret = true;
-      } catch (error) {
-        this.error(error);
-      }
-      return callback(ret || false);
-    };
-
-    LocalStorage.prototype.list = function(callback) {
-      var i, ret, _i, _ref1;
-      ret = [];
-      for (i = _i = 0, _ref1 = localStorage.length - 1; 0 <= _ref1 ? _i <= _ref1 : _i >= _ref1; i = 0 <= _ref1 ? ++_i : --_i) {
-        try {
-          key = localStorage.key(i);
-          if (this.prefix !== "") {
-            if (new RegExp("^" + this.prefix).test(key)) {
-              ret.push(key.replace(new RegExp("^" + this.prefix), ""));
-            }
-          } else {
-            ret.push(key);
-          }
-        } catch (error) {
-          this.error(error);
-        }
-      }
-      return callback(ret);
-    };
-
-    LocalStorage.prototype.remove = function(key, callback) {
-      var ret;
-      if (localStorage.getItem(this.prefix + key) === null) {
-        callback(false);
-        return;
-      }
-      try {
-        localStorage.removeItem(this.prefix + key.toString());
-        ret = true;
-      } catch (error) {
-        this.error(error);
-      }
-      return callback(ret || false);
-    };
-
-    return LocalStorage;
-
-  })();
-
-}).call(this);
- 
- })(window.Crystal={Utils:{}})
+MVC = {}
+Logging = {}
+Utils = {}
+Store = {}
+
+
+###
+--------------- /home/gdot/github/crystal/source/types/array.coffee--------------
+###
+methods =
+  remove$: (item) ->
+    if (index = @indexOf(item)) != -1
+      @splice index, 1
+  remove: (item) ->
+    b = @dup()
+    if (index = b.indexOf(item)) != -1
+      b.splice index, 1
+    b
+  removeAll: (item) ->
+    b = @dup()
+    while (index = b.indexOf(item)) != -1
+      b.splice index , 1
+    b
+  uniq: ->
+    b = new @__proto__.constructor
+    @filter (item) ->
+      b.push(item) unless b.include item
+    b
+  shuffle: ->
+    shuffled = []
+    @forEach (value, index) ->
+      rand = Math.floor(Math.random() * (index + 1))
+      shuffled[index] = shuffled[rand]
+      shuffled[rand] = value
+    shuffled
+  compact: ->
+    @filter (item) -> !!item
+  dup: (item) ->
+    @filter -> true
+  pluck: (property) ->
+    @map (item) ->
+      item[property]
+  include: (item) ->
+    @indexOf(item) != -1
+
+for key, method of methods
+  Object.defineProperty Array::, key, value: method
+
+Object.defineProperties Array::,
+  sample:
+    get: ->
+      @[Math.floor(Math.random() * @length)]
+  first:
+    get: ->
+      @[0]
+  last:
+    get: ->
+      @[@length - 1]
+###
+--------------- /home/gdot/github/crystal/source/types/object.coffee--------------
+###
+Object.defineProperties Object::,
+  toFormData:
+    value: ->
+      ret = new FormData()
+      for own key, value of @
+        ret.append key, value
+      ret
+  toQueryString:
+    value: ->
+      (for own key, value of @
+        "#{key}=#{value.toString()}").join "&"
+
+Object.each = (object, fn) ->
+  for own key, value of object
+    fn.call object, key, value
+
+Object.pluck = (object, prop) ->
+  for own key, value of object
+    value[prop]
+
+Object.values = (object) ->
+  for own key, value of object
+    value
+
+Object.canRespondTo = (object, args...) ->
+  ret = true
+  for arg in args
+    ret = false unless typeof object[arg] is 'function'
+  ret
+###
+--------------- /home/gdot/github/crystal/source/types/number.coffee--------------
+###
+Object.defineProperties Number::,
+  # Date
+  seconds:
+    get: ->
+      @valueOf() * 1e+3
+  minutes:
+    get: ->
+      @valueOf() * 6e+4
+  hours:
+    get: ->
+      @valueOf() * 3.6e+6
+  days:
+    get: ->
+      @valueOf() * 8.64e+7
+  # Iterators
+  upto:
+    value: (limit,func,bound = @) ->
+      i = parseInt(@)
+      while i <= limit
+        func.call bound, i
+        i++
+  downto:
+    value: (limit,func,bound = @) ->
+      i = parseInt(@)
+      while i >= limit
+        func.call bound, i
+        i--
+  times:
+    value: (func,bound = @) ->
+      for i in [1..parseInt(@)]
+        func.call bound, i
+  # Utility
+  clamp:
+    value: (min,max) ->
+      min = parseFloat(min)
+      max = parseFloat(max)
+      val = @valueOf()
+      if val > max
+        max
+      else if val < min
+        min
+      else
+        val
+  clampRange:
+    value: (min,max) ->
+      min = parseFloat(min)
+      max = parseFloat(max)
+      val = @valueOf()
+      if val > max
+        val % max
+      else if val < min
+        max - Math.abs(val % max)
+      else
+        val
+###
+--------------- /home/gdot/github/crystal/source/types/date.coffee--------------
+###
+# @require ./number
+Date.Locale = 
+  ago:
+    seconds: " seconds ago"
+    minutes: " minutes ago"
+    hours: " hours ago"
+    days: " days ago"
+    now: "just now"
+  format: "%Y-%M-%D"
+
+Object.defineProperties Date::,
+  ago:
+    get: ->
+      diff = +new Date()-@
+      if diff < (1).seconds
+        Date.Locale.ago.now
+      else if diff < (1).minutes
+        Math.round(diff/1000)+Date.Locale.ago.seconds
+      else if diff < (1).hours
+        Math.round(diff/(1).minutes)+Date.Locale.ago.minutes
+      else if diff < (1).days
+        Math.round(diff/(1).hours)+Date.Locale.ago.hours
+      else if diff < (30).days
+        Math.round(diff/(1).days)+Date.Locale.ago.days
+      else
+        @format Date.Locale.format
+
+  # TODO localization
+  format:
+    value: (str = Date.Locale.format) ->
+      str.replace /%([a-zA-z])/g, ($0,$1) =>
+        switch $1
+          # Day
+          when 'D'
+            @getDate().toString().replace /^\d$/, "0$&"
+          when 'd'
+            @getDate()
+          # Year
+          when 'Y'
+            @getFullYear()
+          # Hours
+          when 'h'
+            @getHours()
+          when 'H'
+            @getHours().toString().replace /^\d$/, "0$&"
+          # Month
+          when 'M'
+            (@getMonth()+1).toString().replace /^\d$/, "0$&"
+          when 'm'
+            @getMonth()+1
+          # Minutes
+          when "T"
+            @getMinutes().toString().replace /^\d$/, "0$&"
+          when "t"
+            @getMinutes()
+          else
+            ""
+
+['day:Date','year:FullYear','hours:Hours','minutes:Minutes','seconds:Seconds'].forEach (item) ->
+  [prop,meth] = item.split(/:/)
+  Object.defineProperty Date::, prop,
+    get: ->
+      @["get"+meth]()
+    set: (value)->
+      @["set"+meth] parseInt(value)
+
+
+Object.defineProperty Date::, 'month',
+  get: -> @getMonth()+1
+  set: (value) -> @setMonth value-1
+###
+--------------- /home/gdot/github/crystal/source/logger/logger.coffee--------------
+###
+# @requires ../types/array
+# @requires ../types/object
+# @requires ../types/number
+# @requires ../types/date
+
+window.Logger = class Logging.Logger
+  @DEBUG: 4
+  @INFO: 3
+  @WARN: 2
+  @ERROR: 1
+  @FATAL: 0
+  @LOG: 4
+
+  constructor: (level = 4) ->
+    throw "Level must be Number" if isNaN parseInt(level)
+    @_level = parseInt(level).clamp 0, 4
+    @_timestamp = true
+
+  _format: (args...) ->
+    line = ""
+    if @timestamp
+      line += "["+new Date().format("%Y-%M-%D %H:%T")+"] "
+    line += args.map((arg) -> args.toString()).join ","
+
+Object.defineProperties Logger::,
+  timestamp:
+    set: (value) ->
+      @_timestamp = !!value
+    get: ->
+      @_timestamp
+  level:
+    set: (value) ->
+      @_level = parseInt(value).clamp 0, 4
+    get: ->
+      @_level
+
+['debug', 'log', 'error', 'fatal', 'info', 'warn'].forEach (type) ->
+  Logger::["_"+type] = ->
+  Logger::[type] = (args...) ->
+    if @level >= Logging.Logger[type.toUpperCase()]
+      @["_"+type] @_format args
+###
+--------------- /home/gdot/github/crystal/source/logger/console-logger.coffee--------------
+###
+# @requires ./logger
+
+window.ConsoleLogger = class Logging.ConsoleLogger extends Logging.Logger
+  constructor: -> super
+
+['debug', 'error', 'fatal', 'info', 'warn','log'].forEach (type) ->
+  ConsoleLogger::["_"+type] = (text) ->
+    type = 'log' if type is 'debug'
+    type = 'error' if type is 'fatal'
+    console[type] text
+###
+--------------- /home/gdot/github/crystal/source/dom/element.coffee--------------
+###
+# @requires ../types/object
+# @requires ../types/array
+
+# TODO Simpler
+Attributes =
+  title:{ prefix: "!", unique: true }
+  name:{ prefix: "&", unique: true }
+  type:{ prefix: "%", unique: true }
+  id:{ prefix: "#", unique: true }
+  class:{ prefix: "\\.", unique: false }
+  role:{ prefix: "~", unique: true }
+
+prefixes = Object.pluck(Attributes,'prefix').concat("$").join("|")
+Object.each Attributes, (key,value) ->
+  value.regexp = new RegExp value.prefix+"(.*?)(?=#{prefixes})", "g"
+
+
+# Utility Functions
+_wrap = NodeList._wrap = (fn) ->
+  (args...) ->
+    for el in @
+      fn.apply el, args
+
+_find = (property, selector, el) ->
+  while el = el[property]
+    if el instanceof Element
+      if el.webkitMatchesSelector selector
+        return el
+
+# Parse attributes from string (#id.class!title)
+_parseName = (name,atts = {}) ->
+  cssattributes = {}
+  name = name.replace /\[(.*?)=(.*?)\]/g, (m, name, value)->
+    cssattributes[name] = value
+    ""
+  name = name.replace /\[(.*)?\]/g, (m, name)->
+    cssattributes[name] = true
+    ""
+  ret =
+    tag: name.match(new RegExp("^.*?(?=#{prefixes})"))[0] or 'div'
+    attributes: cssattributes
+  Object.each Attributes, (key,value) ->
+    if (m = name.match(value.regexp)) isnt null
+      name = name.replace(value.regexp, "")
+      if value.unique
+        if atts[key]
+          ret.attributes[key] = atts[key] if atts[key] isnt null and atts[key] isnt undefined
+        else
+          ret.attributes[key] = m.pop().slice(1)
+      else
+        map = m.map (item) -> item.slice(1)
+        if atts[key]
+          if typeof atts[key] is 'string'
+            map = map.concat atts[key].split(" ")
+          else
+            map = map.concat atts[key]
+        ret.attributes[key] = map.compact().join(" ")
+    else
+      ret.attributes[key] = atts[key] if atts[key] isnt null and atts[key] isnt undefined
+  ret
+
+# Methods for Node
+methods_node =
+  append: (elements...) ->
+    @appendChild el for el in elements when el instanceof Node
+  first: (selector = "*") ->
+    @querySelector selector
+  last: (selector = "*") ->
+    @querySelectorAll(selector).last
+  all: (selector = "*") ->
+    @querySelectorAll(selector)
+  empty: ->
+    @querySelectorAll("*").dispose()
+  moveUp: ->
+    @parent.insertBefore @, prev if @parent and (prev = @prev())
+  moveDown: ->
+    @parent.insertBefore next, @ if @parent and (next = @next())
+  indexOf: (el) ->
+    Array::slice.call(@childNodes).indexOf el
+
+# Methods only for HTMLElement, NodeList
+methods_element =
+  dispose: ->
+    @parent?.removeChild @
+  # TODO implement these with TreeWalker
+  ancestor: (selector = "*") ->
+    _find 'parentElement', selector, @
+  next: (selector = "*") ->
+    _find 'nextSibling', selector, @
+  prev: (selector = "*") ->
+    _find 'previousSibling', selector, @
+  # http://www.quirksmode.org/dom/getstyles.html
+  css: (args...) ->
+    property = args[0]
+    if args.length is 1
+      if @currentStyle
+        value = @currentStyle[property]
+      else
+        value = window.getComputedStyle(@)[property]
+      return value
+    if args.length is 2
+      value = args[1]
+      @style[property] = value
+
+for key, method of methods_node
+  Object.defineProperty Node::, key, value: method
+
+for key, method of methods_element
+  Object.defineProperty NodeList::, key, value: _wrap method
+  Object.defineProperty HTMLElement::, key, value: method
+
+Object.defineProperty HTMLSelectElement::, 'selectedOption',
+  get: ->
+    @children[@selectedIndex] if @children
+  set: (el) ->
+    @selectedIndex = Array::slice.call(@children).indexOf(el) if @childNodes.include(el)
+
+Object.defineProperty HTMLInputElement::, 'caretToEnd', value: ->
+  length = @value.length
+  @setSelectionRange(length, length)
+
+properties = 
+  id:
+    get: -> @getAttribute 'id'
+    set: (value) -> @setAttribute 'id', value
+  tag:
+    get: -> @tagName.toLowerCase()
+  parent:
+    get: -> @parentElement
+    set: (el) ->
+      return unless el instanceof HTMLElement
+      el.append @
+  text:
+    get: -> @textContent
+    set: (value) -> @textContent = value
+  html:
+    get: -> @innerHTML
+    set: (value) -> @innerHTML = value
+  class:
+    get: -> @getAttribute 'class'
+    set: (value) -> @setAttribute 'class', value
+
+Object.defineProperties HTMLElement::, properties
+
+Object.defineProperty Node::, 'delegateEventListener', value: (event,listener,useCapture) ->
+  [baseEvent,selector] = event.split(':')
+  selector ?= "*"
+  @addEventListener baseEvent, (e) ->
+    target = e.relatedTarget or e.target
+    listener e if target.webkitMatchesSelector selector
+  , true
+
+['addEventListener','removeEventListener','delegateEventListener'].forEach (prop) ->
+  Object.defineProperty Node::, prop.replace("Listener",''), value: Node::[prop]
+  Object.defineProperty window, prop.replace("Listener",''), value: window[prop]
+
+Element.create = (node, atts = {}) ->
+  return node if node instanceof Node
+  switch typeof node
+    when 'string'
+      {tag,attributes} = _parseName node, atts
+      node = document.createElement tag.replace /[^A-Za-z_\-0-9]/, ''
+      for key, value of attributes
+        if (desc = properties[key])
+          node[key] = value
+          continue
+        node.setAttribute key, value
+    else
+      node = document.createElement 'div'
+  node
+
+Node
+
+###
+--------------- /home/gdot/github/crystal/source/logger/flash-logger.coffee--------------
+###
+# @requires ./logger
+# @requires ../dom/element
+
+window.FlashLogger = class Logging.FlashLogger extends Logging.Logger
+  constructor: (el, level) ->
+    throw "Base Element must be HTMLElement" unless el instanceof HTMLElement
+    super level
+    @visible = false
+    @el = el
+  hide: ->
+    clearTimeout @id
+    @id = setTimeout =>
+      @visible = false
+      @el.classList.toggle 'hidden'
+      @el.classList.toggle 'visible'
+    , 2000
+
+['debug', 'error', 'fatal', 'info', 'warn','log'].forEach (type) ->
+  FlashLogger::["_"+type] = (text) ->
+    if @visible
+      @el.html += "</br>"+text
+      @hide()
+    else
+      @el.text = text
+      @el.classList.toggle 'hidden'
+      @el.classList.toggle 'visible'
+      @visible = true
+      @hide()
+
+###
+--------------- /home/gdot/github/crystal/source/logger/html-logger.coffee--------------
+###
+# @requires ./logger
+# @requires ../dom/element
+
+css =
+  error:
+    color: 'orangered'
+  info:
+    color: 'blue'
+  warn:
+    color: 'orange'
+  fatal:
+    color: 'red'
+    'font-weight': 'bold'
+  debug:
+    color: 'black'
+  log:
+    color: 'black'
+
+window.HTMLLogger = class Logging.HTMLLogger extends Logging.Logger
+  constructor: (el, level) ->
+    throw "Base Element must be HTMLElement" unless el instanceof HTMLElement
+    super level
+    @el = el
+
+['debug', 'error', 'fatal', 'info', 'warn','log'].forEach (type) ->
+  HTMLLogger::["_"+type] = (text) ->
+    el = Element.create 'div.'+type
+    for prop, value of css[type]
+      el.css prop, value
+    el.text = text
+    @el.append el
+    el
+###
+--------------- /home/gdot/github/crystal/source/types/keyboard-event.coffee--------------
+###
+SPECIAL_KEYS = 
+    0   : "\\"          # Firefox reports this keyCode when shift is held
+    8   : "backspace"
+    9   : "tab"
+    12  : "num"
+    13  : "enter"
+    16  : "shift"
+    17  : "ctrl"
+    18  : "alt"
+    19  : "pause"
+    20  : "capslock"
+    27  : "esc"
+    32  : "space"
+    33  : "pageup"
+    34  : "pagedown"
+    35  : "end"
+    36  : "home"
+    37  : "left"
+    38  : "up"
+    39  : "right"
+    40  : "down"
+    44  : "print"
+    45  : "insert"
+    46  : "delete"
+    48  : "0"
+    49  : "1"
+    50  : "2"
+    51  : "3"
+    52  : "4"
+    53  : "5"
+    54  : "6"
+    55  : "7"
+    56  : "8"
+    57  : "9"
+    65  : "a"
+    66  : "b"
+    67  : "c"
+    68  : "d"
+    69  : "e"
+    70  : "f"
+    71  : "g"
+    72  : "h"
+    73  : "i"
+    74  : "j"
+    75  : "k"
+    76  : "l"
+    77  : "m"
+    78  : "n"
+    79  : "o"
+    80  : "p"
+    81  : "q"
+    82  : "r"
+    83  : "s"
+    84  : "t"
+    85  : "u"
+    86  : "v"
+    87  : "w"
+    88  : "x"
+    89  : "y"
+    90  : "z"
+    91  : "cmd"
+    92  : "cmd"
+    93  : "cmd"
+    96  : "num_0"
+    97  : "num_1"
+    98  : "num_2"
+    99  : "num_3"
+    100 : "num_4"
+    101 : "num_5"
+    102 : "num_6"
+    103 : "num_7"
+    104 : "num_8"
+    105 : "num_9"
+    106 : "multiply"
+    107 : "add"
+    108 : "enter"
+    109 : "subtract"
+    110 : "decimal"
+    111 : "divide"
+    124 : "print"
+    144 : "num"
+    145 : "scroll"
+    186 : ";"
+    187 : "="
+    188 : ","
+    189 : "-"
+    190 : "."
+    191 : "/"
+    192 : "`"
+    219 : "["
+    220 : "\\"
+    221 : "]"
+    222 : "\'"
+    224 : "cmd"
+    57392   : "ctrl"
+    63289   : "num"
+
+Object.defineProperty KeyboardEvent::, 'key', get: ->
+  return key if key = SPECIAL_KEYS[@keyCode]
+  String.fromCharCode(@keyCode).toLowerCase()
+###
+--------------- /home/gdot/github/crystal/source/utils/keyboard.coffee--------------
+###
+# @requires ../types/keyboard-event
+window.Keyboard = class Keyboard
+  handleKeydown: (e) =>
+    delimeters = /-|\+|:|_/g
+    unless e.cancelled
+      combo = []
+      combo.push "ctrl" if e.ctrlKey
+      combo.push "shift" if e.shiftKey
+      combo.push "alt" if e.altKey
+      combo.push e.key
+      for sc, method of @
+        pressed = true
+        for key in sc.split delimeters
+          if combo.indexOf(key) is -1
+            pressed = false
+            break
+        if pressed
+          method.call @
+          e.preventDefault()
+          e.cancelled = true
+          e.stopPropagation()
+          break
+  constructor: (@focus = false)->
+    document.addEventListener 'keydown', (e) =>
+      if @focus
+        if document.first(":focus")
+          @handleKeydown e
+      else
+        unless document.first(':focus')
+          @handleKeydown e
+    @initialize?()
+###
+--------------- /home/gdot/github/crystal/source/utils/json.coffee--------------
+###
+# FIX Stringify
+olds = JSON.stringify
+JSON.stringify = (obj) ->
+  if obj instanceof Array
+    olds Array::slice.call obj
+  else
+    olds obj
+###
+--------------- /home/gdot/github/crystal/source/utils/history.coffee--------------
+###
+window.History = class Utils.History
+  constructor: ->
+    @_type = if 'pushState' of history then 'popstate' else 'hashchange'
+    window.addEventListener @_type, (event) =>
+      url = switch @_type
+        when 'popstate'
+          window.location.pathname
+        when 'hashchange'
+          window.location.hash
+      @[url.trim()]() if @[url.trim()] instanceof Function
+    @stateid = 0
+  push: (url) ->
+    switch @_type
+      when 'popstate'
+        history.pushState {}, @stateid++, url
+      when 'hashchange'
+        window.location.hash = url
+
+
+###
+--------------- /home/gdot/github/crystal/source/utils/path.coffee--------------
+###
+window.Path = class Utils.Path
+  constructor: (@context = {}) ->
+
+  create: (path,value) ->
+    path = path.toString()
+    last = @context
+    prop = (path = path.split(/\./)).pop()
+    for segment in path
+      if not last.hasOwnProperty(segment)
+        last[segment] = {}
+      last = last[segment]
+    last[prop] = value
+
+  exists: (path) ->
+    @lookup(path) isnt undefined
+
+  lookup: (path) ->
+    end = (path = path.split(/\./)).pop()
+    if path.length is 0 and not @context.hasOwnProperty(end) then return undefined
+    last = @context
+    for segment in path
+      if last.hasOwnProperty(segment) then last = last[segment] else return undefined
+    if last.hasOwnProperty(end) then return last[end]
+    undefined
+
+###
+--------------- /home/gdot/github/crystal/source/utils/i18n.coffee--------------
+###
+# @requires ./path
+# @requires ../types/object
+
+class i18n
+
+  @locales: {}
+
+  @t: (path) ->
+    if arguments.length is 2
+      if (arg = arguments[1]) instanceof Object
+        params = arg
+      else
+        locale = arg
+    if arguments.length is 3
+      locale = arguments[2]
+      params = arguments[1]
+    locale ?= document.querySelector('html').getAttribute('lang') or 'en'
+    _path = new Path @locales[locale]
+    str = _path.lookup path
+    unless str
+      console.warn "No translation found for '#{path}' for locale '#{locale}'"
+      return path
+    str.replace /\{\{(.*?)\}\}/g, (m,prop) ->
+      if params[prop] isnt undefined then params[prop].toString() else ''
+
+window.i18n = i18n
+###
+--------------- /home/gdot/github/crystal/source/types/string.coffee--------------
+###
+# @requires ./number
+# @requires ./array
+
+Object.defineProperties String::,
+  wordWrap:  
+    value: (width = 15, separator = "\n", cut = false) ->
+      regex = ".{1," + width + "}(\\s|$)" + ((if cut then "|.{" + width + "}|.+$" else "|\\S+?(\\s|$)"))
+      @match(RegExp(regex, "g")).join(separator)
+  test: 
+    value: (regexp)->
+      !!@match regexp
+  escape:
+    value: ->
+      @replace /[-[\]{}()*+?.\/'\\^$|#]/g, "\\$&"
+  ellipsis:
+    value: (length = 10) ->
+      if @length > length
+        @[0..length-1]+"..."
+      else
+        @valueOf()
+  compact:
+    value: ->
+      s = @valueOf().trim()
+      s.replace /\s+/g, ' '
+
+  camelCase:
+    value: ->
+      @replace /[- _](\w)/g, (matches) ->  matches[1].toUpperCase()
+  hyphenate:
+    value: ->
+      @replace(/^[A-Z]/, (match) -> match.toLowerCase()).replace /[A-Z]/g, (match) -> "-"+match.toLowerCase()
+  capitalize:
+    value: ->
+      @replace /^\w|\s\w/g, (match) ->  match.toUpperCase()
+
+  indent:
+    value: (spaces = 2) ->
+      s = ''
+      spaces = spaces.times -> s+=" "
+      @replace(/^/gm,s)
+  outdent:
+    value: (spaces = 2) ->
+      @replace new RegExp("^\\s{#{spaces}}","gm"), ""
+
+  entities:
+    value: ->
+      @replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
+
+  parseQueryString:
+    value: ->
+      ret = {}
+      regexp = /([^&=]+)=([^&]*)/g
+      while match = regexp.exec(@)
+        ret[decodeURIComponent(match[1])] = decodeURIComponent(match[2])
+      ret
+
+String.random = (length = 10) ->
+  chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXTZabcdefghiklmnopqrstuvwxyz'.split('')
+  if not length
+    length = Math.floor(Math.random() * chars.length)
+  str = ''
+  for i in [0..length-1]
+    str += chars.sample
+  str
+
+###
+--------------- /home/gdot/github/crystal/source/utils/request.coffee--------------
+###
+# @requires ../types/array
+# @requires ../types/string
+# @requires ../types/object
+
+# TODO Errors, FileUpload, Progress Events etc...
+window.Response = class Utils.Response
+  constructor: (headers,body,status) ->
+    @headers = headers
+    @raw = body
+    @status = status
+
+types =
+  script: ['text/javascript']
+  html: ['text/html']
+  JSON: ['text/json','application/json']
+  XML: ['text/xml']
+
+Object.each types, (key,value) ->
+  Object.defineProperty Response::, 'is'+key.capitalize(), value: ->
+    value.map( (type) => @headers['Content-Type'] is type).compact().length > 0
+
+Object.defineProperty Response::, 'body', get: ->
+  switch @headers['Content-Type']
+    when "text/html"
+      div = document.createElement('div')
+      div.innerHTML = @raw
+      df = document.createDocumentFragment()
+      for node in Array::slice.call div.childNodes
+        df.appendChild node
+      df
+    when "text/json", "application/json"
+      try
+        JSON.parse(@raw)
+      catch e
+        @raw
+    when "text/xml"
+      p = new DOMParser()
+      p.parseFromString(@raw,"text/xml")
+    else
+      @raw
+
+window.Request = class Utils.Request
+  constructor: (url, headers = {}) ->
+    @uri = url
+    @headers = headers
+    @_request = new XMLHttpRequest()
+    @_request.onreadystatechange = @handleStateChange
+
+  request: (method = 'GET' ,data, callback) ->
+    if (@_request.readyState is 4) or (@_request.readyState is 0)
+      if method.toUpperCase() is 'GET' and data isnt undefined and data isnt null
+        @_request.open method, @uri+"?"+data.toQueryString()
+      else
+        @_request.open method, @uri
+      for own key, value of @headers
+        @_request.setRequestHeader key.toString(), value.toString()
+      @_callback = callback
+      @_request.send(data?.toFormData())
+
+  parseResponseHeaders: ->
+    r = {}
+    @_request.getAllResponseHeaders().split(/\n/).compact().forEach (header) ->
+      [key,value] = header.split(/:\s/)
+      r[key.trim()] = value.trim()
+    r
+
+  handleStateChange: =>
+    if @_request.readyState is 4
+      headers = @parseResponseHeaders()
+      body = @_request.response
+      status = @_request.status
+      @_callback new Response(headers,body,status)
+      @_request.responseText
+
+['get','post','put','delete','patch'].forEach (type) ->
+  Request::[type] = ->
+    if arguments.length is 2
+      data = arguments[0]
+      callback = arguments[1]
+    else
+      callback = arguments[0]
+    @request type.toUpperCase(), data, callback
+
+
+###
+--------------- /home/gdot/github/crystal/source/utils/uri.coffee--------------
+###
+# @requires ../types/array
+
+window.URI = class Utils.URI
+  constructor: (uri = '') ->
+    parser = document.createElement('a')
+    parser.href = uri
+    if !!(m=uri.match /\/\/(.*?):(.*?)@/)
+        [m,@user,@password] = m
+    @host = parser.hostname
+    @protocol = parser.protocol.replace /:$/, ''
+    if parser.port == "0"
+      @port = 80
+    else
+      @port = parser.port or 80
+    @hash = parser.hash.replace /^#/, ''
+    @query = uri.match(/\?(.*?)(?:#|$)/)?[1].parseQueryString() or {}
+    @path = parser.pathname.replace(/^\//, '')
+    @parser = parser
+    @
+
+  toString: ->
+    uri = @protocol
+    uri += "://"
+    if @user and @password
+      uri += @user.toString()+":"+@password.toString()+"@"
+    uri += @host
+    uri += ":"+@port unless @port is 80
+    uri += "/"+@path if @path isnt ""
+    uri += "?"+@query.toQueryString() if Object.keys(@query).length > 0
+    uri += "#"+@hash if @hash isnt ""
+    uri
+
+
+
+###
+--------------- /home/gdot/github/crystal/source/utils/evented.coffee--------------
+###
+Crystal.Utils.Event = class Utils.Event
+  constructor: (target) ->
+    throw "No target" unless !!target
+    throw "Invalid target!" unless target instanceof Object
+    @cancelled = false
+    @target = target
+  stop: ->
+    @cancelled = true
+
+class Utils.Mediator
+  constructor: ->
+    @listeners = {}
+  fireEvent: (type,args)->
+    event = args.first
+    throw "Not Utils.Event!" unless event instanceof Utils.Event
+    if @listeners[type]
+      for callback in @listeners[type]
+        unless event.cancelled
+          callback.apply event.target, args
+  addListener: (type,callback) ->
+    throw "Only functions can be added as callback" unless callback instanceof Function
+    @listeners[type] = [] unless @listeners[type]
+    @listeners[type].push callback
+  removeListener: (type, callback) ->
+    @listeners[type].remove$ callback
+    delete @listeners[type] if @listeners[type].length is 0
+
+window.Mediator = new Utils.Mediator
+
+Crystal.Utils.Evented = class Utils.Evented
+  constructor: ->
+
+  _ensureMediator: ->
+    unless @_mediator
+      Object.defineProperty @, "_mediator", value: new Utils.Mediator
+
+  toString: ->
+    "[Object #{@__proto__.constructor.name}]"
+
+  trigger: (type,args...) ->
+    event = new Utils.Event @
+    args.unshift event
+    @_ensureMediator()
+    @_mediator.fireEvent type, args
+
+  on: (type, callback) ->
+    @_ensureMediator()
+    @_mediator.addListener type, callback
+
+  off: (type,callback) ->
+    @_ensureMediator()
+    @_mediator.removeListener type, callback
+
+  publish: (type,args...) ->
+    event = new Utils.Event @
+    args.unshift event
+    Mediator.fireEvent type, args
+
+  subscribe: (type,callback) ->
+    Mediator.addListener type, callback
+
+  unsubscribe: (type,callback) ->
+    Mediator.removeListener type, callback
+###
+--------------- /home/gdot/github/crystal/source/utils/base64.coffee--------------
+###
+window.Base64 = new class Utils.Base64
+  _keyStr: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/="
+  encode: (input) ->
+    output = ""
+    i = 0
+    input = @UTF8Encode(input)
+    while i < input.length
+      chr1 = input.charCodeAt(i++)
+      chr2 = input.charCodeAt(i++)
+      chr3 = input.charCodeAt(i++)
+      enc1 = chr1 >> 2
+      enc2 = ((chr1 & 3) << 4) | (chr2 >> 4)
+      enc3 = ((chr2 & 15) << 2) | (chr3 >> 6)
+      enc4 = chr3 & 63
+      if isNaN(chr2)
+        enc3 = enc4 = 64
+      else enc4 = 64  if isNaN(chr3)
+      output = output + @_keyStr.charAt(enc1) + @_keyStr.charAt(enc2) + @_keyStr.charAt(enc3) + @_keyStr.charAt(enc4)
+    output
+
+  decode: (input) ->
+    output = ""
+    i = 0
+    input = input.replace(/[^A-Za-z0-9\+\/\=]/g, "")
+    while i < input.length
+      enc1 = @_keyStr.indexOf(input.charAt(i++))
+      enc2 = @_keyStr.indexOf(input.charAt(i++))
+      enc3 = @_keyStr.indexOf(input.charAt(i++))
+      enc4 = @_keyStr.indexOf(input.charAt(i++))
+      chr1 = (enc1 << 2) | (enc2 >> 4)
+      chr2 = ((enc2 & 15) << 4) | (enc3 >> 2)
+      chr3 = ((enc3 & 3) << 6) | enc4
+      output = output + String.fromCharCode(chr1)
+      output = output + String.fromCharCode(chr2)  unless enc3 is 64
+      output = output + String.fromCharCode(chr3)  unless enc4 is 64
+    output = @UTF8Decode(output)
+    output
+
+  UTF8Encode: (string) ->
+    string = string.replace(/\r\n/g, "\n")
+    utftext = ""
+    n = 0
+    while n < string.length
+      c = string.charCodeAt(n)
+      if c < 128
+        utftext += String.fromCharCode(c)
+      else if (c > 127) and (c < 2048)
+        utftext += String.fromCharCode((c >> 6) | 192)
+        utftext += String.fromCharCode((c & 63) | 128)
+      else
+        utftext += String.fromCharCode((c >> 12) | 224)
+        utftext += String.fromCharCode(((c >> 6) & 63) | 128)
+        utftext += String.fromCharCode((c & 63) | 128)
+      n++
+    utftext
+
+  UTF8Decode: (utftext) ->
+    string = ""
+    i = 0
+    c = c1 = c2 = 0
+    while i < utftext.length
+      c = utftext.charCodeAt(i)
+      if c < 128
+        string += String.fromCharCode(c)
+        i++
+      else if (c > 191) and (c < 224)
+        c2 = utftext.charCodeAt(i + 1)
+        string += String.fromCharCode(((c & 31) << 6) | (c2 & 63))
+        i += 2
+      else
+        c2 = utftext.charCodeAt(i + 1)
+        c3 = utftext.charCodeAt(i + 2)
+        string += String.fromCharCode(((c & 15) << 12) | ((c2 & 63) << 6) | (c3 & 63))
+        i += 3
+    string
+
+###
+--------------- /home/gdot/github/crystal/source/mvc/model-view.coffee--------------
+###
+window.ModelView = class ModelView
+  constructor: (@model, @view)->
+    @__bindings__ = []
+    for key,args of @bindings
+      args = [args] unless args instanceof Array
+      [selector,binding] = key.split '|'
+      if Bindings[binding]
+        @__bindings__.push [selector.trim(), binding.trim(), args]
+    for key,fn of @events
+      @view.delegateEvent key, fn.bind @
+  render: ->
+    for bobj in @__bindings__
+      [selector,binding,args] = bobj
+      args = args.dup()
+      views = if selector is '.' then @view else @view.all(selector)
+      args.unshift views
+      Bindings[binding].apply @model, args
+###
+--------------- /home/gdot/github/crystal/source/mvc/model.coffee--------------
+###
+window.Model = class Model extends Crystal.Utils.Evented
+  constructor: (data)->
+    @_ensureProperties()
+    for key,descriptor of @properties
+      @_property key, descriptor
+    for key,value of data
+      if Object.getOwnPropertyDescriptor(@,key)
+        @[key] = value
+
+  _ensureProperties: ->
+    unless @__properties__
+      Object.defineProperty @, '__properties__',
+        value: {}
+        enumerable: false
+
+  _property: (name, value)->
+    Object.defineProperty @, name,
+      get: ->
+        @__properties__[name]
+      set: (val) ->
+        if value instanceof Function
+          val = value val
+        if val isnt @__properties__[name]
+          @__properties__[name] = val
+          @trigger 'change'
+          @trigger 'change:'+name
+      enumerable: true
+###
+--------------- /home/gdot/github/crystal/source/mvc/collection.coffee--------------
+###
+# @requires ../types/array
+# @requires ../utils/evented
+
+window.Collection = class MVC.Collection extends Array
+  constructor: (args...) ->
+    super
+    if args.length > 0
+      @push.apply @, args
+    @
+
+  transaction: (fn) ->
+    old = @dup()
+    @silent = true
+    fn.call @
+    @silent = false
+    @_compare old
+    @
+
+  switch: (index1,index2) ->
+    return unless 0 <= index1 <= @length-1
+    return unless 0 <= index2 <= @length-1
+    @transaction ->
+      x = @[index2]
+      @[index2] = @[index1]
+      @[index1] = x
+    @
+
+  splice: (index,length,args...) ->
+    old = @dup()
+    r = Collection.__super__.splice.apply @, [index,length]
+    items = args.uniq().compact().filter (item) => @indexOf(item) is -1
+    items.unshift index, 0
+    r = Collection.__super__.splice.apply @, items
+    @_compare old
+    r
+
+  _compare: (old) ->
+    unless @silent
+      n = @map((item,i) =>
+        if old.indexOf(item) is -1
+          [item,i]
+        else false
+      ).compact()
+
+      moves = []
+      removes = []
+      old.map((item,i) =>
+        index = @indexOf item
+        if index isnt -1 and index isnt i
+          moves.push [i,index]
+        if index is -1
+          removes.push i
+      ).compact()
+      
+      @trigger 'change', {
+        removed: removes
+        added: n
+        moved: moves
+      }
+
+['push','unshift'].forEach (key) ->
+  Collection::[key] = (args...)->
+    old = @dup()
+    items = args.uniq().compact().filter (item) => @indexOf(item) is -1
+    r = Array::[key].apply @, items
+    @_compare old
+    r
+
+['pop','shift','sort','reverse'].forEach (key) ->
+  Collection::[key] = (args...)->
+    old = @dup()
+    r = Array::[key].apply @, args
+    @_compare old
+    r
+
+for key, value of Utils.Evented::
+  Collection::[key] = value
+###
+--------------- /home/gdot/github/crystal/source/mvc/bindings.coffee--------------
+###
+window.Bindings =
+  define: (key,value) ->
+    @[key] = value
+Bindings.define 'text', (els,property) ->
+  els.forEach (el) => el.text = @[property]
+Bindings.define 'toggleClass', (el,property,cls) ->
+  if @[property]
+    el.classList.add cls
+  else
+    el.classList.remove cls
+Bindings.define 'value', (els,property) ->
+  els.forEach (el) =>
+    el.value = @[property]
+    el.addEvent 'input', =>
+      @[property] = el.value
+
+Bindings.define 'visible', (el,property) ->
+  if @[property]
+    el.css 'display', 'none'
+  else
+    el.css 'display', 'block
+###
+--------------- /home/gdot/github/crystal/source/types/color.coffee--------------
+###
+# @requires ./number
+window.Color = class Color
+  constructor: (color = "FFFFFF") ->
+    color = color.toString()
+    color = color.replace /\s/g, ''
+    if (match = color.match /^#?([0-9a-f]{3}|[0-9a-f]{6})$/i)
+      if color.match /^#/
+        hex = color[1..]
+      else
+        hex = color
+      if hex.length is 3
+        hex = hex.replace(/([0-9a-f])/gi, '$1$1')
+      @type = 'hex'
+      @_hex = hex
+      @_alpha = 100
+      @_update 'hex'
+    else if (match = color.match /^hsla?\((-?\d+),\s*(-?\d{1,3})%,\s*(-?\d{1,3})%(,\s*([01]?\.?\d*))?\)$/)?
+      @type = 'hsl'
+      @_hue = parseInt(match[1]).clampRange 0, 360
+      @_saturation = parseInt(match[2]).clamp 0, 100
+      @_lightness = parseInt(match[3]).clamp 0, 100
+      @_alpha = parseInt(parseFloat(match[5])*100) || 100
+      @_alpha = @_alpha.clamp 0, 100
+      @type += if match[5] then "a" else ""
+      @_update 'hsl'
+    else if (match = color.match /^rgba?\((\d{1,3}),\s*(\d{1,3}),\s*(\d{1,3})(,\s*([01]?\.?\d*))?\)$/)?
+      @type = 'rgb'
+      @_red = parseInt(match[1]).clamp 0, 255
+      @_green = parseInt(match[2]).clamp 0, 255
+      @_blue = parseInt(match[3]).clamp 0, 255
+      @_alpha = parseInt(parseFloat(match[5])*100) || 100
+      @_alpha = @_alpha.clamp 0, 100
+      @type += if match[5] then "a" else ""
+      @_update 'rgb'
+    else
+      throw 'Wrong color format!'
+
+  invert: ->
+    @_red = 255 - @_red
+    @_green = 255 - @_green
+    @_blue = 255 - @_blue
+    @_update 'rgb'
+    @
+
+  mix: (color2, alpha = 50) ->
+    color2 = new Color(color2) unless color2 instanceof Color
+    c = new Color()
+    for item in ['red','green','blue']
+      c[item] = Math.round((color2[item] / 100 * (100 - alpha))+(@[item] / 100 * alpha)).clamp 0, 255
+    c
+
+  _hsl2rgb: ->
+    h = @_hue / 360
+    s = @_saturation / 100
+    l = @_lightness / 100
+    if s is 0
+      val = Math.round(l * 255)
+      @_red = val
+      @_green = val
+      @_blue =val
+    if l < 0.5
+      t2 = l * (1 + s)
+    else
+      t2 = l + s - l * s
+    t1 = 2 * l - t2
+    rgb = [ 0, 0, 0 ]
+    i = 0
+
+    while i < 3
+      t3 = h + 1 / 3 * -(i - 1)
+      t3 < 0 and t3++
+      t3 > 1 and t3--
+      if 6 * t3 < 1
+        val = t1 + (t2 - t1) * 6 * t3
+      else if 2 * t3 < 1
+        val = t2
+      else if 3 * t3 < 2
+        val = t1 + (t2 - t1) * (2 / 3 - t3) * 6
+      else
+        val = t1
+      rgb[i] = val * 255
+      i++
+    @_red = Math.round(rgb[0])
+    @_green = Math.round(rgb[1])
+    @_blue = Math.round(rgb[2])
+
+  _hex2rgb: ->
+    value = parseInt(@_hex, 16)
+    @_red = value >> 16
+    @_green = (value >> 8) & 0xFF
+    @_blue = value & 0xFF
+
+  _rgb2hex: ->
+    value = (@_red << 16 | (@_green << 8) & 0xffff | @_blue)
+    x = value.toString(16)
+    x = '000000'.substr(0, 6 - x.length) + x
+    @_hex = x.toUpperCase()
+
+  _rgb2hsl: ->
+    r = @_red / 255
+    g = @_green / 255
+    b = @_blue / 255
+    min = Math.min(r, g, b)
+    max = Math.max(r, g, b)
+    delta = max - min
+    if max is min
+      h = 0
+    else if r is max
+      h = (g - b) / delta
+    else if g is max
+      h = 2 + (b - r) / delta
+    else h = 4 + (r - g) / delta  if b is max
+    h = Math.min(h * 60, 360)
+    h += 360  if h < 0
+    l = (min + max) / 2
+    if max is min
+      s = 0
+    else if l <= 0.5
+      s = delta / (max + min)
+    else
+      s = delta / (2 - max - min)
+    @_hue = h
+    @_saturation = s * 100
+    @_lightness = l *100
+
+  _update: (type) ->
+    switch type
+      when 'rgb'
+        @_rgb2hsl()
+        @_rgb2hex()
+      when 'hsl'
+        @_hsl2rgb()
+        @_rgb2hex()
+      when 'hex'
+        @_hex2rgb()
+        @_rgb2hsl()
+
+  toString: (type = 'hex')->
+    switch type
+      when "rgb"
+        "rgb(#{@_red}, #{@_green}, #{@_blue})"
+      when "rgba"
+        "rgba(#{@_red}, #{@_green}, #{@_blue}, #{@alpha/100})"
+      when "hsl"
+        "hsl(#{@_hue}, #{Math.round(@_saturation)}%, #{Math.round(@_lightness)}%)"
+      when "hsla"
+        "hsla(#{@_hue}, #{Math.round(@_saturation)}%, #{Math.round(@_lightness)}%, #{@alpha/100})"
+      when "hex"
+        @hex
+
+['red','green','blue'].forEach (item) ->
+  Object.defineProperty Color::, item,
+    get: ->
+      @["_"+item]
+    set: (value) ->
+      @["_"+item] = parseInt(value).clamp 0, 255
+      @_update 'rgb'
+
+['lightness','saturation'].forEach (item) ->
+  Object.defineProperty Color::, item,
+    get: ->
+      @["_"+item]
+    set: (value) ->
+      @["_"+item] = parseInt(value).clamp 0, 100
+      @_update 'hsl'
+
+['rgba','rgb','hsla','hsl'].forEach (item) ->
+  Object.defineProperty Color::, item,
+    get: ->
+      @toString(item)
+
+Object.defineProperties Color::,
+  hex:
+    get: ->
+      @_hex
+    set: (value) ->
+      @_hex = value
+      @_update 'hex'
+  hue:
+    get: ->
+      @_hue
+    set: (value) ->
+      @_hue = parseInt(value).clampRange 0, 360
+      @_update 'hsl'
+  alpha:
+    get: ->
+      @_alpha
+    set: (value) ->
+      @_alpha = parseInt(value).clamp 0, 100
+###
+--------------- /home/gdot/github/crystal/source/types/function.coffee--------------
+###
+Object.defineProperties Function::,
+  delay:
+    value: (ms,bind = @,args...) ->
+      id = setTimeout =>
+        @apply bind, args
+        clearTimeout id
+      , ms
+  periodical:
+    value: (ms,bind = @, args...) ->
+      setInterval =>
+        @apply bind, args
+      , ms
+###
+--------------- /home/gdot/github/crystal/source/types/unit.coffee--------------
+###
+window.Unit = class Unit
+  @UNITS: {px: true,  em: true}
+  constructor: (value = "0px", basePX = 16) ->
+    @base = basePX
+    @set value
+
+  toString: (type = "px") ->
+    return @_value+"px" unless type of Unit.UNITS
+    if type is 'em'
+      (@_value / @base)+"em"
+    else
+      return @_value+"px"
+
+  set: (value) ->
+    if(match = value.match /(\d+)(px|em)$/)
+      [m,value,type] = match
+      v = parseFloat(value) or 0
+      if type is 'em'
+        @_value = parseInt(@base*v)
+      else
+        @_value = parseInt(v)
+    else
+      throw 'Wrong Unit format!'
+
+['px','em'].forEach (type) ->
+  Object.defineProperty Unit::, type,
+    get: ->
+      @toString(type)
+###
+--------------- /home/gdot/github/crystal/source/crystal.coffee--------------
+###
+Types = {}
+###
+--------------- /home/gdot/github/crystal/source/dom/node-list.coffee--------------
+###
+Object.defineProperties NodeList::,
+  forEach:
+    value: (fn, bound = @) ->
+      for node,i in @
+        fn.call bound, node, i
+      @
+  map:
+    value: (fn, bound = @) ->
+      for node in @
+        fn.call bound, node
+  pluck:
+    value: (property) ->
+      for node in @
+        node[property]
+  include:
+    value: (el) ->
+      for node in @
+        return true if node is el
+      false
+  first:
+    get: ->
+      @[0]
+  last:
+    get: ->
+      @[@length - 1]    
+###
+--------------- /home/gdot/github/crystal/source/dom/document-fragment.coffee--------------
+###
+Object.defineProperties DocumentFragment::
+  children:
+    get: ->
+      @childNodes
+  remove:
+    value: (el) ->
+      for node in @childNodes
+        if node is el
+          @removeChild el
+      @
+
+DocumentFragment.Create = ->
+  document.createDocumentFragment()
+###
+--------------- /home/gdot/github/crystal/source/app/view.coffee--------------
+###
+
+###
+--------------- /home/gdot/github/crystal/source/app/app.coffee--------------
+###
+# @requries ../utils/evented
+
+_wrap = (name, app)->
+  (data,fn) ->
+    if data instanceof Object
+      for key, value of data
+        app[name].call app, key, value
+    else
+      app[name].call app, data, fn
+
+window.Application = class Application extends Utils.Evented
+  constructor: ->
+    @logger = new ConsoleLogger
+    @keyboard = new Keyboard
+    @router = new History
+    window.addEvent 'load', => @trigger 'load'
+    ###
+    nw > 3.0
+    if PLATFORM is Platforms.NODE_WEBKIT
+      win = require('nw.gui').Window.get()
+      win.on 'close', ->
+      win.on 'minimize', => @trigger 'minimize'
+    ###
+
+  set: (name,value) ->
+    switch name
+      when "logger"
+        @logger = new value
+      else
+        @[name] = value
+
+  get: (key, fn)->
+    @router[key] = fn.bind @
+  sc: (key, fn) ->
+    @keyboard[key] = fn.bind @
+  def: (key, fn) ->
+    @[key] = fn
+
+  event: (key,fn) ->
+    document.delegateEvent key, fn.bind @
+
+  on: (name,fn)->
+    if name is 'end'
+      window.onbeforeunload = fn
+    else
+      super
+
+  subscribe: (name, callback)->
+    super name, callback.bind @
+
+  @new: (func) ->
+    @app = new Application
+    context = {}
+    for key of @app
+      context[key] = _wrap(key,@app)
+    func.call context
+    @app
+###
+--------------- /home/gdot/github/crystal/source/app/env.coffee--------------
+###
+window.Platforms = 
+  WEBSTORE: 1
+  NODE_WEBKIT: 2
+  WEB:3
+  
+window.PLATFORM = if window.location.href.match(/^chrome-extension\:\/\//)
+    Platforms.WEBSTORE
+  else if 'require' of window
+    Platforms.NODE_WEBKIT
+  else
+    Platforms.WEB
+###
+--------------- /home/gdot/github/crystal/source/store/store.coffee--------------
+###
+window.Store = class Store.Store
+  constructor: (options = {})->
+    
+    @prefix = options.prefix or ""
+    ad = parseInt(options.adapter) or 0
+    
+    @$serialize = options.serialize if options.serialize instanceof Function
+    @$deserialize = options.deserialize if options.deserialize instanceof Function
+    
+    a = window
+    indexedDB = 'indexedDB' of a or 'webkitIndexedDB' of a or 'mozIndexedDB' of a
+    requestFileSystem = 'requestFileSystem' of a or 'webkitRequestFileSystem' of a
+    websql = 'openDatabase' of a
+    localStore = 'localStorage' of a
+    xhr = 'XMLHttpRequest' of a
+    
+    adapter = switch ad
+      when 0
+        if indexedDB
+          Store.IndexedDB
+        else if websql
+          Store.WebSQL
+        else if requestFileSystem
+          Store.FileSystem
+        else if xhr
+          Store.Request
+        else if localStorage
+          Store.LocalStorage
+        else
+          Store.Memory
+      when 1
+        throw "IndexedDB not supported!" unless indexedDB
+        Store.IndexedDB
+      when 2
+        throw "WebSQL not supported!" unless websql
+        Store.WebSQL
+      when 3
+        throw "FileSystem not supported!" unless requestFileSystem
+        Store.FileSystem
+      when 4
+        throw "LocalStorage not supported!" unless localStorage
+        Store.LocalStorage
+      when 5
+        throw "XHR not supported!" unless xhr
+        Store.Request
+      when 6
+        Store.Memory
+      else
+        throw "Adapter not found!"
+    
+    ['get','set','remove','list'].forEach (item) =>
+        @[item] = ->
+          args = Array::slice.call arguments
+          if @running
+            @chain item, args
+          else
+            @call item, args
+          @
+    
+    @$chain = []
+    
+    @adapter = new adapter()
+    
+    @adapter.init.call @, (store) =>
+      @ready = true
+      options.callback? @
+      @callChain()
+  
+  error: ->
+    console.error arguments
+  
+  serialize: (obj) -> 
+    if @$serialize
+      return @$serialize obj
+    JSON.stringify obj
+  deserialize: (json) ->
+    if @$deserialize
+      return @$deserialize obj
+    JSON.parse json 
+  
+  chain: (type, args) ->
+    @$chain.push [type, args]
+  callChain: ->
+    if @$chain.length > 0
+      first = @$chain.shift()
+      @call first[0], first[1]
+      
+  call: (type, args) ->
+    unless @ready
+      @chain type, args
+    else
+      @running = true
+      if (type is 'set' and args.length is 3) or (type is 'list' and args.length is 1) or ((type is 'get' or type is 'remove') and args.length is 2)
+        callback = args.pop()
+      @adapter[type].apply @, args.concat (data) =>
+        if typeof callback is 'function' then callback data
+        @running = false
+        @callChain()
+
+  @ADAPTER_BEST = 0
+  @INDEXED_DB = 1
+  @WEB_SQL = 2
+  @FILE_SYSTEM = 3
+  @LOCAL_STORAGE = 4
+  @XHR = 5
+  @MEMORY = 6
+###
+--------------- /home/gdot/github/crystal/source/store/adapters/xhr.coffee--------------
+###
+# @requires ../store
+# @requires ../../utils/request
+window.Store.Request = class Store.XHR
+  init: (callback) ->
+    @request = new Request @prefix
+    callback @
+  get: (key, callback) ->
+    @request.get {key:key}, (response) =>
+      callback? @deserialize response.body
+  set: (key, value, callback) ->
+    @request.post {key:key, value: @serialize value}, (response) =>
+      callback? response.body
+  list: (callback) ->
+    @request.get (response) =>
+      callback? response.body
+  remove: (key, callback) ->
+    @request.delete {key:key}, (response) =>
+      callback? response.body
+
+###
+--------------- /home/gdot/github/crystal/source/store/adapters/file-system.coffee--------------
+###
+# @requires ../store
+
+window.Store.FileSystem = class Store.FileSystem
+
+  init: (callback) ->
+    rfs = window.RequestFileSystem || window.webkitRequestFileSystem
+    rfs window.PRESISTENT, 50*1024*1024, (store) =>
+      @storage = store
+      callback @
+    , @error
+
+  list: (callback) ->
+    dirReader = @storage.root.createReader()
+    entries = []
+    readEntries = =>
+      dirReader.readEntries (results) ->
+        if (!results.length)
+          entries.sort()
+          callback entries.map (item) ->
+            item.name
+        else 
+          entries = entries.concat(Array::slice.call(results))
+          readEntries()
+      , @error
+    readEntries()
+
+  remove: (file, callback) ->
+    @storage.root.getFile file, null, (fe) =>
+      fe.remove ->
+        callback true
+      , ->
+        callback false
+    , ->
+      callback false
+
+  get: (file, callback) ->
+    @storage.root.getFile file, null, (fe) =>
+      fe.file (f) =>
+        reader = new FileReader()
+        reader.onloadend = (e) =>
+          callback @deserialize e.target.result
+        reader.readAsText f
+      , ->
+        callback false
+    , ->
+      callback false
+
+  set: (file, data, callback = ->) ->
+    @storage.root.getFile file, {create:true}, (fe) =>
+      fe.createWriter (fileWriter) =>
+        fileWriter.onwriteend = (e) =>
+          callback true
+        fileWriter.onerror = (e) =>
+          callback false
+        bb = new (window.WebKitBlobBuilder || BlobBuilder())
+        bb.append(@serialize data)
+        fileWriter.write(bb.getBlob('text/plain'))
+      , ->
+        callback false
+    , ->
+      callback false
+
+###
+--------------- /home/gdot/github/crystal/source/store/adapters/websql.coffee--------------
+###
+# @requires ../store
+
+window.Store.WebSQL = class Store.WebSQL
+
+    init: (callback) ->
+      @exec = (statement, callback = (->), args) ->
+        @db.transaction (tr) =>
+          tr.executeSql statement, args, callback, (tr,err) =>
+            callback false
+          , ->
+            callback false
+      @db = openDatabase @prefix, '1.0', 'Store', 5 * 1024 * 1024
+      @exec "CREATE TABLE IF NOT EXISTS store ( 'key' VARCHAR PRIMARY KEY NOT NULL, 'value' TEXT)", =>
+        callback @
+
+    get: (key, callback) ->
+      @exec "SELECT * FROM store WHERE key = '#{key}'", (tr,result) =>
+        if result.rows.length > 0
+          ret = @deserialize result.rows.item(0).value
+        else
+          ret = false
+        callback.call @, ret
+
+    set: (key, value, callback) ->
+      @exec "SELECT * FROM store WHERE key = '#{key}'", (tr,result) =>
+        unless result.rows.length > 0
+          @exec "INSERT INTO store (key, value) VALUES ('#{key}','#{@serialize value}')", (tr, result) =>
+            if result.rowsAffected is 1
+              callback true
+            else
+              callback false
+        else
+          @exec "UPDATE store SET value = '#{@serialize value}' WHERE key = '#{key}'", (tr, result) =>
+            if result.rowsAffected is 1
+              callback true
+            else
+              callback false
+
+    list: (callback) ->
+      @exec "SELECT key FROM store", (tr, results) =>
+        keys = []
+        if results.rows.length > 0
+          [0..results.rows.length-1].forEach (i) ->
+            keys.push results.rows.item(i).key
+        callback keys
+
+    remove: (key, callback) ->
+      @exec "DELETE FROM store WHERE key = '#{key}'", (tr, result) =>
+        if result.rowsAffected is 1
+          callback true
+        else
+          callback false
+
+###
+--------------- /home/gdot/github/crystal/source/store/adapters/memory.coffee--------------
+###
+# @requires ../store
+
+window.Store.Memory = class Store.Memory
+  init: (callback) ->
+    @store = {}
+    callback? @
+
+  get: (key, callback) -> 
+    if (a = @store[key.toString()])
+      ret = @deserialize a
+    else
+      ret = false
+    callback? ret 
+
+  set: (key, value, callback) ->
+    try
+      @store[key.toString()] = @serialize value
+      ret = true 
+    catch error
+      @error error
+    callback? ret or false
+
+  list: (callback) ->
+    ret = []
+    try
+      ret = for own key of @store 
+        key
+    catch error
+      @error error
+    callback? ret
+
+  remove: (key, callback) ->
+    if @store[key.toString()] is undefined
+      callback false 
+      return
+    try
+      delete @store[key.toString()]
+      ret = true
+    catch error
+      @error error
+    callback? ret or false
+
+###
+--------------- /home/gdot/github/crystal/source/store/adapters/indexed-db.coffee--------------
+###
+# @requires ../store
+
+window.Store.IndexedDB = class Store.IndexedDB
+    init: (callback) ->
+      @version = "2"
+      @database = 'store'
+      a = window
+      a.indexedDB = a.indexedDB || a.webkitIndexedDB || a.mozIndexedDB
+      request = window.indexedDB.open(@prefix, @version)
+      request.onupgradeneeded = (e) =>
+        @db = e.target.result
+        unless @db.objectStoreNames.contains("note")
+          store = @db.createObjectStore(@database, keyPath: "key")
+      request.onsuccess = (e) =>
+        @db = e.target.result
+        if 'setVersion' in @db
+          unless @version is @db.version
+            setVrequest = @db.setVersion(@version)
+            setVrequest.onfailure = @error
+            setVrequest.onsuccess = (e) =>
+              store = @db.createObjectStore(@database, keyPath: "key")
+              trans = setVrequest.result
+              trans.oncomplete = ->
+                callback @
+          else
+            callback @
+        else
+          callback @
+      request.onfailure = @error
+    
+    get: (key, callback) ->
+      trans = @db.transaction([@database], 'readwrite')
+      store = trans.objectStore(@database)
+      request = store.get key.toString()
+      request.onerror = ->
+        callback false
+      request.onsuccess = (e) =>
+        result = e.target.result
+        if result
+          callback @deserialize result.value
+        else
+          callback false
+
+    set: (key, value, callback) ->
+      trans = @db.transaction([@database], 'readwrite')
+      store = trans.objectStore(@database)
+      request = store.put(
+        key: key.toString()
+        value: @serialize value
+      )
+      request.onsuccess = ->
+        callback true
+      request.onerror = @error
+
+    list: (callback) ->
+      trans = @db.transaction([@database], 'readwrite')
+      store = trans.objectStore(@database)
+      cursorRequest = store.openCursor()
+      cursorRequest.onerror = @error
+      ret = []
+      cursorRequest.onsuccess = (e) =>
+        result = e.target.result
+        if result 
+          ret.push result.value.key
+          result.continue()
+        else
+          callback ret
+
+    remove: (key, callback) ->
+      trans = @db.transaction([@database], 'readwrite')
+      store = trans.objectStore(@database)  
+      r = store.get key.toString()
+      r.onerror = ->
+        callback false
+      r.onsuccess = (e) =>
+        result = e.target.result
+        if result
+          r = store.delete key.toString() 
+          r.onsuccess = -> 
+            callback true
+          r.onerror = ->
+            callback false
+        else
+          callback false
+
+
+###
+--------------- /home/gdot/github/crystal/source/store/adapters/localstorage.coffee--------------
+###
+# @requires ../store
+
+window.Store.LocalStorage = class Store.LocalStorage
+
+  init: (callback) ->
+    @prefix += "::" unless @prefix is ""
+    callback @
+
+  get: (key, callback) ->
+    try
+      ret = @deserialize localStorage.getItem @prefix+key.toString()
+    catch error
+      @error error
+    callback ret or false
+
+  set: (key, value, callback) ->
+    try
+      localStorage.setItem @prefix+key.toString(), @serialize value
+      ret = true 
+    catch error
+      @error error
+    callback ret or false
+
+  list: (callback) ->
+    ret = []
+    for i in [0..localStorage.length-1]
+      try
+        key = localStorage.key(i)
+        if @prefix != ""
+          if new RegExp("^#{@prefix}").test key
+            ret.push key.replace new RegExp("^#{@prefix}"), ""
+        else
+          ret.push key
+      catch error
+        @error error
+    callback ret
+
+  remove: (key, callback) ->
+    if localStorage.getItem(@prefix+key) is null
+      callback false 
+      return
+    try
+      localStorage.removeItem @prefix+key.toString()
+      ret = true
+    catch error
+      @error error
+    callback ret or false
+###
+--------------- /home/gdot/github/crystal/source/ui/list.coffee--------------
+###
+window.UI = {}
+
+UI.List = class List extends Crystal.Utils.Evented
+  indexOf: (el) -> @base.indexOf el
+  itemOf: (el) -> @collection[@base.indexOf el]
+
+  change: (data) ->
+    for item in data.added
+      if @options.element instanceof HTMLElement
+        el = @options.element.cloneNode(true)
+      else
+        el = Element.create @options.element
+      if @options.prepare instanceof Function
+        @options.prepare.call @, el, item[0]
+      @add el, item[1]
+    @remove data.removed
+    @move data.moved
+
+  add: (el,index) ->
+    @base.insertBefore el, @base.childNodes[index]
+
+  remove: (indexes) ->
+    (for index in indexes
+      @base.childNodes[index]).forEach (el) -> el.dispose()
+
+  move: (moves) ->
+    elements = moves.map (move) => @base.childNodes[move[0]]
+    for el, i in elements
+      @base.insertBefore el, @base.childNodes[moves[i][1]]
+
+  constructor: (@options) ->
+    @base = Element.create()
+    @collection = @options.collection
+    @collection.on 'change', (e,data) => @change data

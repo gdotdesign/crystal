@@ -1,11 +1,15 @@
 window.UI = {}
 
-UI.List = class List
+UI.List = class List extends Crystal.Utils.Evented
   indexOf: (el) -> @base.indexOf el
+  itemOf: (el) -> @collection[@base.indexOf el]
 
   change: (data) ->
     for item in data.added
-      el = Element.create @options.zen
+      if @options.element instanceof HTMLElement
+        el = @options.element.cloneNode(true)
+      else
+        el = Element.create @options.element
       if @options.prepare instanceof Function
         @options.prepare.call @, el, item[0]
       @add el, item[1]
