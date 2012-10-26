@@ -1,3 +1,4 @@
+# @requires ../utils/evented
 window.Model = class Model extends Crystal.Utils.Evented
   constructor: (data)->
     @_ensureProperties()
