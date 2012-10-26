@@ -1,5 +1,5 @@
+# @requires ../utils/evented
 window.UI = {}
-
 UI.List = class List extends Crystal.Utils.Evented
   indexOf: (el) -> @base.indexOf el
   itemOf: (el) -> @collection[@base.indexOf el]
