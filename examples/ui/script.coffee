@@ -44,7 +44,7 @@ class AbsoluteList extends UI.List
     @trigger 'moved'
 
 # Model
-class ToDoItem extends Model
+window.ToDoItem = class ToDoItem extends Model
   properties:
     name: {}
     done: {}
@@ -161,7 +161,7 @@ window.app = Application.new ->
       prepare: (el, item) ->
         mv = new ToDoItemView(item,el)
         mv.render()
-    
+    @listView.base.dataset.empty = "No Items left! Yey!"
     @listEl.append @listView.base
     @listView.on 'moved', => @chevrons()
     @collection.on 'change', => @chevrons()
