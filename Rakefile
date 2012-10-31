@@ -55,7 +55,11 @@ end
 
 task :examples do
   require './assets/lib/example_server'
-  builder = Rack::Builder.new { run ExampleServer }
+  statics = Dir.glob("./assets/*/").map {|dir| "/"+File.basename(dir)}
+  builder = Rack::Builder.new { 
+    use Rack::Static, :urls => statics, :root => "./assets"
+    run ExampleServer
+  }
   Rack::Handler::Thin.run builder, :Port => 5000
 end
 

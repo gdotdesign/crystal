@@ -1,7 +1,0 @@
-{
-  "main": "index.html",
-  "window": {
-    "toolbar": false,
-    "as_desktop": true
-  }
- }

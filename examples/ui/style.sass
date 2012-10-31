@@ -1,20 +1,20 @@
-@import url(//fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic,700italic)
-@import url(//netdna.bootstrapcdn.com/font-awesome/2.0/css/font-awesome.css)
+@import url(http://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic,700italic)
+@import url(http://netdna.bootstrapcdn.com/font-awesome/2.0/css/font-awesome.css)
 
 body
-  :margin 20px
   :overflow hidden
-  :font-family "Source Sans Pro"
   :background #222
-  :font-weight 400
-
-@-webkit-keyframes load
+  :font-size 16px
+  :margin 0
+  :font-family "Source Sans Pro"
+  
+@-webkit-keyframes todo-load
   0%
     :-webkit-transform translateY(-200px)
   100%
     :-webkit-transform translateY(0)
 
-@-webkit-keyframes load2
+@-webkit-keyframes todo-load2
   0%
     :opacity 0
     :-webkit-transform translateX(-130%) rotateY(-90deg)
@@ -22,7 +22,7 @@ body
     :opacity 1
     :-webkit-transform translateX(0)
 
-@-webkit-keyframes load3
+@-webkit-keyframes todo-load3
   0%
     :opacity 0
     :-webkit-transform translateX(-130%) rotateY(-90deg)
@@ -30,166 +30,194 @@ body
     :opacity 0.3
     :-webkit-transform translateX(0)
 
-section
-  :max-width 500px
-  :margin 0 auto
+[app=todo]
 
-.menu
-  > *
-    :float left
-.menu > input
-  :background #eee
-  :border none
-  :margin 0
-  :padding 0
-  :height 30px
-  :line-height 28px
-  :display block
-  :border-radius 2px
-  :box-sizing border-box
-  :-webkit-transition-duration 320ms
-  &[type=text]
-    &::-webkit-input-placeholder
-      :line-height 20px
-      :font-style italic
-    :border-bottom 3px solid transparent
-    :-webkit-animation load 500ms 1s backwards
-    :font-size 14px
-    :width 60%
-    :line-height 14px
-    :margin-bottom 3px
-    :padding 8px 10px
-    &:focus
-      :outline none
-      :border-bottom-color #1FA1C5
-input[type=button]
-  :-webkit-animation load 500ms 1.2s backwards
-  :width 17%
-.menu i
-  :width 10%
-  :-webkit-animation load 500ms 1.4s backwards
-  &.icon-sort
-    :background-color #74B541
-    &:hover
-      :background-color lighten(#74B541,5%)
-    &:active
-      :background-color darken(#74B541,5%)
-  &:last-child
-    :background-color #FF6000
-    &:hover
-      :background-color lighten(#FF6000,5%)
-    &:active
-      :background-color darken(#FF6000,5%)
-input[type=button], .menu i
-  :margin-left 1%
-  :background-image -webkit-linear-gradient(rgba(#fff,0.2), rgba(#fff,0))
-  :text-shadow 0 1px 1px rgba(#000,0.4)
-  :border-top 1px solid rgba(#fff,0.45)
-  :box-shadow 0 2px 1px rgba(#000,0.2)
-  :border-radius 2px
-  :box-sizing border-box
-  :font-family "Source Sans Pro"
-  :color #fff
-  :font-weight 600
-  :background-color #1FA1C5
-  :text-transform uppercase
-  :cursor pointer
-  &:hover
-    :border-top 1px solid rgba(#fff,0.1)
-    :background-color lighten(#1FA1C5,5%)
-  &:active
-    :border-top 1px solid rgba(#fff,0.1)
-    :background-color darken(#1FA1C5,5%)
-.menu i
-  :display block
-  :float left
-  :height 30px
-  :line-height 32px
-  :text-align center
-#list
-  :position relative
-  :clear both
-  > div:empty
-    :text-align center
-    :padding-top 40px
-    &:after
-      :content attr(data-empty)
-      :color #555
-      :font-weight 600
-      :font-size 30px
-  @for $i from 1 through 2000
-    .item:nth-child(#{$i})
-      :-webkit-animation-delay 1000ms+$i*70ms
-.item
-  > div
+  :background #222
+  .todo
+    :max-width 700px
+    :margin 0 auto
+
+  .wrap
+    :width 700px
+    :margin 0 auto
+
+
+
+  .wrap
+    > *
+      :float left
+    
+  .menu
+    :background-color rgba(0,0,0,.5)
     :position absolute
-    :top 0
     :left 0
-    :bottom 0
     :right 0
-    :-webkit-transition-duration 160ms
-    :-webkit-transition-easing-function linear
-  > div:last-child
-    :-webkit-transform perspective(1000) rotateX(-90deg)
+    :top 0
+    :padding 10px
+  .wrap > input
+    :background #eee
+    :border none
+    :margin 0
+    :padding 0
+    :height 35px
+    :line-height 28px
+    :display block
     :border-radius 2px
-    input
-      :border none
-      :margin 0
+    :box-sizing border-box
+    :-webkit-transition-duration 320ms
+    &[type=text]
+      &::-webkit-input-placeholder
+        :line-height 20px
+        :font-style italic
+      :border-bottom 3px solid transparent
+      :-webkit-animation todo-load 500ms 1s backwards
       :font-size 14px
+      :width 60%
       :line-height 14px
-      :padding 6px 10px
-      :width 100%
-      :box-sizing border-box
-      :height 30px
-      :border-radius inherit
+      :margin-bottom 3px
+      :padding 8px 10px
       &:focus
         :outline none
-  > div:first-child
-    :-webkit-transition-delay 160ms
-    :background-color #333
-    :background-image -webkit-linear-gradient(rgba(#fff,0.05), rgba(#fff,0))
-    :border-radius 2px
-    :border-top 1px solid rgba(#fff,0.14)
+        :border-bottom-color #1FA1C5
+  input[type=button]
+    :-webkit-animation todo-load 500ms 1.2s backwards
+    :width 17%
+  .menu i
+    :width 10%
+    :-webkit-animation todo-load 500ms 1.4s backwards
+    &.icon-sort
+      :background-color #74B541
+      &:hover
+        :background-color lighten(#74B541,5%)
+      &:active
+        :background-color darken(#74B541,5%)
+    &:last-child
+      :background-color #FF6000
+      &:hover
+        :background-color lighten(#FF6000,5%)
+      &:active
+        :background-color darken(#FF6000,5%)
+  input[type=button], .menu i
+    :margin-left 1%
+    :background-image -webkit-linear-gradient(rgba(#fff,0.2), rgba(#fff,0))
+    :text-shadow 0 1px 1px rgba(#000,0.4)
+    :border-top 1px solid rgba(#fff,0.45)
     :box-shadow 0 2px 1px rgba(#000,0.2)
-  :color #eee
-  :-webkit-animation load2 500ms backwards
-  :height 30px
-  :box-sizing border-box
-  :line-height 27px
-  :padding 0 5px
-  :width 100%
-  :-webkit-user-select none
-  :text-shadow 0 1px 1px rgba(#000,0.4)
-  &.edit
-    div:first-child
-      :-webkit-transition-delay 0
-      :-webkit-transform perspective(1000) rotateX(90deg)
-    div:last-child
-      :-webkit-transition-delay 160ms
-      :-webkit-transform perspective(1000) rotateX(0)
-  &.done
-    :-webkit-animation load3 500ms backwards
-    div:first-child
-      span
-        :text-decoration line-through
-    :opacity 0.3
-    :-webkit-filter blur(1px)
-  .icon-ok
-    :float left
-    :margin 0 10px
-      :left 5px
-  .icon-remove
-    :margin-right 5px
-  i
-    :-webkit-transition-delay 0
-    :line-height 30px
-    :text-shadow 0 -1px 1px rgba(#000,0.4)
-    :font-size 14px
-    :text-align center
-    :width 20px
-    :float right
+    :border-radius 2px
+    :box-sizing border-box
+    :font-family "Source Sans Pro"
+    :color #fff
+    :font-weight 600
+    :background-color #1FA1C5
+    :text-transform uppercase
     :cursor pointer
-    :-webkit-transition-duration 320ms
-    &.hidden
+    &:hover
+      :border-top 1px solid rgba(#fff,0.1)
+      :background-color lighten(#1FA1C5,5%)
+    &:active
+      :border-top 1px solid rgba(#fff,0.1)
+      :background-color darken(#1FA1C5,5%)
+  .menu i
+    :display block
+    :float left
+    :height 35px
+    :line-height 37px
+    :text-align center
+  #list
+    :margin-top 70px
+    :position relative
+    :clear both
+    > div:empty
+      :text-align center
+      :padding-top 40px
+      &:after
+        :content attr(data-empty)
+        :color #555
+        :font-weight 600
+        :font-size 30px
+    @for $i from 1 through 2000
+      .item:nth-child(#{$i})
+        :-webkit-animation-delay 1000ms+$i*70ms
+  .item
+    i
       :opacity 0
-  :-webkit-transition-duration 320ms
+    i.icon-ok
+      :opacity 1
+    .text
+      :font-size 20px
+    &:hover
+      i
+        :opacity 1
+    > div
+      :position absolute
+      :top 0
+      :left 0
+      :bottom 0
+      :right 0
+      :-webkit-transition-duration 160ms
+      :-webkit-transition-easing-function linear
+    > div:last-child
+      :-webkit-transform perspective(1000) rotateX(-90deg)
+      :border-radius 2px
+      input
+        :border none
+        :margin 0
+        :font-size 14px
+        :line-height 14px
+        :padding 6px 10px
+        :width 100%
+        :box-sizing border-box
+        :height 40px
+        :border-radius inherit
+        &:focus
+          :outline none
+    > div:first-child
+      :-webkit-transition-delay 160ms
+      :background-color #333
+      :background-image -webkit-linear-gradient(rgba(#fff,0.05), rgba(#fff,0))
+      :border-radius 2px
+      :border-top 1px solid rgba(#fff,0.14)
+      :box-shadow 0 2px 1px rgba(#000,0.2)
+    :color #eee
+    :-webkit-animation todo-load2 500ms backwards
+    :height 40px
+    :box-sizing border-box
+    :line-height 37px
+    :padding 0 5px
+    :width 100%
+    :-webkit-user-select none
+    :text-shadow 0 1px 1px rgba(#000,0.4)
+    &.edit
+      :-webkit-transform perspective(1000) translateZ(30px)
+      div:first-child
+        :-webkit-transition-delay 0
+        :-webkit-transform perspective(1000) rotateX(90deg)
+      div:last-child
+        :-webkit-transition-delay 160ms
+        :-webkit-transform perspective(1000) rotateX(0)
+    &.done
+      :-webkit-animation todo-load3 500ms backwards
+      :-webkit-transform perspective(1000) translateZ(-30px)
+      div:first-child
+        span
+          :text-decoration line-through
+      :opacity 0.3
+      :-webkit-filter blur(1px)
+    .icon-ok
+      :float left
+      :margin 0 5px
+    .icon-remove
+      :margin-right 5px
+    i
+      :-webkit-transition-delay 0
+      :line-height 40px
+      :text-shadow 0 -1px 1px rgba(#000,0.4)
+      :font-size 14px
+      :text-align center
+      :width 20px
+      :float right
+      :cursor pointer
+      :-webkit-transition-duration 320ms
+      &.hidden
+        :opacity 0
+    :-webkit-transition-duration 320ms

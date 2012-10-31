@@ -9,7 +9,7 @@ _wrap = (name, app)->
       app[name].call app, data, fn
 
 window.Application = class Application extends Utils.Evented
-  constructor: ->
+  constructor: (@root = document)->
     @logger = new ConsoleLogger
     @keyboard = new Keyboard
     @router = new History
@@ -37,7 +37,7 @@ window.Application = class Application extends Utils.Evented
     @[key] = fn
 
   event: (key,fn) ->
-    document.delegateEvent key, fn.bind @
+    @root.delegateEvent key, fn.bind @
 
   on: (name,fn)->
     if name is 'end'
@@ -49,9 +49,11 @@ window.Application = class Application extends Utils.Evented
     super name, callback.bind @
 
   @new: (func) ->
-    @app = new Application
-    context = {}
-    for key of @app
-      context[key] = _wrap(key,@app)
-    func.call context
-    @app
+    (root) =>
+      @app = new Application root
+      context = {}
+      for key of @app
+        context[key] = _wrap(key,@app)
+      func.call context
+      @app.trigger 'load'
+      @app

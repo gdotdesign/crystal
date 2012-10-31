@@ -3,7 +3,7 @@ class AbsoluteList extends UI.List
   indexOf: (el) -> parseInt(el.getAttribute('index'))
   itemOf: (el) -> @collection[@indexOf(el)]
 
-  change: (data) ->
+  change: (e,data) ->
     for item in data.added
       if @options.element instanceof HTMLElement
         el = @options.element.cloneNode(true)
@@ -18,13 +18,20 @@ class AbsoluteList extends UI.List
     else
       @move data.moved
 
+  render: ->
+    i = 0
+    elements = @base.childNodes.map((el) => {el:el, index:@indexOf(el)}).sort((a,b) -> a.index-b.index).pluck('el')
+    for el in elements
+      el.css 'position', 'absolute'
+      el.css 'top', i*43+"px"
+      i++
+
   add: (el,index)->
-    el.css 'position', 'absolute'
-    el.css 'top', index*33+"px"
     el.setAttribute 'index', index
     el.addEvent 'webkitAnimationEnd', ->
       el.css '-webkit-animation', 'none'
     @base.append el
+    @render()
 
   remove: (items)->
     elements = for index in items then @base.first("[index='#{index}']")
@@ -40,7 +47,7 @@ class AbsoluteList extends UI.List
     elements = moves.map (move) => @base.first("[index='#{move[0]}']")
     for el,i in elements
       el.setAttribute 'index', moves[i][1]
-      el.css 'top', moves[i][1]*33+"px"
+    @render()
     @trigger 'moved'
 
 # Model
@@ -102,7 +109,7 @@ class ToDoItemView extends ModelView
     view.css '-webkit-animation-delay', 0 if window.loaded
 
 # Application
-window.app = Application.new ->
+window.todoapp = Application.new ->
   @def 'addItem', ->
     window.loaded ?= true
     value = @text.value
@@ -148,10 +155,10 @@ window.app = Application.new ->
   @on 'load', ->
     @collection = new ToDoCollection()
 
-    @text = document.first('#text')
-    @listEl = document.first("#list")
+    @text = @root.first('#text')
+    @listEl = @root.first("#list")
 
-    template = document.first(".item")
+    template = @root.first(".item")
     template.dispose()
     template.removeAttribute 'hidden'
 

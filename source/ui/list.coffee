@@ -4,7 +4,7 @@ UI.List = class List extends Crystal.Utils.Evented
   indexOf: (el) -> @base.indexOf el
   itemOf: (el) -> @collection[@base.indexOf el]
 
-  change: (data) ->
+  change: (e,data) =>
     for item in data.added
       if @options.element instanceof HTMLElement
         el = @options.element.cloneNode(true)
@@ -28,7 +28,16 @@ UI.List = class List extends Crystal.Utils.Evented
     for el, i in elements
       @base.insertBefore el, @base.childNodes[moves[i][1]]
 
+  bind: (collection)->
+    @base.empty()
+    if @collection
+      @collection.off 'change', @change
+    @collection = collection
+    @collection.on 'change', @change
+    added = for item,i in @collection then [item,i]
+    @change null, {added:added,removed: [], moved:[]}
+
   constructor: (@options) ->
     @base = Element.create()
-    @collection = @options.collection
-    @collection.on 'change', (e,data) => @change data
+    if @options.collection
+      @bind @options.collection

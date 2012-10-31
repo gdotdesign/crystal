@@ -1,18 +1,16 @@
 # @requires ../utils/evented
 window.Model = class Model extends Crystal.Utils.Evented
   constructor: (data)->
-    @_ensureProperties()
+    Object.defineProperty @, '__properties__',
+      value: {}
+      enumerable: false
+
     for key,descriptor of @properties
       @_property key, descriptor
+
     for key,value of data
       if Object.getOwnPropertyDescriptor(@,key)
         @[key] = value
-
-  _ensureProperties: ->
-    unless @__properties__
-      Object.defineProperty @, '__properties__',
-        value: {}
-        enumerable: false
 
   _property: (name, value)->
     Object.defineProperty @, name,
