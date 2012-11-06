@@ -18,7 +18,7 @@ window.Model = class Model extends Crystal.Utils.Evented
         @__properties__[name]
       set: (val) ->
         if value instanceof Function
-          val = value val
+          val = value.call @, val
         if val isnt @__properties__[name]
           @__properties__[name] = val
           @trigger 'change'

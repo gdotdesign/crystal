@@ -14,13 +14,9 @@ window.Application = class Application extends Utils.Evented
     @keyboard = new Keyboard
     @router = new History
     window.addEvent 'load', => @trigger 'load'
-    ###
-    nw > 3.0
     if PLATFORM is Platforms.NODE_WEBKIT
       win = require('nw.gui').Window.get()
-      win.on 'close', ->
       win.on 'minimize', => @trigger 'minimize'
-    ###
 
   set: (name,value) ->
     switch name
@@ -49,11 +45,9 @@ window.Application = class Application extends Utils.Evented
     super name, callback.bind @
 
   @new: (func) ->
-    (root) =>
-      @app = new Application root
-      context = {}
-      for key of @app
-        context[key] = _wrap(key,@app)
-      func.call context
-      @app.trigger 'load'
-      @app
+    @app = new Application
+    context = {}
+    for key of @app
+      context[key] = _wrap(key,@app)
+    func.call context
+    @app

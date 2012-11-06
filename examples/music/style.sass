@@ -1,0 +1,164 @@
+@import url(http://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic,700italic)
+@import url(http://netdna.bootstrapcdn.com/font-awesome/2.0/css/font-awesome.css)
+
+*
+  :-webkit-user-select none
+body
+  :overflow hidden
+  :background #999
+  :font-size 16px
+  :margin 0
+  :font-family "Source Sans Pro"
+
+.music-player
+  :border-radius 3px
+  :box-shadow 0 10px 30px rgba(#000,0.3), 0 4px 10px rgba(#000,0.3)
+  :width 600px
+  :margin 0 auto
+  :margin-top 30px
+  &.idle
+    .info
+      :height 0
+
+.cover
+  &:before
+    :background-color #222
+    :z-index -2
+    :content ""
+    :position absolute
+    :top -3px
+    :left -3px
+    :bottom -3px
+    :right -3px
+  &:after
+    :z-index -1
+    :content ""
+    :top -3px
+    :left -3px
+    :bottom -3px
+    :right -3px
+    :position absolute
+    :background-image url(http://www.phillm.com/myspace/twodoorcinemaclub/cover.jpg)
+    :background-size cover
+    :background-position center
+    :border-radius 3px
+    :-webkit-filter blur(5px) saturate(0.3)
+  :z-index -1
+  :top 3px
+  :left 3px
+  :bottom 3px
+  :right 3px
+
+.title, .aa
+  :float left
+.title
+  :font-size 16px
+  :line-height 29px
+  :font-weight bold
+  :margin-right 10px
+  &:after
+    :margin-left 10px
+    :content "-"
+.aa, .current, .full
+  :line-height 30px
+  :font-size 14px
+
+.artist
+  &:after
+    :margin-left 5px
+    :content "/"
+.current, .full
+  :float right
+
+.current
+  :margin-right 5px
+  &:after
+    :margin-left 2px
+    :content "/"
+
+.info, .playlist, .player
+  :margin 0
+  :overflow hidden
+  :-webkit-transition-duration 320ms
+  :color #ddd
+  :box-sizing border-box
+  :border-top 1px solid #333
+  :background #222
+  :border-bottom 1px solid #111
+
+.info
+  :padding 0 20px
+    :left 17px
+  :height 32px
+
+.playlist
+  :position relative
+  :background-color transparent
+  :overflow hidden
+  :border-radius 3px 3px 0 0
+  :padding 0
+  :list-style none
+  :height 500px
+  li
+    :height 30px
+    :line-height 30px
+    :padding 0 10px
+    :border-bottom 1px solid rgba(#000,0.2)
+    :background rgba(#222,0.7)
+    :-webkit-transition-duration 320ms
+    :font-weight bold
+    :color #aaa
+    :cursor pointer
+    :text-shadow 0 0 10px rgba(0,0,0,0.5)
+    &:hover
+      :color #ccc
+      :background rgba(#222,0.5)
+      :border-bottom 1px solid rgba(#000,0.4)
+    &.playing
+      :color #ddd
+      :background rgba(#1FA1C5,0.7)
+      :border-bottom 1px solid rgba(#000,0.5)
+  li + li
+
+.player
+  :padding 10px
+  :font-size 20px
+  :line-height 20px
+  :border-radius 0 0 3px 3px
+  :background-image -webkit-linear-gradient(rgba(#fff,0.02) 0%, rgba(#fff,0.05) 49%,rgba(#fff,0.01) 50%, rgba(#fff,0) 100%)
+  i
+    :display inline-block
+    :color #eee
+    :width 30px
+    :text-shadow 0 -1px 1px #000 ,0 -1px 3px #000
+    :cursor pointer
+    :overflow hidden
+    :-webkit-transition-duration 320ms
+    :text-align center
+    &.hide
+      :opacity 0
+      :width 0
+    &:hover, &.on
+      :color lighten(#1FA1C5,25%)
+      :text-shadow 0 0 5px #1FA1C5
+  progress
+    &.progress
+      :width 252px
+    &.volume
+      :width 70px
+    :cursor pointer
+    :margin 0 10px
+    :background transparent
+    :height 8px
+    :position relative
+    :top -7px
+    :border 1px solid #222
+    :border-radius 3px
+    &::-webkit-progress-bar
+      :background #333
+      :border-radius 2px
+    &::-webkit-progress-value
+      :background #1FA1C5
+      :-webkit-transition-duration 100ms
+      :border-radius 2px
+

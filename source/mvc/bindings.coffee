@@ -1,4 +1,3 @@
-
 window.Bindings = class Bindings
   @_wrap: (fn) ->
     (els,args...) ->

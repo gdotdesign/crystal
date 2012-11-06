@@ -1,0 +1,31 @@
+!!!
+%head
+  %script{:src => "/crystal", :type => "text/javascript"}
+  %script{:src => "/js/music", :type => "text/javascript", app: true}
+  %link{rel: "stylesheet", href: "/style/music", app: true}
+  %meta{:content => "width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0", :name => "viewport"}
+%body
+  .music-player.idle
+    .playlist
+      .cover
+      
+    .info
+      .title
+        The Chase
+      .aa
+        %span.artist Televisor
+        %span.album Televisor
+      .full
+        4:33
+      .current
+        0:44
+    .player
+      %i.icon-backward
+      %i.icon-pause.hide
+      %i.icon-play
+      %i.icon-forward
+      %progress.progress{value: 0, max: 100}
+      %i.icon-repeat
+      %i.icon-random
+      %i.icon-volume-up
+      %progress.volume{value: 0, max: 100}
