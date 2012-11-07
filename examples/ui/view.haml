@@ -10,11 +10,10 @@
   %section{app: 'todo'}
     .todo
       .menu
-        .wrap
-          %input#text{type: 'text',placeholder: 'What needs to be done?'}
-          %input#add{type: 'button', value: 'add'}
-          %i.icon-sort
-          %i.icon-remove
+        %input#text{type: 'text',placeholder: 'What needs to be done?'}
+        %i.icon-plus
+        %i.icon-sort
+        %i.icon-remove
       #list
       .item{hidden: true}
         %div

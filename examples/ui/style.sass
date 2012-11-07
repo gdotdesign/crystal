@@ -1,9 +1,13 @@
 @import url(http://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic,700italic)
 @import url(http://netdna.bootstrapcdn.com/font-awesome/2.0/css/font-awesome.css)
 
+body, html
+  :height 100%
 body
   :overflow hidden
-  :background #222
+  background: -webkit-radial-gradient(rgba(#000,0.5) 15%, transparent 16%) 0 0, -webkit-radial-gradient(rgba(#000,0.5) 15%, transparent 16%) 8px 8px, -webkit-radial-gradient(rgba(255,255,255,.1) 15%, transparent 20%) 0 1px, -webkit-radial-gradient(rgba(255,255,255,.1) 15%, transparent 20%) 8px 9px
+  background-color: #222
+  background-size: 16px 16px, 16px 16px, 16px 16px, 16px 16px, 16px 16px
   :font-size 16px
   :margin 0
   :font-family "Source Sans Pro"
@@ -32,99 +36,54 @@ body
 
 [app=todo]
 
-  :background #222
   .todo
-    :max-width 700px
-    :margin 0 auto
-
-  .wrap
+    :border-radius 3px
+    :box-shadow 0 10px 30px rgba(#000,0.3), 0 4px 10px rgba(#000,0.3)
     :width 700px
     :margin 0 auto
+    :margin-top 30px
 
-
-
-  .wrap
+  .menu
+    :height 40px
+    :background-color #222
+    :line-height 40px
+    :margin-bottom 10px
+    :border-radius 3px
+    :background-image -webkit-linear-gradient(rgba(#fff,0.02) 0%, rgba(#fff,0.05) 49%,rgba(#fff,0.01) 50%, rgba(#fff,0) 100%)
     > *
       :float left
     
-  .menu
-    :background-color rgba(0,0,0,.5)
-    :position absolute
-    :left 0
-    :right 0
-    :top 0
-    :padding 10px
-  .wrap > input
+  .menu > input[type=text]
     :background #eee
     :border none
     :margin 0
     :padding 0
-    :height 35px
-    :line-height 28px
+    :height 30px
+    :margin-left 1%
+    :margin-top 5px
     :display block
     :border-radius 2px
     :box-sizing border-box
     :-webkit-transition-duration 320ms
-    &[type=text]
-      &::-webkit-input-placeholder
-        :line-height 20px
-        :font-style italic
-      :border-bottom 3px solid transparent
-      :-webkit-animation todo-load 500ms 1s backwards
-      :font-size 14px
-      :width 60%
-      :line-height 14px
-      :margin-bottom 3px
-      :padding 8px 10px
-      &:focus
-        :outline none
-        :border-bottom-color #1FA1C5
-  input[type=button]
-    :-webkit-animation todo-load 500ms 1.2s backwards
-    :width 17%
+    &::-webkit-input-placeholder
+      :line-height 20px
+      :font-style italic
+    :-webkit-animation todo-load 500ms 1s backwards
+    :box-shadow 0 1px 5px rgba(0,0,0,0.6) inset
+    :font-size 14px
+    :width 78%
+    :line-height 14px
+    :margin-bottom 3px
+    :padding 8px 10px
+      :top 6px
   .menu i
-    :width 10%
-    :-webkit-animation todo-load 500ms 1.4s backwards
-    &.icon-sort
-      :background-color #74B541
-      &:hover
-        :background-color lighten(#74B541,5%)
-      &:active
-        :background-color darken(#74B541,5%)
-    &:last-child
-      :background-color #FF6000
-      &:hover
-        :background-color lighten(#FF6000,5%)
-      &:active
-        :background-color darken(#FF6000,5%)
-  input[type=button], .menu i
-    :margin-left 1%
-    :background-image -webkit-linear-gradient(rgba(#fff,0.2), rgba(#fff,0))
-    :text-shadow 0 1px 1px rgba(#000,0.4)
-    :border-top 1px solid rgba(#fff,0.45)
-    :box-shadow 0 2px 1px rgba(#000,0.2)
-    :border-radius 2px
-    :box-sizing border-box
-    :font-family "Source Sans Pro"
-    :color #fff
-    :font-weight 600
-    :background-color #1FA1C5
-    :text-transform uppercase
     :cursor pointer
-    &:hover
-      :border-top 1px solid rgba(#fff,0.1)
-      :background-color lighten(#1FA1C5,5%)
-    &:active
-      :border-top 1px solid rgba(#fff,0.1)
-      :background-color darken(#1FA1C5,5%)
-  .menu i
-    :display block
-    :float left
-    :height 35px
-    :line-height 37px
+    :width 7%
+    :color #ddd
+    :-webkit-animation todo-load 500ms 1.4s backwards
+    :line-height 45px
     :text-align center
   #list
-    :margin-top 70px
     :position relative
     :clear both
     > div:empty
@@ -188,7 +147,6 @@ body
     :-webkit-user-select none
     :text-shadow 0 1px 1px rgba(#000,0.4)
     &.edit
-      :-webkit-transform perspective(1000) translateZ(30px)
       div:first-child
         :-webkit-transition-delay 0
         :-webkit-transform perspective(1000) rotateX(90deg)
@@ -197,7 +155,6 @@ body
         :-webkit-transform perspective(1000) rotateX(0)
     &.done
       :-webkit-animation todo-load3 500ms backwards
-      :-webkit-transform perspective(1000) translateZ(-30px)
       div:first-child
         span
           :text-decoration line-through

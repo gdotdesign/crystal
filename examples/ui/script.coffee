@@ -131,7 +131,7 @@ window.todoapp = Application.new ->
   @event
     'keydown:#text': (e)->
       @addItem() if e.key is 'enter'
-    'click:#add': ->
+    'click:i.icon-plus': ->
       @addItem()
     'click:i.icon-sort': (e) ->
       @collection.sort (a, b) ->

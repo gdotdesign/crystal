@@ -18,8 +18,10 @@ Bindings.define 'text', (el,property) ->
 Bindings.define 'visible', (el,property) ->
   el.css 'display', if @[property] then 'block' else 'none'
 
-Bindings.define 'toggleClass', (el,property,cls) ->
-  if @[property]
+Bindings.define 'toggleClass', (el,property,cls,inverse = false) ->
+  val = !!@[property]
+  val = !val if inverse
+  if val
     el.classList.add cls
   else
     el.classList.remove cls
@@ -27,7 +29,10 @@ Bindings.define 'toggleClass', (el,property,cls) ->
 Bindings.define 
   name: 'value'
   render: (el,property) ->
-    el.value = @[property]
+    try
+      el.value = @[property]
+    catch e
+      el.setAttribute 'value', @[property]
   initialize: (el,property) ->
     el.addEvent 'input', =>
       @[property] = el.value
