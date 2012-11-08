@@ -18,6 +18,7 @@ class Dragger extends Crystal.Utils.Evented
         @offset = new WebKitPoint(e.pageX,e.pageY).diff new WebKitPoint(rect.left,rect.top)
         @el.parent.insertBefore @dummy, @el
 
+        @el.css '-webkit-transition-duration', '0'
         @el.css 'width', rect.width+"px"
         @el.css 'position', 'absolute'
         @el.css 'top', rect.top+"px"
@@ -30,22 +31,30 @@ class Dragger extends Crystal.Utils.Evented
     console.log box
     if box
       box.parent.insertBefore @dummy, box
-    else 
+    else
       dummyColumn = @dummy.ancestor(".column")
       column = if e.target.webkitMatchesSelector('.column') then e.target else  e.target.ancestor(".column")
       if column and column isnt dummyColumn
         column.append @dummy
     @el.css 'top', (e.pageY-@offset.y)+"px"
     @el.css 'left', (e.pageX-@offset.x)+"px"
+
   up: =>
-    @el.css 'pointer-events', 'auto'
-    @el.css 'position','static'
-    @el.css 'width', "auto"
     document.removeEvent 'mousemove', @move
     document.addEvent 'mouseup', @up
-    @dummy.parent.insertBefore @el, @dummy
-    @dummy.dispose()
-    @publish 'reorder'
+
+    rect = @dummy.getBoundingClientRect()
+    @el.css '-webkit-transition-duration', '120ms'
+    @el.css 'top', rect.top+"px"
+    @el.css 'left', rect.left+"px"
+    setTimeout =>
+      @el.css 'pointer-events', 'auto'
+      @el.css 'position','static'
+      @el.css 'width', "auto"
+      @dummy.parent.insertBefore @el, @dummy
+      @dummy.dispose()
+      @publish 'reorder'
+    , 150
 
 class Box extends Model
   properties:
@@ -53,11 +62,11 @@ class Box extends Model
   constructor: ->
     super
     Object.defineProperties @,
-      base: 
+      base:
         value: Element.create '.box'
-      content: 
+      content:
         value: Element.create '.content'
-      titlebox: 
+      titlebox:
         value: Element.create '.title'
       titleEl:
         value: Element.create 'span'
@@ -98,19 +107,20 @@ class RSSBox extends Box
         value: list
     @content.append @list.base
     @load @url if @url
-  
+
   load: (url) ->
     feed = new google.feeds.Feed(url)
-    feed.setNumEntries(10) 
+    feed.setNumEntries(10)
     feed.load (result) =>
       c = new Collection()
       @title = result.feed.title
       for item in result.feed.entries
+        console.log item
         c.push new RSSEntry {title: item.title, link: item.link}
       @list.bind c
-      
+
 class window.Column extends Crystal.Utils.Evented
-  constructor: (@id) -> 
+  constructor: (@id) ->
     @base = Element.create '.column'
     @subscribe 'reorder', @update
     @load()

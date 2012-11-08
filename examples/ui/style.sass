@@ -11,7 +11,7 @@ body
   :font-size 16px
   :margin 0
   :font-family "Source Sans Pro"
-  
+
 @-webkit-keyframes todo-load
   0%
     :-webkit-transform translateY(-200px)
@@ -52,7 +52,7 @@ body
     :background-image -webkit-linear-gradient(rgba(#fff,0.02) 0%, rgba(#fff,0.05) 49%,rgba(#fff,0.01) 50%, rgba(#fff,0) 100%)
     > *
       :float left
-    
+
   .menu > input[type=text]
     :background #eee
     :border none
@@ -117,6 +117,7 @@ body
       :-webkit-transition-easing-function linear
     > div:last-child
       :-webkit-transform perspective(1000) rotateX(-90deg)
+      :opacity 0
       :border-radius 2px
       input
         :border none
@@ -151,6 +152,7 @@ body
         :-webkit-transition-delay 0
         :-webkit-transform perspective(1000) rotateX(90deg)
       div:last-child
+        :opacity 1
         :-webkit-transition-delay 160ms
         :-webkit-transform perspective(1000) rotateX(0)
     &.done

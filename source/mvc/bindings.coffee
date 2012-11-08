@@ -26,7 +26,7 @@ Bindings.define 'toggleClass', (el,property,cls,inverse = false) ->
   else
     el.classList.remove cls
 
-Bindings.define 
+Bindings.define
   name: 'value'
   render: (el,property) ->
     try
@@ -34,5 +34,4 @@ Bindings.define
     catch e
       el.setAttribute 'value', @[property]
   initialize: (el,property) ->
-    el.addEvent 'input', =>
-      @[property] = el.value
+    el.addEvent 'input', => @[property] = el.value
