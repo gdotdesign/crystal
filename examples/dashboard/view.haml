@@ -6,5 +6,14 @@
   %link{rel: "stylesheet", href: "/style/dashboard", app: true}
   %meta{:content => "width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0", :name => "viewport"}
 %body
-  %button Add RSS
+  .menu
+    %input{type: 'text'}
+    %button{name: 'search'} Search
+    %button{name: 'rss'} 
+      %i.icon-plus
+      %i.icon-rss
+    %button{name: 'tab'}
+      %i.icon-plus
+      %i.icon-inbox
+  %ul.tabs
   .warpper

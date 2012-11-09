@@ -10,14 +10,14 @@ class Dragger extends Crystal.Utils.Evented
     document.addEvent 'mousedown', (e) =>
       if e.target.webkitMatchesSelector('.title')
         @el = e.target.parent
+
         rect = @el.getBoundingClientRect()
         @dummy.css 'width', rect.width+"px"
         @dummy.css 'height', rect.height+"px"
 
-
         @offset = new WebKitPoint(e.pageX,e.pageY).diff new WebKitPoint(rect.left,rect.top)
         @el.parent.insertBefore @dummy, @el
-
+        document.body.append @el
         @el.css '-webkit-transition-duration', '0'
         @el.css 'width', rect.width+"px"
         @el.css 'position', 'absolute'
@@ -28,8 +28,10 @@ class Dragger extends Crystal.Utils.Evented
         document.addEvent 'mouseup', @up
   move: (e) =>
     box = if e.target.webkitMatchesSelector('.box') then e.target else e.target.ancestor(".box")
-    console.log box
-    if box
+    li = if e.target.webkitMatchesSelector('li') then e.target else e.target.ancestor("li")
+    if li and li.parent is document.first(".tabs")
+      document.body.all(".tab")[li.parent.indexOf(li)].first('.column').append @dummy
+    else if box
       box.parent.insertBefore @dummy, box
     else
       dummyColumn = @dummy.ancestor(".column")
@@ -40,21 +42,23 @@ class Dragger extends Crystal.Utils.Evented
     @el.css 'left', (e.pageX-@offset.x)+"px"
 
   up: =>
-    document.removeEvent 'mousemove', @move
-    document.addEvent 'mouseup', @up
+    if @el
+      document.removeEvent 'mousemove', @move
+      document.addEvent 'mouseup', @up
 
-    rect = @dummy.getBoundingClientRect()
-    @el.css '-webkit-transition-duration', '120ms'
-    @el.css 'top', rect.top+"px"
-    @el.css 'left', rect.left+"px"
-    setTimeout =>
-      @el.css 'pointer-events', 'auto'
-      @el.css 'position','static'
-      @el.css 'width', "auto"
-      @dummy.parent.insertBefore @el, @dummy
-      @dummy.dispose()
-      @publish 'reorder'
-    , 150
+      rect = @dummy.getBoundingClientRect()
+      @el.css '-webkit-transition-duration', '120ms'
+      @el.css 'top', rect.top+"px"
+      @el.css 'left', rect.left+"px"
+      setTimeout =>
+        @el.css 'pointer-events', 'auto'
+        @el.css 'position','static'
+        @el.css 'width', "auto"
+        @dummy.parent.insertBefore @el, @dummy
+        @dummy.dispose()
+        @publish 'reorder'
+        @el = null
+      , 150
 
 class Box extends Model
   properties:
@@ -115,7 +119,6 @@ class RSSBox extends Box
       c = new Collection()
       @title = result.feed.title
       for item in result.feed.entries
-        console.log item
         c.push new RSSEntry {title: item.title, link: item.link}
       @list.bind c
 
@@ -131,21 +134,59 @@ class window.Column extends Crystal.Utils.Evented
     @save()
 
   save: ->
-    localStorage.setItem "column"+@id, JSON.stringify(@boxes)
+    localStorage.setItem @id, JSON.stringify(@boxes)
   load: ->
-    boxes = JSON.parse localStorage.getItem "column"+@id
+    boxes = JSON.parse localStorage.getItem @id
     if boxes
       for box in boxes
         @base.append new RSSBox(box).base
 
-window.onload = ->
-  d = new Dragger()
 
-  document.first("button").addEvent 'click', ->
+window.Tabs = []
+addTab = (name) ->
+  id = Tabs.length
+  tab = Element.create '.tab'
+  (1).upto 4, (j) ->
+    c = new Column "tab#{id}:#{j}"
+    tab.append c.base
+  document.first('.warpper').append tab
+  li = Element.create('li')
+  li.text = name
+  document.first(".tabs").append li
+  Tabs.push name
+
+window.onload = ->
+
+  d = new Dragger()
+  d.subscribe 'reorder', ->
+    localStorage.setItem 'tabs', JSON.stringify Tabs
+
+  document.delegateEvent 'dblclick:.tabs li', (e) -> 
+    if name = prompt("Tab Name",e.target.text)
+      e.target.text = name
+      Tabs[e.target.parent.indexOf(e.target)] = name
+      localStorage.setItem 'tabs', JSON.stringify Tabs
+
+  document.delegateEvent 'click:.tabs li', (e) -> 
+    tabs = document.body.all('.tab')
+    for tab in tabs
+      tab.classList.remove 'active'
+    tabs[e.target.parent.indexOf(e.target)].classList.add 'active'
+
+  document.first("button[name=tab]").addEvent 'click', ->
+    addTab('Empty Tab')
+
+  document.first("button[name=rss]").addEvent 'click', ->
     if url = prompt()
-      document.first('.column').append new RSSBox({url:url}).base
+      document.first('.active .column').append new RSSBox({url:url}).base
       d.publish 'reorder'
 
-  (1).upto 4, (i) ->
-    c = new Column i
-    document.first('.warpper').append c.base
+  tabs = JSON.parse localStorage.getItem 'tabs'
+  if tabs
+    for tab in tabs
+      addTab tab
+  else
+    addTab 'First Tab'
+    localStorage.setItem 'tabs', JSON.stringify Tabs
+  document.first(".tab").classList.add 'active'
+
