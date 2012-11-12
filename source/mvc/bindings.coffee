@@ -9,7 +9,8 @@ window.Bindings = class Bindings
       @[key] = @_wrap value
     else
       @[key.name] = @_wrap key.render
-      @["_"+key.name] = @_wrap key.initialize
+      if key.initialize
+        @["_"+key.name] = @_wrap key.initialize
 
 # Default Bindings
 Bindings.define 'text', (el,property) ->

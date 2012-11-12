@@ -1,3 +1,4 @@
+# @requires ../types/function
 # @requires ../types/array
 # @requires ../types/object
 # @requires ../types/number
@@ -22,17 +23,10 @@ window.Logger = class Logging.Logger
       line += "["+new Date().format("%Y-%M-%D %H:%T")+"] "
     line += args.map((arg) -> args.toString()).join ","
 
-Object.defineProperties Logger::,
-  timestamp:
-    set: (value) ->
-      @_timestamp = !!value
-    get: ->
-      @_timestamp
-  level:
-    set: (value) ->
-      @_level = parseInt(value).clamp 0, 4
-    get: ->
-      @_level
+  @get 'timestamp', -> @_timestamp
+  @set 'timestamp', (value) -> @_timestamp = !!value
+  @get 'level', -> @_level
+  @set 'level', (value) -> @_level = parseInt(value).clamp 0, 4
 
 ['debug', 'log', 'error', 'fatal', 'info', 'warn'].forEach (type) ->
   Logger::["_"+type] = ->

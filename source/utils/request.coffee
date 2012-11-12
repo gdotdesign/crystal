@@ -1,3 +1,4 @@
+# @requires ../types/function
 # @requires ../types/array
 # @requires ../types/string
 # @requires ../types/object
@@ -9,35 +10,32 @@ window.Response = class Utils.Response
     @raw = body
     @status = status
 
-types =
-  script: ['text/javascript']
-  html: ['text/html']
-  JSON: ['text/json','application/json']
-  XML: ['text/xml']
+  isScript: -> @headers['Content-Type'] is 'text/javascript'
+  isHtml: -> @headers['Content-Type'] is 'text/html'
+  isXML: -> @headers['Content-Type'] is 'text/xml'
+  isJSON: ->
+    contentType = @headers['Content-Type']
+    contentType is 'text/json' or contentType is 'application/json'
 
-Object.each types, (key,value) ->
-  Object.defineProperty Response::, 'is'+key.capitalize(), value: ->
-    value.map( (type) => @headers['Content-Type'] is type).compact().length > 0
-
-Object.defineProperty Response::, 'body', get: ->
-  switch @headers['Content-Type']
-    when "text/html"
-      div = document.createElement('div')
-      div.innerHTML = @raw
-      df = document.createDocumentFragment()
-      for node in Array::slice.call div.childNodes
-        df.appendChild node
-      df
-    when "text/json", "application/json"
-      try
-        JSON.parse(@raw)
-      catch e
+  @get 'body', ->
+    switch @headers['Content-Type']
+      when "text/html"
+        div = document.createElement('div')
+        div.innerHTML = @raw
+        df = document.createDocumentFragment()
+        for node in Array::slice.call div.childNodes
+          df.appendChild node
+        df
+      when "text/json", "application/json"
+        try
+          JSON.parse(@raw)
+        catch e
+          @raw
+      when "text/xml"
+        p = new DOMParser()
+        p.parseFromString(@raw,"text/xml")
+      else
         @raw
-    when "text/xml"
-      p = new DOMParser()
-      p.parseFromString(@raw,"text/xml")
-    else
-      @raw
 
 window.Request = class Utils.Request
   constructor: (url, headers = {}) ->
@@ -46,7 +44,10 @@ window.Request = class Utils.Request
     @_request = new XMLHttpRequest()
     @_request.onreadystatechange = @handleStateChange
 
-  request: (method = 'GET' ,data, callback) ->
+  request: (method = 'GET' , args...) ->
+    args = args.compact()
+    [data,callback] = args if args.length is 2
+    [callback] = args if args.length is 1
     if (@_request.readyState is 4) or (@_request.readyState is 0)
       if method.toUpperCase() is 'GET' and data isnt undefined and data isnt null
         @_request.open method, @uri+"?"+data.toQueryString()
@@ -72,12 +73,9 @@ window.Request = class Utils.Request
       @_callback new Response(headers,body,status)
       @_request.responseText
 
-['get','post','put','delete','patch'].forEach (type) ->
-  Request::[type] = ->
-    if arguments.length is 2
-      data = arguments[0]
-      callback = arguments[1]
-    else
-      callback = arguments[0]
-    @request type.toUpperCase(), data, callback
+  get:    (data,callback) -> @request 'GET', data, callback
+  post:   (data,callback) -> @request 'POST', data, callback
+  put:    (data,callback) -> @request 'PUT', data, callback
+  delete: (data,callback) -> @request 'DELETE', data, callback
+  patch:  (data,callback) -> @request 'PATCH', data, callback
 

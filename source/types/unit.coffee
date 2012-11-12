@@ -22,7 +22,5 @@ window.Unit = class Unit
     else
       throw 'Wrong Unit format!'
 
-['px','em'].forEach (type) ->
-  Object.defineProperty Unit::, type,
-    get: ->
-      @toString(type)
+  @get 'px', -> @toString('px')
+  @get 'em', -> @toString('em')

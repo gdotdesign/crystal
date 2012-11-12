@@ -15,6 +15,7 @@ describe "Request", ->
           !!@response
         , 'No response', 1000
         runs =>
+          console.log @response
           expect(@response).not.toBe(null)
           expect(@response.body).toBe type.toUpperCase()
 
